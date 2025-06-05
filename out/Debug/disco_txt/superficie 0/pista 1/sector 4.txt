@@ -1,0 +1,13 @@
+62903"Bostandyeff; Mr. Guentcho"male26.000000003492247.895800                    S
+63003"O'Connell; Mr. Patrick D"male0.000000003349127.733300                    Q
+63111"Barkworth; Mr. Algernon Henry Wilson"male80.000000002704230.000000A23                 S
+63203"Lundahl; Mr. Johan Svensson"male51.000000003477437.054200                    S
+63311"Stahelin-Maeglin; Dr. Max"male32.000000001321430.500000B50                 C
+
+
+
+
+63111"Barkworth; Mr. Algernon Henry Wilson"male80.000000002704230.000000A23                 S
+
+
+63311"Stahelin-Maeglin; Dr. Max"male32.000000001321430.500000B50                 C

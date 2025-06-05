@@ -1,0 +1,59 @@
+Next_page_id: 21 N_registers: 5 Free_space/capacity: 87/404
+free_space_offset: 193 # Slots: 18
+ |0|93|1907|
+|1|111|1796|
+|0|89|1707|
+|0|98|1609|
+|0|88|1521|
+|0|100|1421|
+|1|102|1319|
+|1|100|1219|
+|0|95|1124|
+|0|110|1014|
+|0|91|923|
+|1|105|818|
+|0|104|714|
+|0|100|614|
+|0|92|522|
+|0|103|419|
+|1|123|296|
+|0|103|193|
+|
+Superficie: 1 Track: 0 Sector: 14
+
+
+35201"Williams-Lambert; Mr. Fletcher Fellows"male0.0000000011351035.000000C128                S
+
+
+
+
+
+
+
+Superficie: 0 Track: 0 Sector: 14
+
+
+35711"Bowerman; Miss. Elsie Edith"female22.0000000111350555.000000E33                 S
+35802"Funk; Miss. Annie Clemmer"female38.0000000023767113.000000                    S
+
+
+
+
+
+
+
+Superficie: 5 Track: 0 Sector: 13
+36202"del Carlo; Mr. Sebastiano"male29.00000010SC/PARIS 216727.720800                    C
+
+
+
+
+
+
+
+
+
+Superficie: 4 Track: 0 Sector: 13
+36711"Warren; Mrs. Frank Manley (Anna Sophia Atkinson)"female60.0000001011081375.250000D37                 C
+
+

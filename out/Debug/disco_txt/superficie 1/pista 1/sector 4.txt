@@ -1,0 +1,12 @@
+62403"Hansen; Mr. Henry Damsgaard"male21.000000003500297.854200                    S
+62503"Bowen; Mr. David John ""Dai"""male21.000000005463616.100000                    S
+62601"Sutton; Mr. Frederick"male61.000000003696332.320800D50                 S
+62702"Kirkland; Rev. Charles Leonard"male57.0000000021953312.350000                    Q
+62811"Longley; Miss. Gretchen Fiske"female21.000000001350277.958300D9                  S
+
+
+
+
+62601"Sutton; Mr. Frederick"male61.000000003696332.320800D50                 S
+62702"Kirkland; Rev. Charles Leonard"male57.0000000021953312.350000                    Q
+62811"Longley; Miss. Gretchen Fiske"female21.000000001350277.958300D9                  S

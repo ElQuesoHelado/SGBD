@@ -1,0 +1,9 @@
+5412"Faunthorpe; Mrs. Lizzie (Elizabeth Anne Wilkinson)"female29.00000010292626.000000                    S
+5611"Woolner; Mr. Hugh"male0.000000001994735.500000C52                 S
+5712"Rugg; Miss. Emily"female21.00000000C.A. 3102610.500000                    S
+5803"Novel; Mr. Mansouer"male28.5000000026977.229200                    C
+5412"Faunthorpe; Mrs. Lizzie (Elizabeth Anne Wilkinson)"female29.00000010292626.000000                    S
+5611"Woolner; Mr. Hugh"male0.000000001994735.500000C52                 S
+5712"Rugg; Miss. Emily"female21.00000000C.A. 3102610.500000                    S
+
+

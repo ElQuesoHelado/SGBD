@@ -1,0 +1,56 @@
+Next_page_id: 29 N_registers: 8 Free_space/capacity: 18/404
+free_space_offset: 124 # Slots: 18
+ |0|92|1908|
+|1|104|1804|
+|0|107|1697|
+|1|122|1575|
+|0|91|1484|
+|0|89|1395|
+|0|94|1301|
+|0|105|1196|
+|0|103|1093|
+|1|96|997|
+|1|117|880|
+|1|119|761|
+|1|120|641|
+|0|97|544|
+|0|97|447|
+|0|100|347|
+|1|100|247|
+|1|123|124|
+|
+Superficie: 3 Track: 0 Sector: 19
+
+
+49711"Eustis; Miss. Elizabeth Mussey"female54.000000103694778.266700D20                 C
+
+
+49901"Allison; Mrs. Hudson J C (Bessie Waldo Daniels)"female25.00000012113781151.550000C22 C26             S
+
+Superficie: 2 Track: 0 Sector: 19
+
+
+
+
+
+
+
+
+
+
+50511"Maioni; Miss. Roberta"female16.0000000011015286.500000B79                 S
+
+Superficie: 1 Track: 0 Sector: 19
+50601"Penasco y Castellana; Mr. Victor de Satode"male18.00000010PC 17758108.900000C65                 C
+50712"Quick; Mrs. Frederick Charles (Jane Richards)"female33.000000022636026.000000                    S
+50811"Bradley; Mr. George (""George Arthur Brayton"")"male0.0000000011142726.550000                    S
+
+
+
+
+
+Superficie: 0 Track: 0 Sector: 19
+
+
+51311"McGough; Mr. James Robert"male36.00000000PC 1747326.287500E25                 S
+51411"Rothschild; Mrs. Martin (Elizabeth L. Barrett)"female54.00000010PC 1760359.400000                    C

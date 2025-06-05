@@ -1,0 +1,14 @@
+14103"Boulos; Mrs. Joseph (Sultana)"female0.00000002267815.245800                    C
+14213"Nysten; Miss. Anna Sofia"female22.000000003470817.750000                    S
+14313"Hakkarainen; Mrs. Pekka Pietari (Elin Matilda Dolck)"female24.00000010STON/O2. 310127915.850000                    S
+14403"Burke; Mr. Jeremiah"male19.000000003652226.750000                    Q
+14502"Andrew; Mr. Edgardo Samuel"male18.0000000023194511.500000                    S
+
+
+
+
+
+
+
+
+14502"Andrew; Mr. Edgardo Samuel"male18.0000000023194511.500000                    S

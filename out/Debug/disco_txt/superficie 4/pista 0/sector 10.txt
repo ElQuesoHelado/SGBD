@@ -1,0 +1,13 @@
+26401"Harrison; Mr. William"male40.000000001120590.000000B94                 S
+26503"Henry; Miss. Delia"female0.000000003826497.750000                    Q
+26602"Reeves; Mr. David"male36.00000000C.A. 1724810.500000                    S
+26703"Panula; Mr. Ernesti Arvid"male16.00000041310129539.687500                    S
+26813"Persson; Mr. Ernst Ulrik"male25.000000103470837.775000                    S
+26401"Harrison; Mr. William"male40.000000001120590.000000B94                 S
+
+
+26602"Reeves; Mr. David"male36.00000000C.A. 1724810.500000                    S
+
+
+
+

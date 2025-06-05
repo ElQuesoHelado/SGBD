@@ -1,0 +1,13 @@
+47013"Baclini; Miss. Helene Barbara"female0.75000021266619.258300                    C
+47103"Keefe; Mr. Arthur"male0.000000003235927.250000                    S
+47203"Cacic; Mr. Luka"male38.000000003150898.662500                    S
+47312"West; Mrs. Edwy Arthur (Ada Mary Worth)"female33.00000012C.A. 3465127.750000                    S
+47412"Jerwan; Mrs. Amin S (Marie Marthe Thuillard)"female23.00000000SC/AH Basle 54113.791700D                   C
+
+
+
+
+
+
+47312"West; Mrs. Edwy Arthur (Ada Mary Worth)"female33.00000012C.A. 3465127.750000                    S
+47412"Jerwan; Mrs. Amin S (Marie Marthe Thuillard)"female23.00000000SC/AH Basle 54113.791700D                   C

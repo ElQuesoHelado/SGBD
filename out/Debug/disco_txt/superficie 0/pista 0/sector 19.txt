@@ -1,0 +1,7 @@
+51203"Webber; Mr. James"male0.00000000SOTON/OQ 31013168.050000                    S
+51311"McGough; Mr. James Robert"male36.00000000PC 1747326.287500E25                 S
+51411"Rothschild; Mrs. Martin (Elizabeth L. Barrett)"female54.00000010PC 1760359.400000                    C
+
+
+51311"McGough; Mr. James Robert"male36.00000000PC 1747326.287500E25                 S
+51411"Rothschild; Mrs. Martin (Elizabeth L. Barrett)"female54.00000010PC 1760359.400000                    C

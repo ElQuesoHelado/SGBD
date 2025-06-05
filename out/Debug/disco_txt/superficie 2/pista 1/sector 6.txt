@@ -1,0 +1,9 @@
+71311"Taylor; Mr. Elmer Zebley"male48.000000101999652.000000C126                S
+71403"Larsson; Mr. August Viktor"male29.0000000075459.483300                    S
+71502"Greenberg; Mr. Samuel"male52.0000000025064713.000000                    S
+71711"Endres; Miss. Caroline Louise"female38.00000000PC 17757227.525000C45                 C
+71311"Taylor; Mr. Elmer Zebley"male48.000000101999652.000000C126                S
+
+
+71502"Greenberg; Mr. Samuel"male52.0000000025064713.000000                    S
+71711"Endres; Miss. Caroline Louise"female38.00000000PC 17757227.525000C45                 C

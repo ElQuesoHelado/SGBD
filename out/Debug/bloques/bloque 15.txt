@@ -1,0 +1,56 @@
+Next_page_id: 16 N_registers: 11 Free_space/capacity: 4/399
+free_space_offset: 115 # Slots: 19
+ |1|93|1907|
+|1|102|1805|
+|0|90|1715|
+|0|106|1609|
+|1|90|1519|
+|1|94|1425|
+|0|93|1332|
+|1|94|1238|
+|0|99|1139|
+|0|97|1042|
+|1|122|920|
+|1|99|821|
+|1|94|727|
+|0|99|628|
+|1|116|512|
+|1|96|416|
+|0|103|313|
+|1|107|206|
+|0|91|115|
+|
+Superficie: 5 Track: 0 Sector: 10
+25911"Ward; Miss. Anna"female35.00000000PC 17755512.329200                    C
+26012"Parrish; Mrs. (Lutie Davis)"female50.0000000123043326.000000                    S
+
+
+
+
+26301"Taussig; Mr. Emil"male52.0000001111041379.650000E67                 S
+
+Superficie: 4 Track: 0 Sector: 10
+26401"Harrison; Mr. William"male40.000000001120590.000000B94                 S
+
+
+26602"Reeves; Mr. David"male36.00000000C.A. 1724810.500000                    S
+
+
+
+
+
+Superficie: 3 Track: 0 Sector: 10
+26911"Graham; Mrs. William Thompson (Edith Junkins)"female58.00000001PC 17582153.462500C125                S
+27011"Bissette; Miss. Amelia"female35.00000000PC 17760135.633300C99                 S
+27101"Cairns; Mr. Alexander"male0.0000000011379831.000000                    S
+
+
+27312"Mellinger; Mrs. (Elizabeth Anne Maidment)"female41.0000000125064419.500000                    S
+
+Superficie: 2 Track: 0 Sector: 10
+27401"Natsch; Mr. Charles H"male37.00000001PC 1759629.700000C118                C
+
+
+27611"Andrews; Miss. Kornelia Theodosia"female63.000000101350277.958300D7                  S
+
+

@@ -1,0 +1,52 @@
+Next_page_id: 31 N_registers: 12 Free_space/capacity: 56/404
+free_space_offset: 162 # Slots: 18
+ |0|111|1889|
+|0|94|1795|
+|1|103|1692|
+|1|106|1586|
+|1|96|1490|
+|0|97|1393|
+|1|108|1285|
+|1|101|1184|
+|0|111|1073|
+|0|108|965|
+|1|88|877|
+|1|101|776|
+|1|98|678|
+|1|106|572|
+|1|106|466|
+|0|98|368|
+|1|107|261|
+|1|99|162|
+|
+Superficie: 5 Track: 1 Sector: 0
+
+
+
+
+53612"Hart; Miss. Eva Miriam"female7.00000002F.C.C. 1352926.250000                    S
+53701"Butt; Major. Archibald Willingham"male45.0000000011305026.550000B38                 S
+
+Superficie: 4 Track: 1 Sector: 0
+53811"LeRoy; Miss. Bertha"female30.00000000PC 17761106.425000                    C
+
+
+54011"Frolicher; Miss. Hedwig Margaritha"female22.000000021356849.500000B39                 C
+54111"Crosby; Miss. Harriet R"female36.00000002WE/P 573571.000000B22                 S
+
+
+
+Superficie: 3 Track: 1 Sector: 0
+
+
+54412"Beane; Mr. Edward"male32.00000010290826.000000                    S
+54501"Douglas; Mr. Walter Donald"male50.00000010PC 17761106.425000C86                 C
+54601"Nicholson; Mr. Arthur Ernest"male64.0000000069326.000000                    S
+54712"Beane; Mrs. Edward (Ethel Clarke)"female19.00000010290826.000000                    S
+54812"Padro y Manent; Mr. Julian"male0.00000000SC/PARIS 214613.862500                    C
+
+Superficie: 2 Track: 1 Sector: 0
+
+
+55012"Davies; Master. John Morgan Jr"male8.00000011C.A. 3311236.750000                    S
+55111"Thayer; Mr. John Borland Jr"male17.0000000217421110.883300C70                 C

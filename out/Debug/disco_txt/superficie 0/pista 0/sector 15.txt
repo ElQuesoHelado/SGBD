@@ -1,0 +1,9 @@
+40303"Jussila; Miss. Mari Aina"female21.0000001041379.825000                    S
+40403"Hakkarainen; Mr. Pekka Pietari"male28.00000010STON/O2. 310127915.850000                    S
+40503"Oreskovic; Miss. Marija"female20.000000003150968.662500                    S
+
+
+
+
+
+

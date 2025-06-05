@@ -1,0 +1,15 @@
+39703"Olsson; Miss. Elina"female31.000000003504077.854200                    S
+39802"McKane; Mr. Peter David"male46.000000002840326.000000                    S
+39902"Pain; Dr. Alfred"male23.0000000024427810.500000                    S
+40012"Trout; Mrs. William H (Jessie L)"female28.0000000024092912.650000                    S
+40113"Niskanen; Mr. Juha"male39.00000000STON/O 2. 31012897.925000                    S
+40203"Adams; Mr. John"male26.000000003418268.050000                    S
+
+
+39802"McKane; Mr. Peter David"male46.000000002840326.000000                    S
+39902"Pain; Dr. Alfred"male23.0000000024427810.500000                    S
+40012"Trout; Mrs. William H (Jessie L)"female28.0000000024092912.650000                    S
+
+
+
+

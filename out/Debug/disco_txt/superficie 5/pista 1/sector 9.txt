@@ -1,0 +1,12 @@
+80003"Van Impe; Mrs. Jean Baptiste (Rosalie Paula Govaert)"female30.0000001134577324.150000                    S
+80102"Ponesell; Mr. Martin"male34.0000000025064713.000000                    S
+80212"Collyer; Mrs. Harvey (Charlotte Annie Tate)"female31.00000011C.A. 3192126.250000                    S
+80311"Carter; Master. William Thornton II"male11.00000012113760120.000000B96 B98             S
+80413"Thomas; Master. Assad Alexander"male0.4200000126258.516700                    C
+
+
+80102"Ponesell; Mr. Martin"male34.0000000025064713.000000                    S
+80212"Collyer; Mrs. Harvey (Charlotte Annie Tate)"female31.00000011C.A. 3192126.250000                    S
+80311"Carter; Master. William Thornton II"male11.00000012113760120.000000B96 B98             S
+
+

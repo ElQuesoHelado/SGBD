@@ -1,0 +1,11 @@
+34712"Smith; Miss. Marion Elsie"female40.000000003141813.000000                    S
+34813"Davison; Mrs. Thomas Henry (Mary E Finck)"female0.0000001038652516.100000                    S
+34913"Coutts; Master. William Loch ""William"""male3.00000011C.A. 3767115.900000                    S
+35003"Dimic; Mr. Jovan"male42.000000003150888.662500                    S
+34712"Smith; Miss. Marion Elsie"female40.000000003141813.000000                    S
+
+
+
+
+
+

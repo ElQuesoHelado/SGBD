@@ -1,0 +1,12 @@
+66702"Butler; Mr. Reginald Fenton"male25.0000000023468613.000000                    S
+66803"Rommetvedt; Mr. Knud Paust"male0.000000003129937.775000                    S
+66903"Cook; Mr. Jacob"male43.00000000A/5 35368.050000                    S
+67011"Taylor; Mrs. Elmer Zebley (Juliet Cummins Wright)"female0.000000101999652.000000C126                S
+67112"Brown; Mrs. Thomas William Solomon (Elizabeth Catherine Ford)"female40.000000112975039.000000                    S
+66702"Butler; Mr. Reginald Fenton"male25.0000000023468613.000000                    S
+
+
+
+
+67011"Taylor; Mrs. Elmer Zebley (Juliet Cummins Wright)"female0.000000101999652.000000C126                S
+67112"Brown; Mrs. Thomas William Solomon (Elizabeth Catherine Ford)"female40.000000112975039.000000                    S

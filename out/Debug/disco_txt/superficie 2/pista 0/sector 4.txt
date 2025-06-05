@@ -1,0 +1,8 @@
+10903"Rekic; Mr. Tido"male38.000000003492497.895800                    S
+11013"Moran; Miss. Bertha"female0.0000001037111024.150000                    Q
+11101"Porter; Mr. Walter Chamberlain"male47.0000000011046552.000000C110                S
+
+
+
+
+11101"Porter; Mr. Walter Chamberlain"male47.0000000011046552.000000C110                S

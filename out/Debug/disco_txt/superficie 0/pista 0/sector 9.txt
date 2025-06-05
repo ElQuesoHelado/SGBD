@@ -1,0 +1,6 @@
+23812"Collyer; Miss. Marjorie ""Lottie"""female8.00000002C.A. 3192126.250000                    S
+23902"Pengelly; Mr. Frederick William"male19.000000002866510.500000                    S
+24002"Hunt; Mr. George Henry"male33.00000000SCO/W 158512.275000                    S
+23812"Collyer; Miss. Marjorie ""Lottie"""female8.00000002C.A. 3192126.250000                    S
+23902"Pengelly; Mr. Frederick William"male19.000000002866510.500000                    S
+24002"Hunt; Mr. George Henry"male33.00000000SCO/W 158512.275000                    S

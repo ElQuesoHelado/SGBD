@@ -1,0 +1,55 @@
+Next_page_id: 49 N_registers: 9 Free_space/capacity: 13/404
+free_space_offset: 119 # Slots: 18
+ |0|112|1888|
+|1|95|1793|
+|1|99|1694|
+|1|110|1584|
+|1|111|1473|
+|0|100|1373|
+|0|104|1269|
+|0|90|1179|
+|1|122|1057|
+|1|94|963|
+|0|100|863|
+|1|115|748|
+|0|107|641|
+|0|100|541|
+|0|93|448|
+|0|91|357|
+|1|119|238|
+|1|119|119|
+|
+Superficie: 5 Track: 1 Sector: 12
+
+
+86502"Gill; Mr. John William"male24.0000000023386613.000000                    S
+86612"Bystrom; Mrs. (Karolina)"female42.0000000023685213.000000                    S
+86712"Duran y More; Miss. Asuncion"female27.00000010SC/PARIS 214913.858300                    C
+
+Superficie: 4 Track: 1 Sector: 12
+86801"Roebling; Mr. Washington Augustus II"male31.00000000PC 1759050.495800A24                 S
+
+
+
+
+
+
+87211"Beckwith; Mrs. Richard Leonard (Sallie Monypeny)"female47.000000111175152.554200D35                 S
+
+Superficie: 3 Track: 1 Sector: 12
+87301"Carlsson; Mr. Frans Olof"male33.000000006955.000000B51 B53 B55         S
+
+
+87512"Abelson; Mrs. Samuel (Hannah Wizosky)"female28.00000010P/PP 338124.000000                    C
+
+
+
+
+
+Superficie: 2 Track: 1 Sector: 12
+
+
+
+
+88011"Potter; Mrs. Thomas Jr (Lily Alexenia Wilson)"female56.000000011176783.158300C50                 C
+88112"Shelley; Mrs. William (Imanita Parrish Hall)"female25.0000000123043326.000000                    S

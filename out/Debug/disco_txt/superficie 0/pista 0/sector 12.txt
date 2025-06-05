@@ -1,0 +1,16 @@
+30113"Kelly; Miss. Anna Katherine ""Annie Kate"""female0.0000000092347.750000                    Q
+30213"McCoy; Mr. Bernard"male0.0000002036722623.250000                    Q
+30303"Johnson; Mr. William Cahoone Jr"male19.00000000LINE0.000000                    S
+30412"Keane; Miss. Nora A"female0.0000000022659312.350000E101                Q
+30503"Williams; Mr. Howard Hugh ""Harry"""male0.00000000A/5 24668.050000                    S
+30611"Allison; Master. Hudson Trevor"male0.92000012113781151.550000C22 C26             S
+
+
+
+
+
+
+30412"Keane; Miss. Nora A"female0.0000000022659312.350000E101                Q
+
+
+30611"Allison; Master. Hudson Trevor"male0.92000012113781151.550000C22 C26             S

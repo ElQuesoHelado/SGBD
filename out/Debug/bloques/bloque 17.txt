@@ -1,0 +1,51 @@
+Next_page_id: 18 N_registers: 13 Free_space/capacity: 1/404
+free_space_offset: 107 # Slots: 18
+ |0|89|1911|
+|1|103|1808|
+|1|93|1715|
+|1|124|1591|
+|0|115|1476|
+|0|91|1385|
+|0|102|1283|
+|1|94|1189|
+|0|110|1079|
+|1|103|976|
+|1|97|879|
+|1|159|720|
+|1|95|625|
+|1|107|518|
+|1|104|414|
+|1|103|311|
+|1|112|199|
+|1|92|107|
+|
+Superficie: 1 Track: 0 Sector: 12
+
+
+29801"Allison; Miss. Helen Loraine"female2.00000012113781151.550000C22 C26             S
+29911"Saalfeld; Mr. Adolphe"male0.000000001998830.500000C106                S
+30011"Baxter; Mrs. James (Helene DeLaudeniere Chaput)"female50.00000001PC 17558247.520800B58 B60             C
+
+Superficie: 0 Track: 0 Sector: 12
+
+
+
+
+
+
+30412"Keane; Miss. Nora A"female0.0000000022659312.350000E101                Q
+
+
+30611"Allison; Master. Hudson Trevor"male0.92000012113781151.550000C22 C26             S
+
+Superficie: 5 Track: 0 Sector: 11
+30711"Fleming; Miss. Margaret"female0.0000000017421110.883300                    C
+30811"Penasco y Castellana; Mrs. Victor de Satode (Maria Josefa Perez de Soto y Vallejo)"female17.00000010PC 17758108.900000C65                 C
+30902"Abelson; Mr. Samuel"male30.00000010P/PP 338124.000000                    C
+31011"Francatelli; Miss. Laura Mabel"female30.00000000PC 1748556.929200E36                 C
+31111"Hays; Miss. Margaret Bechstein"female24.000000001176783.158300C54                 C
+
+Superficie: 4 Track: 0 Sector: 11
+31211"Ryerson; Miss. Emily Borie"female18.00000022PC 17608262.375000B57 B59 B63 B66     C
+31302"Lahtinen; Mrs. William (Anna Sylfven)"female26.0000001125065126.000000                    S
+31802"Moraweck; Dr. Ernest"male54.000000002901114.000000                    S

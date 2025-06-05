@@ -1,0 +1,15 @@
+17703"Lefebre; Master. Henry Forbes"male0.00000031413325.466700                    S
+17801"Isham; Miss. Ann Elizabeth"female50.00000000PC 1759528.712500C49                 C
+17902"Hale; Mr. Reginald"male30.0000000025065313.000000                    S
+18003"Leonard; Mr. Lionel"male36.00000000LINE0.000000                    S
+18103"Sage; Miss. Constance Gladys"female0.00000082CA. 234369.550000                    S
+18202"Pernot; Mr. Rene"male0.00000000SC/PARIS 213115.050000                    C
+
+
+17801"Isham; Miss. Ann Elizabeth"female50.00000000PC 1759528.712500C49                 C
+17902"Hale; Mr. Reginald"male30.0000000025065313.000000                    S
+
+
+
+
+18202"Pernot; Mr. Rene"male0.00000000SC/PARIS 213115.050000                    C

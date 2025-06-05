@@ -1,0 +1,9 @@
+1812"Williams; Mr. Charles Eugene"male0.0000000024437313.000000                    S
+1903"Vander Planke; Mrs. Julius (Emelia Maria Vandemoortele)"female31.0000001034576318.000000                    S
+2102"Fynney; Mr. Joseph J"male35.0000000023986526.000000                    S
+2212"Beesley; Mr. Lawrence"male34.0000000024869813.000000D56                 S
+1812"Williams; Mr. Charles Eugene"male0.0000000024437313.000000                    S
+
+
+2102"Fynney; Mr. Joseph J"male35.0000000023986526.000000                    S
+2212"Beesley; Mr. Lawrence"male34.0000000024869813.000000D56                 S

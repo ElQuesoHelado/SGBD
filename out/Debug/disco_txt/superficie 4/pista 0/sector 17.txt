@@ -1,0 +1,7 @@
+47503"Strandberg; Miss. Ida Sofia"female22.0000000075539.837500                    S
+47601"Clifford; Mr. George Quincy"male0.0000000011046552.000000A14                 S
+47702"Renouf; Mr. Peter Henry"male34.000000103102721.000000                    S
+
+
+47601"Clifford; Mr. George Quincy"male0.0000000011046552.000000A14                 S
+47702"Renouf; Mr. Peter Henry"male34.000000103102721.000000                    S

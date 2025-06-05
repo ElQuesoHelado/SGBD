@@ -1,0 +1,57 @@
+Next_page_id: 43 N_registers: 7 Free_space/capacity: 71/404
+free_space_offset: 177 # Slots: 18
+ |0|91|1909|
+|1|107|1802|
+|1|98|1704|
+|0|101|1603|
+|1|96|1507|
+|0|101|1406|
+|1|131|1275|
+|0|91|1184|
+|0|113|1071|
+|0|92|979|
+|1|116|863|
+|0|95|768|
+|1|110|658|
+|1|98|560|
+|0|93|467|
+|0|92|375|
+|0|103|272|
+|0|95|177|
+|
+Superficie: 5 Track: 1 Sector: 8
+
+
+75512"Herman; Mrs. Samuel (Jane Laver)"female48.0000001222084565.000000                    S
+75612"Hamalainen; Master. Viljo"male0.6700001125064914.500000                    S
+
+
+75802"Bailey; Mr. Percy Andrew"male18.000000002910811.500000                    S
+
+Superficie: 4 Track: 1 Sector: 8
+
+
+76011"Rothes; the Countess. of (Lucy Noel Martha Dyer-Edwards)"female33.0000000011015286.500000B77                 S
+
+
+
+
+
+
+
+Superficie: 3 Track: 1 Sector: 8
+76411"Carter; Mrs. William Ernest (Lucile Polk)"female36.00000012113760120.000000B96 B98             S
+
+
+76611"Hogeboom; Mrs. John C (Anna Andrews)"female51.000000101350277.958300D11                 S
+76701"Brewe; Dr. Arthur Jackson"male0.0000000011237939.600000                    C
+
+
+
+
+
+Superficie: 2 Track: 1 Sector: 8
+
+
+
+

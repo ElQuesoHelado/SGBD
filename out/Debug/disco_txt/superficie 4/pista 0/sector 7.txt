@@ -1,0 +1,11 @@
+20002"Yrois; Miss. Henriette (""Mrs Harbeck"")"female24.0000000024874713.000000                    S
+20103"Vande Walle; Mr. Nestor Cyriel"male28.000000003457709.500000                    S
+20203"Sage; Mr. Frederick"male0.00000082CA. 234369.550000                    S
+20303"Johanson; Mr. Jakob Alfred"male34.0000000031012646.495800                    S
+20002"Yrois; Miss. Henriette (""Mrs Harbeck"")"female24.0000000024874713.000000                    S
+
+
+
+
+
+

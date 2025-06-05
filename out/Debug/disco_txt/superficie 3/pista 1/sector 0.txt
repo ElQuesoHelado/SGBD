@@ -1,0 +1,13 @@
+54303"Andersson; Miss. Sigrid Elisabeth"female11.0000004234708231.275000                    S
+54412"Beane; Mr. Edward"male32.00000010290826.000000                    S
+54501"Douglas; Mr. Walter Donald"male50.00000010PC 17761106.425000C86                 C
+54601"Nicholson; Mr. Arthur Ernest"male64.0000000069326.000000                    S
+54712"Beane; Mrs. Edward (Ethel Clarke)"female19.00000010290826.000000                    S
+54812"Padro y Manent; Mr. Julian"male0.00000000SC/PARIS 214613.862500                    C
+
+
+54412"Beane; Mr. Edward"male32.00000010290826.000000                    S
+54501"Douglas; Mr. Walter Donald"male50.00000010PC 17761106.425000C86                 C
+54601"Nicholson; Mr. Arthur Ernest"male64.0000000069326.000000                    S
+54712"Beane; Mrs. Edward (Ethel Clarke)"female19.00000010290826.000000                    S
+54812"Padro y Manent; Mr. Julian"male0.00000000SC/PARIS 214613.862500                    C

@@ -1,0 +1,12 @@
+66111"Frauenthal; Dr. Henry William"male50.00000020PC 17611133.650000                    S
+66301"Colley; Mr. Edward Pomeroy"male47.00000000572725.587500E58                 S
+66403"Coleff; Mr. Peju"male36.000000003492107.495800                    S
+66513"Lindqvist; Mr. Eino William"male20.00000010STON/O 2. 31012857.925000                    S
+66602"Hickman; Mr. Lewis"male32.00000020S.O.C. 1487973.500000                    S
+66111"Frauenthal; Dr. Henry William"male50.00000020PC 17611133.650000                    S
+66301"Colley; Mr. Edward Pomeroy"male47.00000000572725.587500E58                 S
+
+
+
+
+66602"Hickman; Mr. Lewis"male32.00000020S.O.C. 1487973.500000                    S

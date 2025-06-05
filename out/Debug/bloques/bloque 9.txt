@@ -1,0 +1,58 @@
+Next_page_id: 10 N_registers: 6 Free_space/capacity: 6/404
+free_space_offset: 112 # Slots: 18
+ |0|113|1887|
+|1|115|1772|
+|1|106|1666|
+|1|104|1562|
+|1|108|1454|
+|0|106|1348|
+|0|97|1251|
+|1|102|1149|
+|0|108|1041|
+|0|97|944|
+|0|92|852|
+|0|101|751|
+|0|97|654|
+|1|131|523|
+|0|99|424|
+|0|88|336|
+|0|102|234|
+|0|122|112|
+|
+Superficie: 5 Track: 0 Sector: 6
+
+
+14902"Navratil; Mr. Michel (""Louis M Hoffman"")"male36.5000000223008026.000000F2                  S
+15002"Byles; Rev. Thomas Roussel Davids"male42.0000000024431013.000000                    S
+15102"Bateman; Rev. Robert James"male51.00000000S.O.P. 116612.525000                    S
+
+Superficie: 4 Track: 0 Sector: 6
+15211"Pears; Mrs. Thomas (Edith Wearne)"female22.0000001011377666.600000C2                  S
+
+
+
+
+15601"Williams; Mr. Charles Duane"male51.00000001PC 1759761.379200                    C
+
+
+
+Superficie: 3 Track: 0 Sector: 6
+
+
+
+
+
+
+
+
+16212"Watt; Mrs. James (Elizabeth ""Bessie"" Inglis Milne)"female40.00000000C.A. 3359515.750000                    S
+
+Superficie: 2 Track: 0 Sector: 6
+
+
+
+
+
+
+
+

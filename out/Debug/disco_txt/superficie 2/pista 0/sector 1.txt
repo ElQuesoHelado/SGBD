@@ -1,0 +1,14 @@
+503"Allen; Mr. William Henry"male35.000000003734508.050000                    S
+603"Moran; Mr. James"male0.000000003308778.458300                    Q
+701"McCarthy; Mr. Timothy J"male54.000000001746351.862500E46                 S
+803"Palsson; Master. Gosta Leonard"male2.0000003134990921.075000                    S
+913"Johnson; Mrs. Oscar W (Elisabeth Vilhelmina Berg)"female27.0000000234774211.133300                    S
+
+
+
+
+701"McCarthy; Mr. Timothy J"male54.000000001746351.862500E46                 S
+
+
+
+

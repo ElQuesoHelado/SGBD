@@ -1,0 +1,13 @@
+81203"Lester; Mr. James"male39.00000000A/4 4887124.150000                    S
+81302"Slemen; Mr. Richard James"male35.000000002820610.500000                    S
+81403"Andersson; Miss. Ebba Iris Alfrida"female6.0000004234708231.275000                    S
+81503"Tomlin; Mr. Ernest Portage"male30.500000003644998.050000                    S
+81601"Fry; Mr. Richard"male0.000000001120580.000000B102                S
+
+
+81302"Slemen; Mr. Richard James"male35.000000002820610.500000                    S
+
+
+
+
+81601"Fry; Mr. Richard"male0.000000001120580.000000B102                S

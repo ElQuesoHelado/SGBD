@@ -1,0 +1,12 @@
+24503"Attalah; Mr. Sleiman"male30.0000000026947.225000                    C
+24601"Minahan; Dr. William Edward"male44.000000201992890.000000C78                 Q
+24703"Lindahl; Miss. Agda Thorilda Viktoria"female25.000000003470717.775000                    S
+24812"Hamalainen; Mrs. William (Anna)"female24.0000000225064914.500000                    S
+24911"Beckwith; Mr. Richard Leonard"male37.000000111175152.554200D35                 S
+
+
+24601"Minahan; Dr. William Edward"male44.000000201992890.000000C78                 Q
+
+
+24812"Hamalainen; Mrs. William (Anna)"female24.0000000225064914.500000                    S
+24911"Beckwith; Mr. Richard Leonard"male37.000000111175152.554200D35                 S

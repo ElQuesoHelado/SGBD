@@ -1,0 +1,14 @@
+56203"Sivic; Mr. Husein"male40.000000003492517.895800                    S
+56302"Norman; Mr. Robert Douglas"male28.0000000021862913.500000                    S
+56403"Simmons; Mr. John"male0.00000000SOTON/OQ 3920828.050000                    S
+56503"Meanwell; Miss. (Marion Ogden)"female0.00000000SOTON/O.Q. 3920878.050000                    S
+56603"Davies; Mr. Alfred J"male24.00000020A/4 4887124.150000                    S
+
+
+56302"Norman; Mr. Robert Douglas"male28.0000000021862913.500000                    S
+
+
+
+
+
+

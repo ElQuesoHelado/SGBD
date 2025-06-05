@@ -1,0 +1,60 @@
+Next_page_id: 7 N_registers: 7 Free_space/capacity: 4/399
+free_space_offset: 115 # Slots: 19
+ |1|105|1895|
+|0|99|1796|
+|0|90|1706|
+|0|100|1606|
+|1|100|1506|
+|1|106|1400|
+|1|111|1289|
+|1|90|1199|
+|0|98|1101|
+|0|107|994|
+|1|97|897|
+|0|97|800|
+|0|104|696|
+|0|94|602|
+|0|107|495|
+|0|95|400|
+|0|88|312|
+|0|94|218|
+|1|103|115|
+|
+Superficie: 5 Track: 0 Sector: 4
+9301"Chaffee; Mr. Herbert Fuller"male46.00000010W.E.P. 573461.175000E31                 S
+
+
+
+
+
+
+9701"Goldschmidt; Mr. George B"male71.00000000PC 1775434.654200A5                  C
+
+Superficie: 4 Track: 0 Sector: 4
+9811"Greenfield; Mr. William Bertram"male23.00000001PC 1775963.358300D10 D12             C
+9912"Doling; Mrs. John T (Ada Julia Bone)"female34.0000000123191923.000000                    S
+10002"Kantor; Mr. Sinai"male34.0000001024436726.000000                    S
+
+
+
+
+
+Superficie: 3 Track: 0 Sector: 4
+10301"White; Mr. Richard Frasar"male21.000000013528177.287500D26                 S
+
+
+
+
+
+
+
+
+
+
+
+Superficie: 2 Track: 0 Sector: 4
+
+
+
+
+11101"Porter; Mr. Walter Chamberlain"male47.0000000011046552.000000C110                S

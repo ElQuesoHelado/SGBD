@@ -1,0 +1,12 @@
+88603"Rice; Mrs. William (Margaret Norton)"female39.0000000538265229.125000                    Q
+88702"Montvila; Rev. Juozas"male27.0000000021153613.000000                    S
+88811"Graham; Miss. Margaret Edith"female19.0000000011205330.000000B42                 S
+88903"Johnston; Miss. Catherine Helen ""Carrie"""female0.00000012W./C. 660723.450000                    S
+89011"Behr; Mr. Karl Howell"male26.0000000011136930.000000C148                C
+
+
+88702"Montvila; Rev. Juozas"male27.0000000021153613.000000                    S
+88811"Graham; Miss. Margaret Edith"female19.0000000011205330.000000B42                 S
+
+
+89011"Behr; Mr. Karl Howell"male26.0000000011136930.000000C148                C

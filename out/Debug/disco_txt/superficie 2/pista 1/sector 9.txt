@@ -1,0 +1,14 @@
+77603"Myhrman; Mr. Pehr Fabian Oliver Malkolm"male18.000000003470787.750000                    S
+77703"Tobin; Mr. Roger"male0.000000003831217.750000F38                 Q
+77813"Emanuel; Miss. Virginia Ethel"female5.0000000036451612.475000                    S
+77903"Kilgannon; Mr. Thomas J"male0.00000000368657.737500                    Q
+78011"Robert; Mrs. Edward Scott (Elisabeth Walton McMillan)"female43.0000000124160211.337500B3                  S
+
+
+
+
+
+
+
+
+78011"Robert; Mrs. Edward Scott (Elisabeth Walton McMillan)"female43.0000000124160211.337500B3                  S

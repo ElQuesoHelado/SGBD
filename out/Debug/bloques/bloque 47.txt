@@ -1,0 +1,56 @@
+Next_page_id: 48 N_registers: 8 Free_space/capacity: 50/404
+free_space_offset: 156 # Slots: 18
+ |0|95|1905|
+|0|99|1806|
+|0|91|1715|
+|1|90|1625|
+|1|118|1507|
+|0|112|1395|
+|0|92|1303|
+|0|96|1207|
+|1|102|1105|
+|1|120|985|
+|0|101|884|
+|1|116|768|
+|1|95|673|
+|0|110|563|
+|0|87|476|
+|0|96|380|
+|1|99|281|
+|1|125|156|
+|
+Superficie: 1 Track: 1 Sector: 12
+
+
+
+
+
+
+84902"Harper; Rev. John"male28.0000000124872733.000000                    S
+85011"Goldenberg; Mrs. Samuel L (Edwiga Grabowska)"female0.000000101745389.104200C92                 C
+
+Superficie: 0 Track: 1 Sector: 12
+
+
+
+
+
+
+85411"Lines; Miss. Mary Conover"female16.00000001PC 1759239.400000D28                 S
+85502"Carter; Mrs. Ernest Courtenay (Lilian Hughes)"female44.0000001024425226.000000                    S
+
+Superficie: 5 Track: 1 Sector: 11
+
+
+85711"Wick; Mrs. George Dennick (Mary Hitchcock)"female45.0000001136928164.866700                    S
+85811"Daly; Mr. Peter Denis "male51.0000000011305526.550000E17                 S
+
+
+
+
+
+Superficie: 4 Track: 1 Sector: 11
+
+
+86202"Giles; Mr. Frederick Edward"male21.000000102813411.500000                    S
+86311"Swift; Mrs. Frederick Joel (Margaret Welles Barron)"female48.000000001746625.929200D17                 S

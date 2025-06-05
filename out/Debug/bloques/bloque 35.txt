@@ -1,0 +1,59 @@
+Next_page_id: 36 N_registers: 8 Free_space/capacity: 2/399
+free_space_offset: 113 # Slots: 19
+ |0|100|1900|
+|0|101|1799|
+|1|93|1706|
+|1|103|1603|
+|1|103|1500|
+|0|98|1402|
+|0|97|1305|
+|1|108|1197|
+|0|100|1097|
+|1|97|1000|
+|1|102|898|
+|0|93|805|
+|1|92|713|
+|0|110|603|
+|1|96|507|
+|0|114|393|
+|0|99|294|
+|0|95|199|
+|0|86|113|
+|
+Superficie: 1 Track: 1 Sector: 4
+
+
+
+
+62601"Sutton; Mr. Frederick"male61.000000003696332.320800D50                 S
+62702"Kirkland; Rev. Charles Leonard"male57.0000000021953312.350000                    Q
+62811"Longley; Miss. Gretchen Fiske"female21.000000001350277.958300D9                  S
+
+Superficie: 0 Track: 1 Sector: 4
+
+
+
+
+63111"Barkworth; Mr. Algernon Henry Wilson"male80.000000002704230.000000A23                 S
+
+
+63311"Stahelin-Maeglin; Dr. Max"male32.000000001321430.500000B50                 C
+
+Superficie: 5 Track: 1 Sector: 3
+63401"Parr; Mr. William Henry Marsh"male0.000000001120520.000000                    S
+
+
+63612"Davis; Miss. Mary"female28.0000000023766813.000000                    S
+
+
+63802"Collyer; Mr. Harvey"male31.00000011C.A. 3192126.250000                    S
+
+Superficie: 4 Track: 1 Sector: 3
+
+
+
+
+
+
+
+

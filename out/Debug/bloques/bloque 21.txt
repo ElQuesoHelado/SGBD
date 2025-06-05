@@ -1,0 +1,56 @@
+Next_page_id: 22 N_registers: 8 Free_space/capacity: 68/404
+free_space_offset: 174 # Slots: 18
+ |0|93|1907|
+|1|106|1801|
+|1|99|1702|
+|0|99|1603|
+|0|99|1504|
+|1|94|1410|
+|0|101|1309|
+|1|114|1195|
+|0|106|1089|
+|1|98|991|
+|0|90|901|
+|0|100|801|
+|1|98|703|
+|0|102|601|
+|0|102|499|
+|1|126|373|
+|0|95|278|
+|1|104|174|
+|
+Superficie: 5 Track: 0 Sector: 14
+
+
+37011"Aubart; Mme. Leontine Pauline"female24.00000000PC 1747769.300000B35                 C
+37111"Harder; Mr. George Achilles"male25.000000101176555.441700E50                 C
+
+
+
+
+
+Superficie: 4 Track: 0 Sector: 14
+37401"Ringhini; Mr. Sante"male22.00000000PC 17760135.633300                    C
+
+
+37611"Meyer; Mrs. Edgar Joseph (Leila Saks)"female0.00000010PC 1760482.170800                    C
+
+
+37801"Widener; Mr. Harry Elkins"male27.00000002113503211.500000C82                 C
+
+Superficie: 3 Track: 0 Sector: 14
+
+
+
+
+38111"Bidois; Miss. Rosalie"female42.00000000PC 17757227.525000                    C
+
+
+
+
+
+Superficie: 2 Track: 0 Sector: 14
+38411"Holverson; Mrs. Alexander Oskar (Mary Aline Towner)"female35.0000001011378952.000000                    S
+
+
+38602"Davies; Mr. Charles Henry"male18.00000000S.O.C. 1487973.500000                    S

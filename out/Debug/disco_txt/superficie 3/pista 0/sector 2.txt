@@ -1,0 +1,18 @@
+4603"Rogers; Mr. William John"male0.00000000S.C./A.4. 235678.050000                    S
+4703"Lennon; Mr. Denis"male0.0000001037037115.500000                    Q
+4813"O'Driscoll; Miss. Bridget"female0.00000000143117.750000                    Q
+4903"Samaan; Mr. Youssef"male0.00000020266221.679200                    C
+5003"Arnold-Franchi; Mrs. Josef (Josefine Franchi)"female18.0000001034923717.800000                    S
+5103"Panula; Master. Juha Niilo"male7.00000041310129539.687500                    S
+
+
+
+
+
+
+
+
+
+
+
+

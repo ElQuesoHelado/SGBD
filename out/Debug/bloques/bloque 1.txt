@@ -1,0 +1,58 @@
+Next_page_id: 2 N_registers: 6 Free_space/capacity: 4/404
+free_space_offset: 110 # Slots: 18
+ |0|99|1901|
+|1|128|1773|
+|0|107|1666|
+|1|119|1547|
+|0|97|1450|
+|0|89|1361|
+|1|95|1266|
+|0|103|1163|
+|0|124|1039|
+|1|110|929|
+|0|107|822|
+|1|99|723|
+|0|106|617|
+|0|100|517|
+|0|111|406|
+|1|107|299|
+|0|93|206|
+|0|96|110|
+|
+Superficie: 3 Track: 0 Sector: 1
+
+
+211"Cumings; Mrs. John Bradley (Florence Briggs Thayer)"female38.00000010PC 1759971.283300C85                 C
+
+
+411"Futrelle; Mrs. Jacques Heath (Lily May Peel)"female35.0000001011380353.100000C123                S
+
+Superficie: 2 Track: 0 Sector: 1
+
+
+
+
+701"McCarthy; Mr. Timothy J"male54.000000001746351.862500E46                 S
+
+
+
+
+
+Superficie: 1 Track: 0 Sector: 1
+1012"Nasser; Mrs. Nicholas (Adele Achem)"female14.0000001023773630.070800                    C
+
+
+1211"Bonnell; Miss. Elizabeth"female58.0000000011378326.550000C103                S
+
+
+
+
+
+Superficie: 5 Track: 0 Sector: 0
+
+
+1612"Hewlett; Mrs. (Mary D Kingcome) "female55.0000000024870616.000000                    S
+
+
+
+

@@ -1,0 +1,13 @@
+19511"Brown; Mrs. James Joseph (Margaret Tobin)"female44.00000000PC 1761027.720800B4                  C
+19611"Lurette; Miss. Elise"female58.00000000PC 17569146.520800B80                 C
+19703"Mernagh; Mr. Robert"male0.000000003687037.750000                    Q
+19803"Olsen; Mr. Karl Siegwart Andreas"male42.0000000145798.404200                    S
+19913"Madigan; Miss. Margaret ""Maggie"""female0.000000003703707.750000                    Q
+19511"Brown; Mrs. James Joseph (Margaret Tobin)"female44.00000000PC 1761027.720800B4                  C
+19611"Lurette; Miss. Elise"female58.00000000PC 17569146.520800B80                 C
+
+
+
+
+
+

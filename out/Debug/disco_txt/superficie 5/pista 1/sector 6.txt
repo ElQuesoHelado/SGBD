@@ -1,0 +1,9 @@
+69901"Thayer; Mr. John Borland"male49.0000001117421110.883300C68                 C
+70003"Humblen; Mr. Adolf Mathias Nicolai Olsen"male42.000000003481217.650000F G63               S
+70111"Astor; Mrs. John Jacob (Madeleine Talmadge Force)"female18.00000010PC 17757227.525000C62 C64             C
+70211"Silverthorne; Mr. Spencer Victor"male35.00000000PC 1747526.287500E24                 S
+69901"Thayer; Mr. John Borland"male49.0000001117421110.883300C68                 C
+
+
+70111"Astor; Mrs. John Jacob (Madeleine Talmadge Force)"female18.00000010PC 17757227.525000C62 C64             C
+70211"Silverthorne; Mr. Spencer Victor"male35.00000000PC 1747526.287500E24                 S

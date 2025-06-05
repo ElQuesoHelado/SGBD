@@ -1,0 +1,7 @@
+60301"Harrington; Mr. Charles H"male0.0000000011379642.400000                    S
+60403"Torber; Mr. Ernst William"male44.000000003645118.050000                    S
+60511"Homer; Mr. Harry (""Mr E Haven"")"male35.0000000011142626.550000                    C
+60301"Harrington; Mr. Charles H"male0.0000000011379642.400000                    S
+
+
+60511"Homer; Mr. Harry (""Mr E Haven"")"male35.0000000011142626.550000                    C

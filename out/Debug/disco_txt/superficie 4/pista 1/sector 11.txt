@@ -1,0 +1,7 @@
+86103"Hansen; Mr. Claus Peter"male41.0000002035002614.108300                    S
+86202"Giles; Mr. Frederick Edward"male21.000000102813411.500000                    S
+86311"Swift; Mrs. Frederick Joel (Margaret Welles Barron)"female48.000000001746625.929200D17                 S
+
+
+86202"Giles; Mr. Frederick Edward"male21.000000102813411.500000                    S
+86311"Swift; Mrs. Frederick Joel (Margaret Welles Barron)"female48.000000001746625.929200D17                 S

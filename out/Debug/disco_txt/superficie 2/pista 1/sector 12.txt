@@ -1,0 +1,10 @@
+87803"Petroff; Mr. Nedelio"male19.000000003492127.895800                    S
+87903"Laleff; Mr. Kristo"male0.000000003492177.895800                    S
+88011"Potter; Mrs. Thomas Jr (Lily Alexenia Wilson)"female56.000000011176783.158300C50                 C
+88112"Shelley; Mrs. William (Imanita Parrish Hall)"female25.0000000123043326.000000                    S
+
+
+
+
+88011"Potter; Mrs. Thomas Jr (Lily Alexenia Wilson)"female56.000000011176783.158300C50                 C
+88112"Shelley; Mrs. William (Imanita Parrish Hall)"female25.0000000123043326.000000                    S

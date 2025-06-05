@@ -1,0 +1,10 @@
+30711"Fleming; Miss. Margaret"female0.0000000017421110.883300                    C
+30811"Penasco y Castellana; Mrs. Victor de Satode (Maria Josefa Perez de Soto y Vallejo)"female17.00000010PC 17758108.900000C65                 C
+30902"Abelson; Mr. Samuel"male30.00000010P/PP 338124.000000                    C
+31011"Francatelli; Miss. Laura Mabel"female30.00000000PC 1748556.929200E36                 C
+31111"Hays; Miss. Margaret Bechstein"female24.000000001176783.158300C54                 C
+30711"Fleming; Miss. Margaret"female0.0000000017421110.883300                    C
+30811"Penasco y Castellana; Mrs. Victor de Satode (Maria Josefa Perez de Soto y Vallejo)"female17.00000010PC 17758108.900000C65                 C
+30902"Abelson; Mr. Samuel"male30.00000010P/PP 338124.000000                    C
+31011"Francatelli; Miss. Laura Mabel"female30.00000000PC 1748556.929200E36                 C
+31111"Hays; Miss. Margaret Bechstein"female24.000000001176783.158300C54                 C

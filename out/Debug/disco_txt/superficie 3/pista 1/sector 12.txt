@@ -1,0 +1,13 @@
+87301"Carlsson; Mr. Frans Olof"male33.000000006955.000000B51 B53 B55         S
+87403"Vander Cruyssen; Mr. Victor"male47.000000003457659.000000                    S
+87512"Abelson; Mrs. Samuel (Hannah Wizosky)"female28.00000010P/PP 338124.000000                    C
+87613"Najib; Miss. Adele Kiamie ""Jane"""female15.0000000026677.225000                    C
+87703"Gustafsson; Mr. Alfred Ossian"male20.0000000075349.845800                    S
+87301"Carlsson; Mr. Frans Olof"male33.000000006955.000000B51 B53 B55         S
+
+
+87512"Abelson; Mrs. Samuel (Hannah Wizosky)"female28.00000010P/PP 338124.000000                    C
+
+
+
+

@@ -1,0 +1,10 @@
+51503"Coleff; Mr. Satio"male24.000000003492097.495800                    S
+51601"Walker; Mr. William Anderson"male47.000000003696734.020800D46                 S
+51712"Lemore; Mrs. (Amelia Milley)"female34.00000000C.A. 3426010.500000F33                 S
+51803"Ryan; Mr. Patrick"male0.0000000037111024.150000                    Q
+
+
+51601"Walker; Mr. William Anderson"male47.000000003696734.020800D46                 S
+51712"Lemore; Mrs. (Amelia Milley)"female34.00000000C.A. 3426010.500000F33                 S
+
+

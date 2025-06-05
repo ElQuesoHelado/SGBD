@@ -1,0 +1,14 @@
+36202"del Carlo; Mr. Sebastiano"male29.00000010SC/PARIS 216727.720800                    C
+36303"Barbara; Mrs. (Catherine David)"female45.00000001269114.454200                    C
+36403"Asim; Mr. Adola"male35.00000000SOTON/O.Q. 31013107.050000                    S
+36503"O'Brien; Mr. Thomas"male0.0000001037036515.500000                    Q
+36603"Adahl; Mr. Mauritz Nils Martin"male30.00000000C 70767.250000                    S
+36202"del Carlo; Mr. Sebastiano"male29.00000010SC/PARIS 216727.720800                    C
+
+
+
+
+
+
+
+

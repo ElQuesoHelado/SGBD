@@ -1,0 +1,54 @@
+Next_page_id: 19 N_registers: 10 Free_space/capacity: 45/404
+free_space_offset: 151 # Slots: 18
+ |0|95|1905|
+|1|97|1808|
+|0|106|1702|
+|1|110|1592|
+|1|98|1494|
+|1|130|1364|
+|0|94|1270|
+|0|89|1181|
+|1|100|1081|
+|1|126|955|
+|0|99|856|
+|1|101|755|
+|0|98|657|
+|1|97|560|
+|0|121|439|
+|1|103|336|
+|0|93|243|
+|1|92|151|
+|
+Superficie: 5 Track: 0 Sector: 12
+
+
+31502"Hart; Mr. Benjamin"male43.00000011F.C.C. 1352926.250000                    S
+
+
+31712"Kantor; Mrs. Sinai (Miriam Sternin)"female24.0000001024436726.000000                    S
+
+Superficie: 4 Track: 0 Sector: 12
+31911"Wick; Miss. Mary Natalie"female31.0000000236928164.866700C7                  S
+32011"Spedden; Mrs. Frederic Oakley (Margaretta Corning Stone)"female40.0000001116966134.500000E34                 C
+
+
+
+
+32312"Slayter; Miss. Hilda Mary"female30.0000000023481812.350000                    Q
+
+Superficie: 3 Track: 0 Sector: 12
+32412"Caldwell; Mrs. Albert Francis (Sylvia Mae Harbaugh)"female22.0000001124873829.000000                    S
+
+
+32611"Young; Miss. Marie Grice"female36.00000000PC 17760135.633300C32                 C
+
+
+32812"Ball; Mrs. (Ada E Hall)"female36.000000002855113.000000D                   S
+
+Superficie: 2 Track: 0 Sector: 12
+
+
+33011"Hippach; Miss. Jean Gertrude"female16.0000000111136157.979200B18                 C
+
+
+33201"Partner; Mr. Austen"male45.5000000011304328.500000C124                S

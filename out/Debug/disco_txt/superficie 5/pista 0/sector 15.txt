@@ -1,0 +1,12 @@
+41603"Meek; Mrs. Thomas (Annie Louise Rowley)"female0.000000003430958.050000                    S
+41712"Drew; Mrs. James Vivian (Lulu Thorne Christian)"female34.000000112822032.500000                    S
+41812"Silven; Miss. Lyyli Karoliina"female18.0000000225065213.000000                    S
+41902"Matthews; Mr. William John"male30.000000002822813.000000                    S
+42003"Van Impe; Miss. Catharina"female10.0000000234577324.150000                    S
+
+
+41712"Drew; Mrs. James Vivian (Lulu Thorne Christian)"female34.000000112822032.500000                    S
+41812"Silven; Miss. Lyyli Karoliina"female18.0000000225065213.000000                    S
+41902"Matthews; Mr. William John"male30.000000002822813.000000                    S
+
+

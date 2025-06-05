@@ -1,0 +1,12 @@
+38703"Goodwin; Master. Sidney Leonard"male1.00000052CA 214446.900000                    S
+38812"Buss; Miss. Kate"female36.000000002784913.000000                    S
+38903"Sadlier; Mr. Matthew"male0.000000003676557.729200                    Q
+39012"Lehmann; Miss. Bertha"female17.00000000SC 174812.000000                    C
+39111"Carter; Mr. William Ernest"male36.00000012113760120.000000B96 B98             S
+
+
+38812"Buss; Miss. Kate"female36.000000002784913.000000                    S
+
+
+39012"Lehmann; Miss. Bertha"female17.00000000SC 174812.000000                    C
+39111"Carter; Mr. William Ernest"male36.00000012113760120.000000B96 B98             S

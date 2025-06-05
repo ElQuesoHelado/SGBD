@@ -1,0 +1,9 @@
+57013"Jonsson; Mr. Carl"male32.000000003504177.854200                    S
+57112"Harris; Mr. George"male62.00000000S.W./PP 75210.500000                    S
+57211"Appleton; Mrs. Edward Dale (Charlotte Lamson)"female53.000000201176951.479200C101                S
+57311"Flynn; Mr. John Irwin (""Irving"")"male36.00000000PC 1747426.387500E25                 S
+
+
+57112"Harris; Mr. George"male62.00000000S.W./PP 75210.500000                    S
+57211"Appleton; Mrs. Edward Dale (Charlotte Lamson)"female53.000000201176951.479200C101                S
+57311"Flynn; Mr. John Irwin (""Irving"")"male36.00000000PC 1747426.387500E25                 S

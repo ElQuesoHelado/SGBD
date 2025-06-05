@@ -1,0 +1,10 @@
+60603"Lindell; Mr. Edvard Bengtsson"male36.0000001034991015.550000                    S
+60703"Karaic; Mr. Milan"male30.000000003492467.895800                    S
+60811"Daniel; Mr. Robert Williams"male27.0000000011380430.500000                    S
+60912"Laroche; Mrs. Joseph (Juliette Marie Louise Lafargue)"female22.00000012SC/Paris 212341.579200                    C
+
+
+
+
+60811"Daniel; Mr. Robert Williams"male27.0000000011380430.500000                    S
+60912"Laroche; Mrs. Joseph (Juliette Marie Louise Lafargue)"female22.00000012SC/Paris 212341.579200                    C

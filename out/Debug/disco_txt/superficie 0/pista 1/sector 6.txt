@@ -1,0 +1,13 @@
+68502"Brown; Mr. Thomas William Solomon"male60.000000112975039.000000                    S
+68602"Laroche; Mr. Joseph Philippe Lemercier"male25.00000012SC/Paris 212341.579200                    C
+68703"Panula; Mr. Jaako Arnold"male14.00000041310129539.687500                    S
+68803"Dakic; Mr. Branko"male19.0000000034922810.170800                    S
+68903"Fischer; Mr. Eberhard Thelander"male18.000000003500367.795800                    S
+68502"Brown; Mr. Thomas William Solomon"male60.000000112975039.000000                    S
+68602"Laroche; Mr. Joseph Philippe Lemercier"male25.00000012SC/Paris 212341.579200                    C
+
+
+
+
+
+

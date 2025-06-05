@@ -1,0 +1,59 @@
+Next_page_id: 39 N_registers: 8 Free_space/capacity: 30/399
+free_space_offset: 141 # Slots: 19
+ |1|109|1891|
+|0|94|1797|
+|1|93|1704|
+|0|98|1606|
+|0|101|1505|
+|1|105|1400|
+|1|118|1282|
+|0|98|1184|
+|0|90|1094|
+|0|104|990|
+|1|107|883|
+|1|95|788|
+|0|93|695|
+|0|83|612|
+|0|87|525|
+|1|88|437|
+|1|99|338|
+|0|89|249|
+|0|108|141|
+|
+Superficie: 1 Track: 1 Sector: 6
+68011"Cardeza; Mr. Thomas Drake Martinez"male36.00000001PC 17755512.329200B51 B53 B55         C
+
+
+68211"Hassab; Mr. Hammad"male27.00000000PC 1757276.729200D49                 C
+
+
+
+
+
+Superficie: 0 Track: 1 Sector: 6
+68502"Brown; Mr. Thomas William Solomon"male60.000000112975039.000000                    S
+68602"Laroche; Mr. Joseph Philippe Lemercier"male25.00000012SC/Paris 212341.579200                    C
+
+
+
+
+
+
+
+Superficie: 5 Track: 1 Sector: 5
+69011"Madill; Miss. Georgette Alexandra"female15.0000000124160211.337500B5                  S
+69111"Dick; Mr. Albert Adrian"male31.000000101747457.000000B20                 S
+
+
+
+
+
+
+69501"Weir; Col. John"male60.0000000011380026.550000                    S
+
+Superficie: 4 Track: 1 Sector: 5
+69602"Chapman; Mr. Charles Henry"male52.0000000024873113.500000                    S
+
+
+
+

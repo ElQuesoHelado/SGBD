@@ -1,0 +1,12 @@
+9811"Greenfield; Mr. William Bertram"male23.00000001PC 1775963.358300D10 D12             C
+9912"Doling; Mrs. John T (Ada Julia Bone)"female34.0000000123191923.000000                    S
+10002"Kantor; Mr. Sinai"male34.0000001024436726.000000                    S
+10103"Petranec; Miss. Matilda"female28.000000003492457.895800                    S
+10203"Petroff; Mr. Pastcho (""Pentcho"")"male0.000000003492157.895800                    S
+9811"Greenfield; Mr. William Bertram"male23.00000001PC 1775963.358300D10 D12             C
+9912"Doling; Mrs. John T (Ada Julia Bone)"female34.0000000123191923.000000                    S
+10002"Kantor; Mr. Sinai"male34.0000001024436726.000000                    S
+
+
+
+

@@ -1,0 +1,58 @@
+Next_page_id: 5 N_registers: 9 Free_space/capacity: 0/399
+free_space_offset: 111 # Slots: 19
+ |1|123|1877|
+|1|89|1788|
+|1|96|1692|
+|0|90|1602|
+|1|107|1495|
+|0|108|1387|
+|0|92|1295|
+|1|93|1202|
+|1|99|1103|
+|0|94|1009|
+|1|96|913|
+|0|95|818|
+|1|107|711|
+|0|100|611|
+|0|107|504|
+|0|90|414|
+|1|103|311|
+|0|102|209|
+|0|98|111|
+|
+Superficie: 3 Track: 0 Sector: 3
+5412"Faunthorpe; Mrs. Lizzie (Elizabeth Anne Wilkinson)"female29.00000010292626.000000                    S
+5611"Woolner; Mr. Hugh"male0.000000001994735.500000C52                 S
+5712"Rugg; Miss. Emily"female21.00000000C.A. 3102610.500000                    S
+
+
+
+Superficie: 2 Track: 0 Sector: 3
+5912"West; Miss. Constance Mirium"female5.00000012C.A. 3465127.750000                    S
+
+
+
+
+6211"Icard; Miss. Amelie"female38.0000000011357280.000000B28                 
+6301"Harris; Mr. Henry Birkhardt"male45.000000103697383.475000C83                 S
+
+
+
+Superficie: 1 Track: 0 Sector: 3
+6501"Stewart; Mr. Albert A"male0.00000000PC 1760527.720800                    C
+
+
+6712"Nye; Mrs. (Elizabeth Ramell)"female29.00000000C.A. 2939510.500000F33                 S
+
+
+
+
+
+
+
+Superficie: 0 Track: 0 Sector: 3
+7102"Jenkin; Mr. Stephen Curnow"male32.00000000C.A. 3311110.500000                    S
+
+
+
+

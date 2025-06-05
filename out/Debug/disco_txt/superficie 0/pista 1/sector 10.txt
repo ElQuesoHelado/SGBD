@@ -1,0 +1,13 @@
+79503"Dantcheff; Mr. Ristiu"male25.000000003492037.895800                    S
+79602"Otter; Mr. Richard"male39.000000002821313.000000                    S
+79711"Leader; Dr. Alice (Farnham)"female49.000000001746525.929200D17                 S
+79813"Osman; Mrs. Mara"female31.000000003492448.683300                    S
+79903"Ibrahim Shawah; Mr. Yousseff"male30.0000000026857.229200                    C
+
+
+79602"Otter; Mr. Richard"male39.000000002821313.000000                    S
+79711"Leader; Dr. Alice (Farnham)"female49.000000001746525.929200D17                 S
+
+
+
+

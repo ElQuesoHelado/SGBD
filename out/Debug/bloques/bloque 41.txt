@@ -1,0 +1,58 @@
+Next_page_id: 42 N_registers: 9 Free_space/capacity: 6/399
+free_space_offset: 117 # Slots: 19
+ |1|101|1899|
+|0|92|1807|
+|0|118|1689|
+|1|97|1592|
+|0|91|1501|
+|0|91|1410|
+|1|99|1311|
+|1|101|1210|
+|1|116|1094|
+|0|90|1004|
+|0|102|902|
+|1|104|798|
+|0|103|695|
+|1|96|599|
+|1|98|501|
+|0|96|405|
+|1|91|314|
+|0|92|222|
+|0|105|117|
+|
+Superficie: 1 Track: 1 Sector: 8
+73502"Troupiansky; Mr. Moses Aaron"male23.0000000023363913.000000                    S
+
+
+
+
+73811"Lesurer; Mr. Gustave J"male35.00000000PC 17755512.329200B101                C
+
+
+
+Superficie: 0 Track: 1 Sector: 8
+
+
+74111"Hawksford; Mr. Walter James"male0.000000001698830.000000D45                 S
+74201"Cavendish; Mr. Tyrell William"male36.000000101987778.850000C46                 S
+74311"Ryerson; Miss. Susan Parker ""Suzette"""female21.00000022PC 17608262.375000B57 B59 B63 B66     C
+
+
+
+Superficie: 5 Track: 1 Sector: 7
+
+
+74601"Crosby; Capt. Edward Gifford"male70.00000011WE/P 573571.000000B22                 S
+
+
+74812"Sinkkonen; Miss. Anna"female30.0000000025064813.000000                    S
+74901"Marvin; Mr. Daniel Warner"male19.0000001011377353.100000D30                 S
+
+
+
+Superficie: 4 Track: 1 Sector: 7
+75112"Wells; Miss. Joan"female4.000000112910323.000000                    S
+
+
+
+

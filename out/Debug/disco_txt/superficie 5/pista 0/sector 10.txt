@@ -1,0 +1,12 @@
+25911"Ward; Miss. Anna"female35.00000000PC 17755512.329200                    C
+26012"Parrish; Mrs. (Lutie Davis)"female50.0000000123043326.000000                    S
+26103"Smith; Mr. Thomas"male0.000000003844617.750000                    Q
+26213"Asplund; Master. Edvin Rojj Felix"male3.0000004234707731.387500                    S
+26301"Taussig; Mr. Emil"male52.0000001111041379.650000E67                 S
+25911"Ward; Miss. Anna"female35.00000000PC 17755512.329200                    C
+26012"Parrish; Mrs. (Lutie Davis)"female50.0000000123043326.000000                    S
+
+
+
+
+26301"Taussig; Mr. Emil"male52.0000001111041379.650000E67                 S

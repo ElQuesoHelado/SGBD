@@ -1,0 +1,56 @@
+Next_page_id: 12 N_registers: 8 Free_space/capacity: 15/404
+free_space_offset: 121 # Slots: 18
+ |0|110|1890|
+|1|94|1796|
+|0|124|1672|
+|1|120|1552|
+|0|92|1460|
+|1|94|1366|
+|1|93|1273|
+|0|122|1151|
+|1|99|1052|
+|1|118|934|
+|1|97|837|
+|0|92|745|
+|0|103|642|
+|0|109|533|
+|1|115|418|
+|0|103|315|
+|0|94|221|
+|0|100|121|
+|
+Superficie: 1 Track: 0 Sector: 8
+
+
+18601"Rood; Mr. Hugh Roscoe"male0.0000000011376750.000000A32                 S
+
+
+18811"Romaine; Mr. Charles Hallace (""Mr C Rolmane"")"male45.0000000011142826.550000                    S
+
+Superficie: 0 Track: 0 Sector: 8
+
+
+19112"Pinsky; Mrs. (Rosa)"female32.0000000023460413.000000                    S
+19202"Carbines; Mr. William"male19.000000002842413.000000                    S
+
+
+19412"Navratil; Master. Michel M"male3.0000001123008026.000000F2                  S
+
+Superficie: 5 Track: 0 Sector: 7
+19511"Brown; Mrs. James Joseph (Margaret Tobin)"female44.00000000PC 1761027.720800B4                  C
+19611"Lurette; Miss. Elise"female58.00000000PC 17569146.520800B80                 C
+
+
+
+
+
+
+
+Superficie: 4 Track: 0 Sector: 7
+20002"Yrois; Miss. Henriette (""Mrs Harbeck"")"female24.0000000024874713.000000                    S
+
+
+
+
+
+

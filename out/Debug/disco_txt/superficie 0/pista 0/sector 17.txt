@@ -1,0 +1,7 @@
+45613"Jalsevac; Mr. Ivan"male29.000000003492407.895800                    C
+45701"Millet; Mr. Francis Davis"male65.000000001350926.550000E38                 S
+45811"Kenyon; Mrs. Frederick R (Marion)"female0.000000101746451.862500D21                 S
+
+
+45701"Millet; Mr. Francis Davis"male65.000000001350926.550000E38                 S
+45811"Kenyon; Mrs. Frederick R (Marion)"female0.000000101746451.862500D21                 S

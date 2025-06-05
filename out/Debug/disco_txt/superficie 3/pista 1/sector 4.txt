@@ -1,0 +1,14 @@
+65413"O'Leary; Miss. Hanora ""Norah"""female0.000000003309197.829200                    Q
+65503"Hegarty; Miss. Hanora ""Nora"""female18.000000003652266.750000                    Q
+65602"Hickman; Mr. Leonard Mark"male24.00000020S.O.C. 1487973.500000                    S
+65703"Radeff; Mr. Alexander"male0.000000003492237.895800                    S
+65803"Bourke; Mrs. John (Catherine)"female32.0000001136484915.500000                    Q
+
+
+
+
+65602"Hickman; Mr. Leonard Mark"male24.00000020S.O.C. 1487973.500000                    S
+
+
+
+

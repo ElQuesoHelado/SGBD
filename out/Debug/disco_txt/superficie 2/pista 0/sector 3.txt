@@ -1,0 +1,15 @@
+5912"West; Miss. Constance Mirium"female5.00000012C.A. 3465127.750000                    S
+6003"Goodwin; Master. William Frederick"male11.00000052CA 214446.900000                    S
+6103"Sirayanian; Mr. Orsen"male22.0000000026697.229200                    C
+6211"Icard; Miss. Amelie"female38.0000000011357280.000000B28                 
+6301"Harris; Mr. Henry Birkhardt"male45.000000103697383.475000C83                 S
+6403"Skoog; Master. Harald"male4.0000003234708827.900000                    S
+5912"West; Miss. Constance Mirium"female5.00000012C.A. 3465127.750000                    S
+
+
+
+
+6211"Icard; Miss. Amelie"female38.0000000011357280.000000B28                 
+6301"Harris; Mr. Henry Birkhardt"male45.000000103697383.475000C83                 S
+
+

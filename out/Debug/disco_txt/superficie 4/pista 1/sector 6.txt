@@ -1,0 +1,13 @@
+70303"Barbara; Miss. Saiide"female18.00000001269114.454200                    C
+70403"Gallagher; Mr. Martin"male25.00000000368647.741700                    Q
+70503"Hansen; Mr. Henrik Juul"male26.000000103500257.854200                    S
+70602"Morley; Mr. Henry Samuel (""Mr Henry Marshall"")"male39.0000000025065526.000000                    S
+70712"Kelly; Mrs. Florence ""Fannie"""female45.0000000022359613.500000                    S
+
+
+
+
+
+
+70602"Morley; Mr. Henry Samuel (""Mr Henry Marshall"")"male39.0000000025065526.000000                    S
+70712"Kelly; Mrs. Florence ""Fannie"""female45.0000000022359613.500000                    S

@@ -1,0 +1,13 @@
+61503"Brocklebank; Mr. William Alfred"male35.000000003645128.050000                    S
+61612"Herman; Miss. Alice"female24.0000001222084565.000000                    S
+61703"Danbom; Mr. Ernst Gilbert"male34.0000001134708014.400000                    S
+61803"Lobb; Mrs. William Arthur (Cordelia K Stanlick)"female26.00000010A/5. 333616.100000                    S
+61912"Becker; Miss. Marion Louise"female4.0000002123013639.000000F4                  S
+
+
+61612"Herman; Miss. Alice"female24.0000001222084565.000000                    S
+
+
+
+
+61912"Becker; Miss. Marion Louise"female4.0000002123013639.000000F4                  S

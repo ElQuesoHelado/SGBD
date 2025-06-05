@@ -1,0 +1,13 @@
+9301"Chaffee; Mr. Herbert Fuller"male46.00000010W.E.P. 573461.175000E31                 S
+9403"Dean; Mr. Bertram Frank"male26.00000012C.A. 231520.575000                    S
+9503"Coxon; Mr. Daniel"male59.000000003645007.250000                    S
+9603"Shorney; Mr. Charles Joseph"male0.000000003749108.050000                    S
+9701"Goldschmidt; Mr. George B"male71.00000000PC 1775434.654200A5                  C
+9301"Chaffee; Mr. Herbert Fuller"male46.00000010W.E.P. 573461.175000E31                 S
+
+
+
+
+
+
+9701"Goldschmidt; Mr. George B"male71.00000000PC 1775434.654200A5                  C

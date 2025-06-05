@@ -1,0 +1,12 @@
+11703"Connors; Mr. Patrick"male70.500000003703697.750000                    Q
+11802"Turpin; Mr. William John Robert"male29.000000101166821.000000                    S
+11901"Baxter; Mr. Quigg Edmond"male24.00000001PC 17558247.520800B58 B60             C
+12003"Andersson; Miss. Ellis Anna Maria"female2.0000004234708231.275000                    S
+12102"Hickman; Mr. Stanley George"male21.00000020S.O.C. 1487973.500000                    S
+
+
+11802"Turpin; Mr. William John Robert"male29.000000101166821.000000                    S
+11901"Baxter; Mr. Quigg Edmond"male24.00000001PC 17558247.520800B58 B60             C
+
+
+12102"Hickman; Mr. Stanley George"male21.00000020S.O.C. 1487973.500000                    S

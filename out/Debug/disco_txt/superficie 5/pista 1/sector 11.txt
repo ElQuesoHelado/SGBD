@@ -1,0 +1,13 @@
+85613"Aks; Mrs. Sam (Leah Rosen)"female18.000000013920919.350000                    S
+85711"Wick; Mrs. George Dennick (Mary Hitchcock)"female45.0000001136928164.866700                    S
+85811"Daly; Mr. Peter Denis "male51.0000000011305526.550000E17                 S
+85913"Baclini; Mrs. Solomon (Latifa Qurban)"female24.00000003266619.258300                    C
+86003"Razi; Mr. Raihed"male0.0000000026297.229200                    C
+
+
+85711"Wick; Mrs. George Dennick (Mary Hitchcock)"female45.0000001136928164.866700                    S
+85811"Daly; Mr. Peter Denis "male51.0000000011305526.550000E17                 S
+
+
+
+

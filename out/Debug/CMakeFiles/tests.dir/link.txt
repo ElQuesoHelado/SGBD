@@ -1,0 +1,1 @@
+/usr/lib64/ccache/c++ -g -rdynamic -Wl,--dependency-file=CMakeFiles/tests.dir/link.d CMakeFiles/tests.dir/src/test.o -o tests  libmegatron.a libdisk_manager.a

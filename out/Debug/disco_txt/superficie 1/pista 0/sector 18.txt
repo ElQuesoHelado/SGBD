@@ -1,0 +1,12 @@
+45912"Toomey; Miss. Ellen"female50.00000000F.C.C. 1353110.500000                    S
+46003"O'Connor; Mr. Maurice"male0.000000003710607.750000                    Q
+46111"Anderson; Mr. Harry"male48.000000001995226.550000E12                 S
+46203"Morley; Mr. William"male34.000000003645068.050000                    S
+46301"Gee; Mr. Arthur H"male47.0000000011132038.500000E63                 S
+45912"Toomey; Miss. Ellen"female50.00000000F.C.C. 1353110.500000                    S
+
+
+46111"Anderson; Mr. Harry"male48.000000001995226.550000E12                 S
+
+
+46301"Gee; Mr. Arthur H"male47.0000000011132038.500000E63                 S

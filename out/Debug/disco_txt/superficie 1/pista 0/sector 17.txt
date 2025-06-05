@@ -1,0 +1,14 @@
+45011"Peuchen; Major. Arthur Godfrey"male52.0000000011378630.500000C104                S
+45102"West; Mr. Edwy Arthur"male36.00000012C.A. 3465127.750000                    S
+45203"Hagland; Mr. Ingvald Olai Olsen"male0.000000106530319.966700                    S
+45301"Foreman; Mr. Benjamin Laventall"male30.0000000011305127.750000C111                C
+45411"Goldenberg; Mr. Samuel L"male49.000000101745389.104200C92                 C
+45503"Peduzzi; Mr. Joseph"male0.00000000A/5 28178.050000                    S
+45011"Peuchen; Major. Arthur Godfrey"male52.0000000011378630.500000C104                S
+45102"West; Mr. Edwy Arthur"male36.00000012C.A. 3465127.750000                    S
+
+
+45301"Foreman; Mr. Benjamin Laventall"male30.0000000011305127.750000C111                C
+45411"Goldenberg; Mr. Samuel L"male49.000000101745389.104200C92                 C
+
+

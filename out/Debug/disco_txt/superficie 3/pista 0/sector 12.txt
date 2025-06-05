@@ -1,0 +1,12 @@
+32412"Caldwell; Mrs. Albert Francis (Sylvia Mae Harbaugh)"female22.0000001124873829.000000                    S
+32503"Sage; Mr. George John Jr"male0.00000082CA. 234369.550000                    S
+32611"Young; Miss. Marie Grice"female36.00000000PC 17760135.633300C32                 C
+32703"Nysveen; Mr. Johan Hansen"male61.000000003453646.237500                    S
+32812"Ball; Mrs. (Ada E Hall)"female36.000000002855113.000000D                   S
+32412"Caldwell; Mrs. Albert Francis (Sylvia Mae Harbaugh)"female22.0000001124873829.000000                    S
+
+
+32611"Young; Miss. Marie Grice"female36.00000000PC 17760135.633300C32                 C
+
+
+32812"Ball; Mrs. (Ada E Hall)"female36.000000002855113.000000D                   S

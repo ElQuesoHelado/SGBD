@@ -1,0 +1,15 @@
+20403"Youseff; Mr. Gerious"male45.5000000026287.225000                    C
+20513"Cohen; Mr. Gurshon ""Gus"""male18.00000000A/5 35408.050000                    S
+20603"Strom; Miss. Telma Matilda"female2.0000000134705410.462500G6                  S
+20703"Backstrom; Mr. Karl Alfred"male32.00000010310127815.850000                    S
+20813"Albimona; Mr. Nassef Cassem"male26.00000000269918.787500                    C
+
+
+
+
+
+
+
+
+
+

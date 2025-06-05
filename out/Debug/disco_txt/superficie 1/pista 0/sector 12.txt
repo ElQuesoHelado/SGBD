@@ -1,0 +1,9 @@
+29703"Hanna; Mr. Mansour"male23.5000000026937.229200                    C
+29801"Allison; Miss. Helen Loraine"female2.00000012113781151.550000C22 C26             S
+29911"Saalfeld; Mr. Adolphe"male0.000000001998830.500000C106                S
+30011"Baxter; Mrs. James (Helene DeLaudeniere Chaput)"female50.00000001PC 17558247.520800B58 B60             C
+
+
+29801"Allison; Miss. Helen Loraine"female2.00000012113781151.550000C22 C26             S
+29911"Saalfeld; Mr. Adolphe"male0.000000001998830.500000C106                S
+30011"Baxter; Mrs. James (Helene DeLaudeniere Chaput)"female50.00000001PC 17558247.520800B58 B60             C

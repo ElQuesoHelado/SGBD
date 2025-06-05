@@ -1,0 +1,12 @@
+31911"Wick; Miss. Mary Natalie"female31.0000000236928164.866700C7                  S
+32011"Spedden; Mrs. Frederic Oakley (Margaretta Corning Stone)"female40.0000001116966134.500000E34                 C
+32103"Dennis; Mr. Samuel"male22.00000000A/5 211727.250000                    S
+32203"Danoff; Mr. Yoto"male27.000000003492197.895800                    S
+32312"Slayter; Miss. Hilda Mary"female30.0000000023481812.350000                    Q
+31911"Wick; Miss. Mary Natalie"female31.0000000236928164.866700C7                  S
+32011"Spedden; Mrs. Frederic Oakley (Margaretta Corning Stone)"female40.0000001116966134.500000E34                 C
+
+
+
+
+32312"Slayter; Miss. Hilda Mary"female30.0000000023481812.350000                    Q

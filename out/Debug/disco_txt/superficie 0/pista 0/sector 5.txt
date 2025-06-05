@@ -1,0 +1,9 @@
+12813"Madsen; Mr. Fridtjof Arne"male24.00000000C 173697.141700                    S
+12913"Peter; Miss. Anna"female0.00000011266822.358300F E69               C
+13003"Ekstrom; Mr. Johan"male45.000000003470616.975000                    S
+
+
+
+
+
+

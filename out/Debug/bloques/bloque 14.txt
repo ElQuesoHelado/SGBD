@@ -1,0 +1,56 @@
+Next_page_id: 15 N_registers: 8 Free_space/capacity: 21/404
+free_space_offset: 127 # Slots: 18
+ |0|94|1906|
+|0|107|1799|
+|1|109|1690|
+|0|113|1577|
+|0|91|1486|
+|1|99|1387|
+|0|112|1275|
+|1|106|1169|
+|1|101|1068|
+|1|102|966|
+|0|95|871|
+|0|117|754|
+|1|98|656|
+|0|100|556|
+|0|115|441|
+|0|112|329|
+|1|107|222|
+|1|95|127|
+|
+Superficie: 1 Track: 0 Sector: 10
+
+
+
+
+24302"Coleridge; Mr. Reginald Charles"male29.00000000W./C. 1426310.500000                    S
+
+
+
+Superficie: 0 Track: 0 Sector: 10
+
+
+24601"Minahan; Dr. William Edward"male44.000000201992890.000000C78                 Q
+
+
+24812"Hamalainen; Mrs. William (Anna)"female24.0000000225064914.500000                    S
+24911"Beckwith; Mr. Richard Leonard"male37.000000111175152.554200D35                 S
+
+Superficie: 5 Track: 0 Sector: 9
+25002"Carter; Rev. Ernest Courtenay"male54.0000001024425226.000000                    S
+
+
+
+
+25301"Stead; Mr. William Thomas"male62.0000000011351426.550000C87                 S
+
+
+
+Superficie: 4 Track: 0 Sector: 9
+
+
+
+
+25711"Thorne; Mrs. Gertrude Maybelle"female0.00000000PC 1758579.200000                    C
+25811"Cherry; Miss. Gladys"female30.0000000011015286.500000B77                 S

@@ -1,0 +1,56 @@
+Next_page_id: 9 N_registers: 8 Free_space/capacity: 6/404
+free_space_offset: 112 # Slots: 18
+ |0|93|1907|
+|0|115|1792|
+|0|124|1668|
+|1|120|1548|
+|1|107|1441|
+|1|98|1343|
+|1|102|1241|
+|1|100|1141|
+|0|90|1051|
+|1|93|958|
+|0|102|856|
+|0|99|757|
+|0|137|620|
+|0|92|528|
+|1|99|429|
+|1|105|324|
+|0|119|205|
+|0|93|112|
+|
+Superficie: 1 Track: 0 Sector: 6
+
+
+
+
+
+
+13412"Weisz; Mrs. Leopold (Mathilde Francoise Pede)"female29.0000001022841426.000000                    S
+
+Superficie: 0 Track: 0 Sector: 6
+13502"Sobey; Mr. Samuel James Hayden"male25.00000000C.A. 2917813.000000                    S
+13602"Richard; Mr. Emile"male23.00000000SC/PARIS 213315.045800                    C
+13711"Newsom; Miss. Helen Monypeny"female19.000000021175226.283300D47                 S
+13801"Futrelle; Mr. Jacques Heath"male37.0000001011380353.100000C123                S
+
+
+14001"Giglio; Mr. Victor"male24.00000000PC 1759379.200000B86                 C
+
+Superficie: 5 Track: 0 Sector: 5
+
+
+
+
+
+
+
+
+14502"Andrew; Mr. Edgardo Samuel"male18.0000000023194511.500000                    S
+
+Superficie: 4 Track: 0 Sector: 5
+14602"Nicholls; Mr. Joseph Charles"male19.00000011C.A. 3311236.750000                    S
+
+
+
+

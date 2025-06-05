@@ -1,0 +1,59 @@
+Next_page_id: 11 N_registers: 8 Free_space/capacity: 1/399
+free_space_offset: 112 # Slots: 19
+ |1|113|1887|
+|0|122|1765|
+|1|94|1671|
+|0|84|1587|
+|1|98|1489|
+|0|93|1396|
+|0|103|1293|
+|0|109|1184|
+|1|95|1089|
+|0|95|994|
+|0|100|894|
+|1|103|791|
+|1|91|700|
+|0|90|610|
+|0|105|505|
+|1|96|409|
+|0|110|299|
+|1|98|201|
+|0|89|112|
+|
+Superficie: 3 Track: 0 Sector: 7
+16711"Chibnall; Mrs. (Edith Martha Bowerman)"female0.0000000111350555.000000E33                 S
+
+
+16901"Baumann; Mr. John D"male0.00000000PC 1731825.925000                    S
+
+
+
+Superficie: 2 Track: 0 Sector: 7
+17101"Van der hoef; Mr. Wyckoff"male61.0000000011124033.500000B19                 S
+
+
+
+
+
+
+17501"Smith; Mr. James Clinch"male56.000000001776430.695800A7                  C
+
+
+
+Superficie: 1 Track: 0 Sector: 7
+
+
+17801"Isham; Miss. Ann Elizabeth"female50.00000000PC 1759528.712500C49                 C
+17902"Hale; Mr. Reginald"male30.0000000025065313.000000                    S
+
+
+
+
+18202"Pernot; Mr. Rene"male0.00000000SC/PARIS 213115.050000                    C
+
+Superficie: 0 Track: 0 Sector: 7
+
+
+18412"Becker; Master. Richard F"male1.0000002123013639.000000F4                  S
+
+

@@ -1,0 +1,10 @@
+49603"Yousseff; Mr. Gerious"male0.00000000262714.458300                    C
+49711"Eustis; Miss. Elizabeth Mussey"female54.000000103694778.266700D20                 C
+49803"Shellard; Mr. Frederick William"male0.00000000C.A. 621215.100000                    S
+49901"Allison; Mrs. Hudson J C (Bessie Waldo Daniels)"female25.00000012113781151.550000C22 C26             S
+
+
+49711"Eustis; Miss. Elizabeth Mussey"female54.000000103694778.266700D20                 C
+
+
+49901"Allison; Mrs. Hudson J C (Bessie Waldo Daniels)"female25.00000012113781151.550000C22 C26             S

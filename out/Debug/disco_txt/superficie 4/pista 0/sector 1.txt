@@ -1,0 +1,9 @@
+3313"Glynn; Miss. Mary Agatha"female0.000000003356777.750000                    Q
+3402"Wheadon; Mr. Edward H"male66.00000000C.A. 2457910.500000                    S
+3501"Meyer; Mr. Edgar Joseph"male28.00000010PC 1760482.170800                    C
+3601"Holverson; Mr. Alexander Oskar"male42.0000001011378952.000000                    S
+
+
+3402"Wheadon; Mr. Edward H"male66.00000000C.A. 2457910.500000                    S
+3501"Meyer; Mr. Edgar Joseph"male28.00000010PC 1760482.170800                    C
+3601"Holverson; Mr. Alexander Oskar"male42.0000001011378952.000000                    S

@@ -1,0 +1,11 @@
+titanic#PassengerId#INTEGER#Survived#INTEGER#Pclass#INTEGER#Name#CHAR(100)#Sex#CHAR(20)#Age#DOUBLE#SibSp#INTEGER#Parch#INTEGER#Ticket#CHAR(20)#Fare#DOUBLE#Cabin#CHAR(20)#Embarked#CHAR(20)
+
+titanic_var#PassengerId#INTEGER#Survived#INTEGER#Pclass#INTEGER#Name#VARCHAR(100)#Sex#VARCHAR(20)#Age#DOUBLE#SibSp#INTEGER#Parch#INTEGER#Ticket#VARCHAR(20)#Fare#DOUBLE#Cabin#CHAR(20)#Embarked#VARCHAR(20)
+
+chica#col1#INTEGER#col2#INTEGER#col3#INTEGER#col4#CHAR(100)#col5#CHAR(20)
+chica_var#col1#INTEGER#col2#INTEGER#col3#INTEGER#col4#VARCHAR(100)#col5#CHAR(20)
+
+housing#price#INTEGER#area#INTEGER#bedrooms#SMALLINT#bathrooms#SMALLINT#stories#SMALLINT#mainroad#CHAR(3)#guestroom#CHAR(3)#basement#CHAR(3)#hotwaterheating#CHAR(3)#airconditioning#CHAR(3)#parking#SMALLINT#prefarea#CHAR(3)#furnishingstatus#CHAR(15)
+
+housing_var#price#INTEGER#area#INTEGER#bedrooms#SMALLINT#bathrooms#SMALLINT#stories#SMALLINT#mainroad#VARCHAR(3)#guestroom#VARCHAR(3)#basement#VARCHAR(3)#hotwaterheating#VARCHAR(3)#airconditioning#VARCHAR(3)#parking#SMALLINT#prefarea#VARCHAR(3)#furnishingstatus#VARCHAR(15)
+

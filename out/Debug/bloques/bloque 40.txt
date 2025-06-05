@@ -1,0 +1,54 @@
+Next_page_id: 41 N_registers: 10 Free_space/capacity: 56/404
+free_space_offset: 162 # Slots: 18
+ |0|115|1885|
+|1|111|1774|
+|0|91|1683|
+|0|101|1582|
+|1|110|1472|
+|0|98|1374|
+|1|100|1274|
+|1|96|1178|
+|1|102|1076|
+|0|92|984|
+|1|117|867|
+|0|98|769|
+|1|104|665|
+|0|114|551|
+|1|103|448|
+|0|95|353|
+|1|93|260|
+|1|98|162|
+|
+Superficie: 3 Track: 1 Sector: 7
+
+
+71812"Troutt; Miss. Edwina Celia ""Winnie"""female27.000000003421810.500000E101                S
+
+
+
+
+
+Superficie: 2 Track: 1 Sector: 7
+72112"Harper; Miss. Annie Jessie ""Nina"""female6.0000000124872733.000000                    S
+
+
+72302"Gillespie; Mr. William Henry"male34.000000001223313.000000                    S
+72402"Hodges; Mr. Henry Price"male50.0000000025064313.000000                    S
+72511"Chambers; Mr. Norman Campbell"male27.0000001011380653.100000E8                  S
+
+
+
+Superficie: 1 Track: 1 Sector: 7
+72712"Renouf; Mrs. Peter Henry (Lillian Jefferys)"female30.000000303102721.000000                    S
+
+
+72902"Bryhl; Mr. Kurt Arnold Gottfrid"male25.0000001023685326.000000                    S
+
+
+73111"Allen; Miss. Elisabeth Walton"female29.0000000024160211.337500B5                  S
+
+Superficie: 0 Track: 1 Sector: 7
+
+
+73302"Knight; Mr. Robert J"male0.000000002398550.000000                    S
+73402"Berriman; Mr. William John"male23.000000002842513.000000                    S

@@ -1,0 +1,8 @@
+69602"Chapman; Mr. Charles Henry"male52.0000000024873113.500000                    S
+69703"Kelly; Mr. James"male44.000000003635928.050000                    S
+69813"Mullens; Miss. Katherine ""Katie"""female0.00000000358527.733300                    Q
+69602"Chapman; Mr. Charles Henry"male52.0000000024873113.500000                    S
+
+
+
+

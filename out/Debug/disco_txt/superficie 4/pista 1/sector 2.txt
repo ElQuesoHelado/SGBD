@@ -1,0 +1,15 @@
+59211"Stephenson; Mrs. Walter Bertram (Martha Eustis)"female52.000000103694778.266700D20                 C
+59303"Elsbury; Mr. William James"male47.00000000A/5 39027.250000                    S
+59403"Bourke; Miss. Mary"female0.000000023648487.750000                    Q
+59502"Chapman; Mr. John Henry"male37.00000010SC/AH 2903726.000000                    S
+59603"Van Impe; Mr. Jean Baptiste"male36.0000001134577324.150000                    S
+59712"Leitch; Miss. Jessie Wills"female0.0000000024872733.000000                    S
+59211"Stephenson; Mrs. Walter Bertram (Martha Eustis)"female52.000000103694778.266700D20                 C
+
+
+
+
+59502"Chapman; Mr. John Henry"male37.00000010SC/AH 2903726.000000                    S
+
+
+59712"Leitch; Miss. Jessie Wills"female0.0000000024872733.000000                    S

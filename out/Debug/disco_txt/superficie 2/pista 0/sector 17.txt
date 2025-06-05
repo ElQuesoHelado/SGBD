@@ -1,0 +1,12 @@
+44513"Johannesen-Bratthammer; Mr. Bernt"male0.00000000653068.112500                    S
+44611"Dodge; Master. Washington"male4.000000023363881.858300A34                 S
+44712"Mellinger; Miss. Madeleine Violet"female13.0000000125064419.500000                    S
+44811"Seward; Mr. Frederic Kimber"male34.0000000011379426.550000                    S
+44913"Baclini; Miss. Marie Catherine"female5.00000021266619.258300                    C
+
+
+44611"Dodge; Master. Washington"male4.000000023363881.858300A34                 S
+44712"Mellinger; Miss. Madeleine Violet"female13.0000000125064419.500000                    S
+44811"Seward; Mr. Frederic Kimber"male34.0000000011379426.550000                    S
+
+

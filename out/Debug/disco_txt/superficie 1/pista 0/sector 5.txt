@@ -1,0 +1,15 @@
+12203"Moore; Mr. Leonard Charles"male0.00000000A4. 545108.050000                    S
+12302"Nasser; Mr. Nicholas"male32.5000001023773630.070800                    C
+12412"Webber; Miss. Susan"female32.500000002726713.000000E101                S
+12501"White; Mr. Percival Wayland"male54.000000013528177.287500D26                 S
+12613"Nicola-Yarred; Master. Elias"male12.00000010265111.241700                    C
+12703"McMahon; Mr. Martin"male0.000000003703727.750000                    Q
+
+
+12302"Nasser; Mr. Nicholas"male32.5000001023773630.070800                    C
+12412"Webber; Miss. Susan"female32.500000002726713.000000E101                S
+12501"White; Mr. Percival Wayland"male54.000000013528177.287500D26                 S
+
+
+
+

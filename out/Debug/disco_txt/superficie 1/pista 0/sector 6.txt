@@ -1,0 +1,11 @@
+13103"Drazenoic; Mr. Jozef"male33.000000003492417.895800                    C
+13203"Coelho; Mr. Domingos Fernandeo"male20.00000000SOTON/O.Q. 31013077.050000                    S
+13303"Robins; Mrs. Alexander A (Grace Charity Laury)"female47.00000010A/5. 333714.500000                    S
+13412"Weisz; Mrs. Leopold (Mathilde Francoise Pede)"female29.0000001022841426.000000                    S
+
+
+
+
+
+
+13412"Weisz; Mrs. Leopold (Mathilde Francoise Pede)"female29.0000001022841426.000000                    S

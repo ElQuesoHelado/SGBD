@@ -1,0 +1,11 @@
+33701"Pears; Mr. Thomas Clinton"male29.0000001011377666.600000C2                  S
+33811"Burns; Miss. Elizabeth Margaret"female41.0000000016966134.500000E40                 C
+33913"Dahl; Mr. Karl Edwart"male45.0000000075988.050000                    S
+34001"Blackwell; Mr. Stephen Weart"male45.0000000011378435.500000T                   S
+34112"Navratil; Master. Edmond Roger"male2.0000001123008026.000000F2                  S
+33701"Pears; Mr. Thomas Clinton"male29.0000001011377666.600000C2                  S
+33811"Burns; Miss. Elizabeth Margaret"female41.0000000016966134.500000E40                 C
+
+
+34001"Blackwell; Mr. Stephen Weart"male45.0000000011378435.500000T                   S
+34112"Navratil; Master. Edmond Roger"male2.0000001123008026.000000F2                  S

@@ -1,0 +1,53 @@
+Next_page_id: 33 N_registers: 11 Free_space/capacity: 76/404
+free_space_offset: 182 # Slots: 18
+ |0|90|1910|
+|1|96|1814|
+|1|119|1695|
+|1|109|1586|
+|0|91|1495|
+|0|105|1390|
+|0|93|1297|
+|1|95|1202|
+|1|115|1087|
+|0|105|982|
+|0|103|879|
+|1|102|777|
+|1|126|651|
+|1|98|553|
+|1|91|462|
+|0|90|372|
+|1|94|278|
+|1|96|182|
+|
+Superficie: 1 Track: 1 Sector: 2
+
+
+57112"Harris; Mr. George"male62.00000000S.W./PP 75210.500000                    S
+57211"Appleton; Mrs. Edward Dale (Charlotte Lamson)"female53.000000201176951.479200C101                S
+57311"Flynn; Mr. John Irwin (""Irving"")"male36.00000000PC 1747426.387500E25                 S
+
+Superficie: 0 Track: 1 Sector: 2
+
+
+
+
+
+
+57712"Garside; Miss. Ethel"female34.0000000024388013.000000                    S
+57811"Silvey; Mrs. William Baird (Alice Munger)"female39.000000101350755.900000E44                 S
+
+Superficie: 5 Track: 1 Sector: 1
+
+
+
+
+58112"Christy; Miss. Julie Rachel"female25.0000001123778930.000000                    S
+58211"Thayer; Mrs. John Borland (Marian Longstreth Morris)"female39.0000001117421110.883300C68                 C
+58302"Downton; Mr. William James"male54.000000002840326.000000                    S
+
+Superficie: 4 Track: 1 Sector: 1
+58401"Ross; Mr. John Hugo"male36.000000001304940.125000A10                 C
+
+
+58611"Taussig; Miss. Ruth"female18.0000000211041379.650000E68                 S
+58702"Jarvis; Mr. John Denzil"male47.0000000023756515.000000                    S

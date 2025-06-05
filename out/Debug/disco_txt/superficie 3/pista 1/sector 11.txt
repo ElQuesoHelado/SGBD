@@ -1,0 +1,10 @@
+82603"Flynn; Mr. John"male0.000000003683236.950000                    Q
+82812"Mallet; Master. Andre"male1.00000002S.C./PARIS 207937.004200                    C
+82913"McCormack; Mr. Thomas Joseph"male0.000000003672287.750000                    Q
+83011"Stone; Mrs. George Nelson (Martha Evelyn)"female62.0000000011357280.000000B28                 
+
+
+82812"Mallet; Master. Andre"male1.00000002S.C./PARIS 207937.004200                    C
+
+
+83011"Stone; Mrs. George Nelson (Martha Evelyn)"female62.0000000011357280.000000B28                 

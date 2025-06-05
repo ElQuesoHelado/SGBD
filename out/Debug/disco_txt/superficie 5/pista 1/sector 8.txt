@@ -1,0 +1,12 @@
+75403"Jonkoff; Mr. Lalio"male23.000000003492047.895800                    S
+75512"Herman; Mrs. Samuel (Jane Laver)"female48.0000001222084565.000000                    S
+75612"Hamalainen; Master. Viljo"male0.6700001125064914.500000                    S
+75703"Carlsson; Mr. August Sigfrid"male28.000000003500427.795800                    S
+75802"Bailey; Mr. Percy Andrew"male18.000000002910811.500000                    S
+
+
+75512"Herman; Mrs. Samuel (Jane Laver)"female48.0000001222084565.000000                    S
+75612"Hamalainen; Master. Viljo"male0.6700001125064914.500000                    S
+
+
+75802"Bailey; Mr. Percy Andrew"male18.000000002910811.500000                    S

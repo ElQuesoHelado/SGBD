@@ -1,0 +1,9 @@
+58401"Ross; Mr. John Hugo"male36.000000001304940.125000A10                 C
+58503"Paulner; Mr. Uscher"male0.0000000034118.712500                    C
+58611"Taussig; Miss. Ruth"female18.0000000211041379.650000E68                 S
+58702"Jarvis; Mr. John Denzil"male47.0000000023756515.000000                    S
+58401"Ross; Mr. John Hugo"male36.000000001304940.125000A10                 C
+
+
+58611"Taussig; Miss. Ruth"female18.0000000211041379.650000E68                 S
+58702"Jarvis; Mr. John Denzil"male47.0000000023756515.000000                    S

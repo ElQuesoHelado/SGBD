@@ -1,0 +1,13 @@
+86801"Roebling; Mr. Washington Augustus II"male31.00000000PC 1759050.495800A24                 S
+86903"van Melkebeke; Mr. Philemon"male0.000000003457779.500000                    S
+87013"Johnson; Master. Harold Theodor"male4.0000001134774211.133300                    S
+87103"Balkic; Mr. Cerin"male26.000000003492487.895800                    S
+87211"Beckwith; Mrs. Richard Leonard (Sallie Monypeny)"female47.000000111175152.554200D35                 S
+86801"Roebling; Mr. Washington Augustus II"male31.00000000PC 1759050.495800A24                 S
+
+
+
+
+
+
+87211"Beckwith; Mrs. Richard Leonard (Sallie Monypeny)"female47.000000111175152.554200D35                 S

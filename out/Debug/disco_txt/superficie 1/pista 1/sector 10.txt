@@ -1,0 +1,12 @@
+79001"Guggenheim; Mr. Benjamin"male46.00000000PC 1759379.200000B82 B84             C
+79103"Keane; Mr. Andrew ""Andy"""male0.00000000124607.750000                    Q
+79202"Gaskell; Mr. Alfred"male16.0000000023986526.000000                    S
+79303"Sage; Miss. Stella Anna"female0.00000082CA. 234369.550000                    S
+79401"Hoyt; Mr. William Fisher"male0.00000000PC 1760030.695800                    C
+79001"Guggenheim; Mr. Benjamin"male46.00000000PC 1759379.200000B82 B84             C
+
+
+79202"Gaskell; Mr. Alfred"male16.0000000023986526.000000                    S
+
+
+79401"Hoyt; Mr. William Fisher"male0.00000000PC 1760030.695800                    C

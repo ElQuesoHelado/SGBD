@@ -1,0 +1,7 @@
+65902"Eitemiller; Mr. George Floyd"male23.000000002975113.000000                    S
+66001"Newell; Mr. Arthur Webster"male58.0000000235273113.275000D48                 C
+66203"Badt; Mr. Mohamed"male40.0000000026237.225000                    C
+65902"Eitemiller; Mr. George Floyd"male23.000000002975113.000000                    S
+66001"Newell; Mr. Arthur Webster"male58.0000000235273113.275000D48                 C
+
+

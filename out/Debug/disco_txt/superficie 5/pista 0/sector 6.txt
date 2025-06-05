@@ -1,0 +1,9 @@
+14803"Ford; Miss. Robina Maggie ""Ruby"""female9.00000022W./C. 660834.375000                    S
+14902"Navratil; Mr. Michel (""Louis M Hoffman"")"male36.5000000223008026.000000F2                  S
+15002"Byles; Rev. Thomas Roussel Davids"male42.0000000024431013.000000                    S
+15102"Bateman; Rev. Robert James"male51.00000000S.O.P. 116612.525000                    S
+
+
+14902"Navratil; Mr. Michel (""Louis M Hoffman"")"male36.5000000223008026.000000F2                  S
+15002"Byles; Rev. Thomas Roussel Davids"male42.0000000024431013.000000                    S
+15102"Bateman; Rev. Robert James"male51.00000000S.O.P. 116612.525000                    S

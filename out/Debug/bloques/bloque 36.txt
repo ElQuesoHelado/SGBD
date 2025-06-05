@@ -1,0 +1,60 @@
+Next_page_id: 37 N_registers: 7 Free_space/capacity: 6/399
+free_space_offset: 117 # Slots: 19
+ |1|97|1903|
+|0|104|1799|
+|0|95|1704|
+|1|100|1604|
+|0|90|1514|
+|1|107|1407|
+|0|98|1309|
+|0|108|1201|
+|0|90|1111|
+|1|94|1017|
+|0|101|916|
+|0|106|810|
+|0|105|705|
+|1|104|601|
+|0|94|507|
+|0|104|403|
+|1|100|303|
+|1|98|205|
+|0|88|117|
+|
+Superficie: 5 Track: 1 Sector: 4
+64211"Sagesser; Mlle. Emma"female24.00000000PC 1747769.300000B35                 C
+
+
+
+
+64611"Harper; Mr. Henry Sleeper"male48.00000010PC 1757276.729200D33                 C
+
+
+
+Superficie: 4 Track: 1 Sector: 4
+64811"Simonius-Blumer; Col. Oberst Alfons"male56.000000001321335.500000A26                 C
+
+
+
+
+
+
+65212"Doling; Miss. Elsie"female18.0000000123191923.000000                    S
+
+
+
+Superficie: 3 Track: 1 Sector: 4
+
+
+
+
+65602"Hickman; Mr. Leonard Mark"male24.00000020S.O.C. 1487973.500000                    S
+
+
+
+
+
+Superficie: 2 Track: 1 Sector: 4
+65902"Eitemiller; Mr. George Floyd"male23.000000002975113.000000                    S
+66001"Newell; Mr. Arthur Webster"male58.0000000235273113.275000D48                 C
+
+

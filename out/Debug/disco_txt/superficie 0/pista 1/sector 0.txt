@@ -1,0 +1,15 @@
+51912"Angle; Mrs. William A (Florence ""Mary"" Agnes Hughes)"female36.0000001022687526.000000                    S
+52003"Pavlovic; Mr. Stefo"male32.000000003492427.895800                    S
+52111"Perreault; Miss. Anne"female30.000000001274993.500000B73                 S
+52203"Vovk; Mr. Janko"male22.000000003492527.895800                    S
+52303"Lahoud; Mr. Sarkis"male0.0000000026247.225000                    C
+52411"Hippach; Mrs. Louis Albert (Ida Sophia Fischer)"female44.0000000111136157.979200B18                 C
+51912"Angle; Mrs. William A (Florence ""Mary"" Agnes Hughes)"female36.0000001022687526.000000                    S
+
+
+52111"Perreault; Miss. Anne"female30.000000001274993.500000B73                 S
+
+
+
+
+52411"Hippach; Mrs. Louis Albert (Ida Sophia Fischer)"female44.0000000111136157.979200B18                 C

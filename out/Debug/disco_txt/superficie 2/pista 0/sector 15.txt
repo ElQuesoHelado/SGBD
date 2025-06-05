@@ -1,0 +1,14 @@
+39213"Jansson; Mr. Carl Olof"male21.000000003500347.795800                    S
+39303"Gustafsson; Mr. Johan Birger"male28.0000002031012777.925000                    S
+39411"Newell; Miss. Marjorie"female23.0000001035273113.275000D36                 C
+39513"Sandstrom; Mrs. Hjalmar (Agnes Charlotta Bengtsson)"female24.00000002PP 954916.700000G6                  S
+39603"Johansson; Mr. Erik"male22.000000003500527.795800                    S
+
+
+
+
+39411"Newell; Miss. Marjorie"female23.0000001035273113.275000D36                 C
+
+
+
+

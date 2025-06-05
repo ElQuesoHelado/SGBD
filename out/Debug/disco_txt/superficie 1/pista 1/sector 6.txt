@@ -1,0 +1,13 @@
+68011"Cardeza; Mr. Thomas Drake Martinez"male36.00000001PC 17755512.329200B51 B53 B55         C
+68103"Peters; Miss. Katie"female0.000000003309358.137500                    Q
+68211"Hassab; Mr. Hammad"male27.00000000PC 1757276.729200D49                 C
+68303"Olsvigen; Mr. Thor Anderson"male20.0000000065639.225000                    S
+68403"Goodwin; Mr. Charles Edward"male14.00000052CA 214446.900000                    S
+68011"Cardeza; Mr. Thomas Drake Martinez"male36.00000001PC 17755512.329200B51 B53 B55         C
+
+
+68211"Hassab; Mr. Hammad"male27.00000000PC 1757276.729200D49                 C
+
+
+
+

@@ -1,0 +1,10 @@
+80803"Pettersson; Miss. Ellen Natalia"female18.000000003470877.775000                    S
+80902"Meyer; Mr. August"male39.0000000024872313.000000                    S
+81011"Chambers; Mrs. Norman Campbell (Bertha Griggs)"female33.0000001011380653.100000E8                  S
+81103"Alexander; Mr. William"male26.0000000034747.887500                    S
+
+
+80902"Meyer; Mr. August"male39.0000000024872313.000000                    S
+81011"Chambers; Mrs. Norman Campbell (Bertha Griggs)"female33.0000001011380653.100000E8                  S
+
+

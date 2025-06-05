@@ -1,0 +1,56 @@
+Next_page_id: 34 N_registers: 8 Free_space/capacity: 60/404
+free_space_offset: 166 # Slots: 18
+ |1|104|1896|
+|0|93|1803|
+|0|96|1707|
+|0|104|1603|
+|1|121|1482|
+|0|101|1381|
+|0|93|1288|
+|1|101|1187|
+|0|100|1087|
+|1|101|986|
+|0|90|896|
+|0|88|808|
+|1|121|687|
+|1|126|561|
+|0|93|468|
+|1|98|370|
+|0|98|272|
+|1|106|166|
+|
+Superficie: 5 Track: 1 Sector: 2
+58811"Frolicher-Stehli; Mr. Maxmillian"male60.000000111356779.200000B41                 C
+
+
+
+
+
+
+
+Superficie: 4 Track: 1 Sector: 2
+59211"Stephenson; Mrs. Walter Bertram (Martha Eustis)"female52.000000103694778.266700D20                 C
+
+
+
+
+59502"Chapman; Mr. John Henry"male37.00000010SC/AH 2903726.000000                    S
+
+
+59712"Leitch; Miss. Jessie Wills"female0.0000000024872733.000000                    S
+
+Superficie: 3 Track: 1 Sector: 2
+
+
+
+
+60011"Duff Gordon; Sir. Cosmo Edmund (""Mr Morgan"")"male49.00000010PC 1748556.929200A20                 C
+60112"Jacobsohn; Mrs. Sidney Samuel (Amy Frances Christy)"female24.0000002124384727.000000                    S
+
+
+
+Superficie: 2 Track: 1 Sector: 2
+60301"Harrington; Mr. Charles H"male0.0000000011379642.400000                    S
+
+
+60511"Homer; Mr. Harry (""Mr E Haven"")"male35.0000000011142626.550000                    C

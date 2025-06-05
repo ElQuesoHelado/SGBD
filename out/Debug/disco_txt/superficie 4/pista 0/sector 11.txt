@@ -1,0 +1,6 @@
+31211"Ryerson; Miss. Emily Borie"female18.00000022PC 17608262.375000B57 B59 B63 B66     C
+31302"Lahtinen; Mrs. William (Anna Sylfven)"female26.0000001125065126.000000                    S
+31802"Moraweck; Dr. Ernest"male54.000000002901114.000000                    S
+31211"Ryerson; Miss. Emily Borie"female18.00000022PC 17608262.375000B57 B59 B63 B66     C
+31302"Lahtinen; Mrs. William (Anna Sylfven)"female26.0000001125065126.000000                    S
+31802"Moraweck; Dr. Ernest"male54.000000002901114.000000                    S

@@ -1,0 +1,13 @@
+81703"Heininen; Miss. Wendla Maria"female23.00000000STON/O2. 31012907.925000                    S
+81802"Mallet; Mr. Albert"male31.00000011S.C./PARIS 207937.004200                    C
+81903"Holm; Mr. John Fredrik Alexander"male43.00000000C 70756.450000                    S
+82003"Skoog; Master. Karl Thorsten"male10.0000003234708827.900000                    S
+82111"Hays; Mrs. Charles Melville (Clara Jennings Gregg)"female52.000000111274993.500000B69                 S
+
+
+81802"Mallet; Mr. Albert"male31.00000011S.C./PARIS 207937.004200                    C
+
+
+
+
+82111"Hays; Mrs. Charles Melville (Clara Jennings Gregg)"female52.000000111274993.500000B69                 S

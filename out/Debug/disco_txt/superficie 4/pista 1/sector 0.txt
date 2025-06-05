@@ -1,0 +1,12 @@
+53811"LeRoy; Miss. Bertha"female30.00000000PC 17761106.425000                    C
+53903"Risien; Mr. Samuel Beard"male0.0000000036449814.500000                    S
+54011"Frolicher; Miss. Hedwig Margaritha"female22.000000021356849.500000B39                 C
+54111"Crosby; Miss. Harriet R"female36.00000002WE/P 573571.000000B22                 S
+54203"Andersson; Miss. Ingeborg Constanzia"female9.0000004234708231.275000                    S
+53811"LeRoy; Miss. Bertha"female30.00000000PC 17761106.425000                    C
+
+
+54011"Frolicher; Miss. Hedwig Margaritha"female22.000000021356849.500000B39                 C
+54111"Crosby; Miss. Harriet R"female36.00000002WE/P 573571.000000B22                 S
+
+

@@ -1,0 +1,12 @@
+74003"Nankoff; Mr. Minko"male0.000000003492187.895800                    S
+74111"Hawksford; Mr. Walter James"male0.000000001698830.000000D45                 S
+74201"Cavendish; Mr. Tyrell William"male36.000000101987778.850000C46                 S
+74311"Ryerson; Miss. Susan Parker ""Suzette"""female21.00000022PC 17608262.375000B57 B59 B63 B66     C
+74403"McNamee; Mr. Neal"male24.0000001037656616.100000                    S
+
+
+74111"Hawksford; Mr. Walter James"male0.000000001698830.000000D45                 S
+74201"Cavendish; Mr. Tyrell William"male36.000000101987778.850000C46                 S
+74311"Ryerson; Miss. Susan Parker ""Suzette"""female21.00000022PC 17608262.375000B57 B59 B63 B66     C
+
+

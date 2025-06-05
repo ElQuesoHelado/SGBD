@@ -1,0 +1,15 @@
+20913"Carr; Miss. Helen ""Ellen"""female16.000000003672317.750000                    Q
+21011"Blank; Mr. Henry"male40.0000000011227731.000000A31                 C
+21103"Ali; Mr. Ahmed"male24.00000000SOTON/O.Q. 31013117.050000                    S
+21212"Cameron; Miss. Clear Annie"female35.00000000F.C.C. 1352821.000000                    S
+21303"Perkin; Mr. John Henry"male22.00000000A/5 211747.250000                    S
+21402"Givard; Mr. Hans Kristensen"male30.0000000025064613.000000                    S
+
+
+21011"Blank; Mr. Henry"male40.0000000011227731.000000A31                 C
+
+
+21212"Cameron; Miss. Clear Annie"female35.00000000F.C.C. 1352821.000000                    S
+
+
+21402"Givard; Mr. Hans Kristensen"male30.0000000025064613.000000                    S

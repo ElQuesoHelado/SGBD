@@ -1,0 +1,7 @@
+43901"Fortune; Mr. Mark"male64.0000001419950263.000000C23 C25 C27         S
+44002"Kvillner; Mr. Johan Henrik Johannesson"male31.00000000C.A. 1872310.500000                    S
+51013"Lang; Mr. Fang"male26.00000000160156.495800                    S
+43901"Fortune; Mr. Mark"male64.0000001419950263.000000C23 C25 C27         S
+44002"Kvillner; Mr. Johan Henrik Johannesson"male31.00000000C.A. 1872310.500000                    S
+
+

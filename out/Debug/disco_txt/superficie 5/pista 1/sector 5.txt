@@ -1,0 +1,15 @@
+69011"Madill; Miss. Georgette Alexandra"female15.0000000124160211.337500B5                  S
+69111"Dick; Mr. Albert Adrian"male31.000000101747457.000000B20                 S
+69213"Karun; Miss. Manca"female4.0000000134925613.416700                    C
+69313"Lam; Mr. Ali"male0.00000000160156.495800                    S
+69403"Saad; Mr. Khalil"male25.0000000026727.225000                    C
+69501"Weir; Col. John"male60.0000000011380026.550000                    S
+69011"Madill; Miss. Georgette Alexandra"female15.0000000124160211.337500B5                  S
+69111"Dick; Mr. Albert Adrian"male31.000000101747457.000000B20                 S
+
+
+
+
+
+
+69501"Weir; Col. John"male60.0000000011380026.550000                    S

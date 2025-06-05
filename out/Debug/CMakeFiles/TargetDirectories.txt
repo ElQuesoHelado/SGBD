@@ -1,0 +1,6 @@
+/home/josealva/Projects/BD2/megatron/out/Debug/CMakeFiles/megatron.dir
+/home/josealva/Projects/BD2/megatron/out/Debug/CMakeFiles/disk_manager.dir
+/home/josealva/Projects/BD2/megatron/out/Debug/CMakeFiles/runner.dir
+/home/josealva/Projects/BD2/megatron/out/Debug/CMakeFiles/tests.dir
+/home/josealva/Projects/BD2/megatron/out/Debug/CMakeFiles/edit_cache.dir
+/home/josealva/Projects/BD2/megatron/out/Debug/CMakeFiles/rebuild_cache.dir

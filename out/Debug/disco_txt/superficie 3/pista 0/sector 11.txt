@@ -1,0 +1,11 @@
+27703"Lindblom; Miss. Augusta Charlotta"female45.000000003470737.750000                    S
+27802"Parkes; Mr. Francis ""Frank"""male0.000000002398530.000000                    S
+28013"Abbott; Mrs. Stanton (Rosa Hunt)"female35.00000011C.A. 267320.250000                    S
+28103"Duane; Mr. Frank"male65.000000003364397.750000                    Q
+
+
+27802"Parkes; Mr. Francis ""Frank"""male0.000000002398530.000000                    S
+
+
+
+
