@@ -14,12 +14,12 @@
 //   return get_zeros_sequence_bitset(free_space_bitmap, FIRST_DBMS_LBA, FIRST_STORABLE_LBA, n_sectors);
 // }
 
-size_t disk_manager::get_free_logic_sectors_storable(size_t n_sectors) {
+size_t DiskManager::get_free_logic_sectors_storable(size_t n_sectors) {
   return get_zeros_sequence_bitset(free_space_bitmap, 0, free_space_bitmap.size(), n_sectors);
 }
 
 // Busca un bloque libre
-uint32_t disk_manager::get_free_block() {
+uint32_t DiskManager::get_free_block() {
   for (size_t i{}; i < TOTAL_BLOCKS; ++i) {
     if (free_block_map.is_block_free(i))
       return i;
@@ -31,7 +31,7 @@ uint32_t disk_manager::get_free_block() {
 //   return get_zeros_sequence_bitset(free_space_bitmap, 0, free_space_bitmap.size(), n_sectors);
 // }
 
-uint32_t disk_manager::reserve_free_block() {
+uint32_t DiskManager::reserve_free_block() {
   uint32_t block_id = get_free_block();
 
   free_block_map.set_block_used(block_id);
@@ -39,7 +39,7 @@ uint32_t disk_manager::reserve_free_block() {
   return block_id;
 }
 
-void disk_manager::store_fsb() {
+void DiskManager::store_fsb() {
   size_t n_bytes = (TOTAL_SECTORS + CHAR_BIT - 1) / CHAR_BIT;
   std::vector<unsigned char> bytes(n_bytes);
 
@@ -58,7 +58,7 @@ void disk_manager::store_fsb() {
   // write_block(bytes, 0);
 }
 
-void disk_manager::load_fsb() {
+void DiskManager::load_fsb() {
   size_t n_bytes = (TOTAL_SECTORS + CHAR_BIT - 1) / CHAR_BIT;
   std::vector<unsigned char> bytes(n_bytes);
 
@@ -82,9 +82,9 @@ void disk_manager::load_fsb() {
   boost::from_block_range(bytes.begin(), bytes.end(), free_space_bitmap);
 }
 
-void disk_manager::new_disk(std::string new_disk_name, size_t surfaces,
-                            size_t tracks_per_surf, size_t sectors_per_track,
-                            size_t sector_size, size_t sectors_per_block) {
+void DiskManager::new_disk(std::string new_disk_name, size_t surfaces,
+                           size_t tracks_per_surf, size_t sectors_per_track,
+                           size_t sector_size, size_t sectors_per_block) {
   SURFACES = surfaces;
   TRACKS_PER_SURFACE = tracks_per_surf;
   SECTORS_PER_TRACK = sectors_per_track;
@@ -136,7 +136,7 @@ void disk_manager::new_disk(std::string new_disk_name, size_t surfaces,
   create_free_block_map();
 }
 
-void disk_manager::load_disk(std::string load_disk_name) {
+void DiskManager::load_disk(std::string load_disk_name) {
   // Caso se haga un switch a otro disco, se tiene que guardar su FSB
   // TODO: check si de verdad valida que se tenia cargado un disco valido
   if (DISK_CAPACITY > 0 && TOTAL_SECTORS > 0 && free_space_bitmap.size() == TOTAL_SECTORS)
@@ -188,7 +188,7 @@ void disk_manager::load_disk(std::string load_disk_name) {
   create_free_block_map();
 }
 
-disk_manager::disk_manager() {
+DiskManager::DiskManager() {
   // // Creamos un disco vacio
   // if (!std::filesystem::exists(DISK_NAME)) {
   //   std::ofstream(DISK_NAME, std::ios::binary).close();
@@ -239,7 +239,7 @@ disk_manager::disk_manager() {
   //   std::cout << "Error al abrir archivo disco" << std::endl;
 }
 
-disk_manager::~disk_manager() {
+DiskManager::~DiskManager() {
   // Se guarda free_space_bitmap
   store_fsb();
 }

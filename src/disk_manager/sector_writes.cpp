@@ -4,7 +4,7 @@
 
 // Solo escribe un sector en disco
 // Asume que ha sido posicionado previamente en un lugar valido
-void disk_manager::seek_write_sector(unsigned char *sector, size_t logic_sector) {
+void DiskManager::seek_write_sector(unsigned char *sector, size_t logic_sector) {
   logic_sector_move_CHS(logic_sector);
   // written_bytes_file << logic_sector << "   " << disk_file.tellp() << "    "
   //                    << cur_cylinder << " " << cur_head << " " << cur_sector << std::endl;
@@ -24,7 +24,7 @@ void disk_manager::seek_write_sector(unsigned char *sector, size_t logic_sector)
 
 // Escribe un sector
 // @note Caso sea menor a size de sector, se rellena, caso mayor, throw
-size_t disk_manager::write_sector(std::vector<unsigned char> &bytes) {
+size_t DiskManager::write_sector(std::vector<unsigned char> &bytes) {
   size_t free_sector = get_free_logic_sectors_storable(1);
 
   write_sector(bytes, free_sector);
@@ -32,7 +32,7 @@ size_t disk_manager::write_sector(std::vector<unsigned char> &bytes) {
   return free_sector;
 }
 
-void disk_manager::write_sector(std::vector<unsigned char> &bytes, size_t logic_sector) {
+void DiskManager::write_sector(std::vector<unsigned char> &bytes, size_t logic_sector) {
   if (bytes.size() < SECTOR_SIZE)
     bytes.resize(SECTOR_SIZE);
 
@@ -45,7 +45,7 @@ void disk_manager::write_sector(std::vector<unsigned char> &bytes, size_t logic_
   seek_write_sector(bytes.data(), logic_sector);
 }
 
-void disk_manager::write_sector_txt(std::string str, size_t logic_sector) {
+void DiskManager::write_sector_txt(std::string str, size_t logic_sector) {
   size_t cilinder = logic_sector / (SURFACES * SECTORS_PER_TRACK),
          head = (logic_sector / SECTORS_PER_TRACK) % SURFACES,
          sector = (logic_sector % SECTORS_PER_TRACK);
@@ -63,7 +63,7 @@ void disk_manager::write_sector_txt(std::string str, size_t logic_sector) {
   file.close();
 }
 
-void disk_manager::write_block_txt(std::string str, uint32_t block_id) {
+void DiskManager::write_block_txt(std::string str, uint32_t block_id) {
   std::string path_txt = "bloques/bloque " + std::to_string(block_id) + ".txt";
 
   std::fstream file(path_txt, std::ios::out | std::ios::app);

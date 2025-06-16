@@ -2,7 +2,7 @@
 #include <cstddef>
 #include <cstdint>
 
-void disk_manager::write_block(std::vector<unsigned char> &block_bytes, uint32_t block_id) {
+void DiskManager::write_block(std::vector<unsigned char> &block_bytes, uint32_t block_id) {
   if (block_bytes.size() != BLOCK_SIZE && block_id >= free_block_map.blocks.size())
     throw std::runtime_error("Bloques y sectores a escribir no concuerdan");
 
@@ -14,7 +14,7 @@ void disk_manager::write_block(std::vector<unsigned char> &block_bytes, uint32_t
   free_block_map.set_block_used(block_id);
 }
 
-uint32_t disk_manager::write_block(std::vector<unsigned char> &block_bytes) {
+uint32_t DiskManager::write_block(std::vector<unsigned char> &block_bytes) {
   if (block_bytes.size() != BLOCK_SIZE)
     throw std::runtime_error("Bloques y sectores a escribir no concuerdan");
 

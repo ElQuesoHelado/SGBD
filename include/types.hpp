@@ -5,7 +5,9 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
+#include <iostream>
 #include <iterator>
+#include <sstream>
 #include <string>
 #include <string_view>
 #include <tuple>
@@ -140,12 +142,73 @@ struct overload : Ts... {
   using Ts::operator()...;
 };
 
-inline std::string SQL_type_to_string(SQL_type &field) {
-  return std::visit(overload{
-                        [](StringCastable auto &arg) { return std::to_string(arg); },
-                        [](StringWrapper auto &arg) { return arg.value; }},
-                    field);
+// inline std::string SQL_type_to_string(SQL_type &field) {
+//   return std::visit(overload{
+//                         [](StringCastable auto &arg) { return std::to_string(arg); },
+//                         [](StringWrapper auto &arg) { return arg.value; }},
+//                     field);
+// }
+
+inline std::string SQL_type_to_string(const SQL_type &var) {
+  std::ostringstream oss;
+  // Configuración segura para todos los tipos
+  oss << std::dec << std::noshowbase << std::fixed;
+
+  std::visit([&oss](const auto &v) {
+    using T = std::decay_t<decltype(v)>;
+    if constexpr (std::is_same_v<T, CharType> || std::is_same_v<T, VarcharType>) {
+      oss << v.value;
+    } else {
+      oss << v; // Respeta el formato seguro configurado arriba
+    }
+  },
+             var);
+
+  return oss.str();
 }
+
+// inline std::string SQL_type_to_string(SQL_type &field) {
+//   return std::visit([](auto &&arg) -> std::string {
+//     using T = std::decay_t<decltype(arg)>;
+//
+//     if constexpr (std::is_same_v<T, CharType> || std::is_same_v<T, VarcharType>) {
+//       // std::cout << "debug1" << std::endl;
+//       return arg.value;
+//     } else if constexpr (std::is_same_v<T, int8_t> || std::is_same_v<T, uint8_t>) {
+//       // std::cout << "debug2" << std::endl;
+//
+//       return std::to_string(static_cast<int>(arg));
+//     } else if constexpr (std::is_integral_v<T> || std::is_floating_point_v<T>) {
+//
+//       return std::to_string(arg);
+//     } else {
+//       // std::cerr << "Tipo no manejado: " << typeid(T).name() << "\n";
+//       return "[unknown]";
+//     }
+//   },
+//                     field);
+// }
+
+// inline std::string SQL_type_to_string(const SQL_type &var) {
+//   return std::visit([](const auto &value) -> std::string {
+//     using T = std::decay_t<decltype(value)>;
+//
+//     if constexpr (std::is_same_v<T, CharType>) {
+//       return value.value; // O puedes formatearlo: return "CHAR[" + std::to_string(value.length) + "]:'" + value.value + "'";
+//     } else if constexpr (std::is_same_v<T, VarcharType>) {
+//       return value.value; // O: return "VARCHAR[" + std::to_string(value.max_length) + "]:'" + value.value + "'";
+//     } else if constexpr (std::is_integral_v<T>) {
+//       return std::to_string(value); // Para enteros
+//     } else if constexpr (std::is_floating_point_v<T>) {
+//       std::string str = std::to_string(value);
+//       // Eliminar ceros innecesarios después del punto
+//       return str;
+//     } else {
+//       static_assert("Tipo no soportado en SQL_type_to_string");
+//     }
+//   },
+//                     var);
+// }
 
 // TODO: cambiar a optional caso sea nulo
 inline SQL_type string_to_sql_type(std::string input, uint8_t type, uint16_t size) {

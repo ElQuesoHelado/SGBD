@@ -41,10 +41,10 @@ void Megatron::select(std::string &table_name, std::string &col_name, std::strin
     select_slotted(table_metadata, col_index, cond_val);
 }
 
-void Megatron::select_fixed(serial::TableMetadata &table_metadata, 
+void Megatron::select_fixed(serial::TableMetadata &table_metadata,
                             size_t col_index, SQL_type &cond_val) {
   // Se iteran por todas las paginas
-  size_t curr_page_id = table_metadata.first_page_id;
+  size_t curr_page_id = table_metadata.first_page_id, n_regs{};
   while (curr_page_id != disk.NULL_BLOCK) {
     std::vector<unsigned char> page_bytes;
     disk.read_block(page_bytes, curr_page_id);
@@ -59,6 +59,7 @@ void Megatron::select_fixed(serial::TableMetadata &table_metadata,
 
     fixed_data_header = serial::deserialize_fixed_data_header(page_bytes_it);
     for (size_t i{}; i < fixed_data_header.max_n_regs; ++i) {
+
       if (fixed_data_header.free_register_bitmap.at(i)) { // Registro existe
         auto register_bytes = get_ith_register_bytes(table_metadata, page_header, fixed_data_header, page_bytes, i);
         auto register_values = deserialize_register(table_metadata, register_bytes);
@@ -67,6 +68,7 @@ void Megatron::select_fixed(serial::TableMetadata &table_metadata,
         if (col_index < table_metadata.n_cols && register_values[col_index] != cond_val)
           continue;
 
+        n_regs++;
         for (auto &v : register_values)
           std::cout << SQL_type_to_string(v) << " | ";
 
@@ -76,11 +78,12 @@ void Megatron::select_fixed(serial::TableMetadata &table_metadata,
 
     curr_page_id = page_header.next_block_id;
   }
+  std::cout << "Numero de registros: " << n_regs << std::endl;
 }
 
 void Megatron::select_slotted(serial::TableMetadata &table_metadata, size_t col_index, SQL_type &cond_val) {
   // Se iteran por todas las paginas
-  size_t curr_page_id = table_metadata.first_page_id;
+  size_t curr_page_id = table_metadata.first_page_id, n_regs{};
   while (curr_page_id != disk.NULL_BLOCK) {
     std::vector<unsigned char> page_bytes;
     disk.read_block(page_bytes, curr_page_id);
@@ -96,7 +99,7 @@ void Megatron::select_slotted(serial::TableMetadata &table_metadata, size_t col_
     slotted_data_header = serial::deserialize_slotted_data_header(page_bytes_it);
     for (size_t i{}; i < slotted_data_header.n_slots; ++i) {
       if (slotted_data_header.slots[i].is_used) { // Registro existe
-        auto register_bytes = get_ith_register_bytes(table_metadata, page_header, 
+        auto register_bytes = get_ith_register_bytes(table_metadata, page_header,
                                                      slotted_data_header, page_bytes, i);
         auto register_values = deserialize_register(table_metadata, register_bytes);
 
@@ -104,6 +107,7 @@ void Megatron::select_slotted(serial::TableMetadata &table_metadata, size_t col_
         if (col_index < table_metadata.n_cols && register_values[col_index] != cond_val)
           continue;
 
+        n_regs++;
         for (auto &v : register_values)
           std::cout << SQL_type_to_string(v) << " | ";
 
@@ -113,4 +117,5 @@ void Megatron::select_slotted(serial::TableMetadata &table_metadata, size_t col_
 
     curr_page_id = page_header.next_block_id;
   }
+  std::cout << "Numero de registros: " << n_regs << std::endl;
 }

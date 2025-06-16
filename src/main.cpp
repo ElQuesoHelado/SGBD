@@ -4,7 +4,7 @@
 int main(int argc, char *argv[]) {
   Megatron megatron;
   // //
-  // megatron.new_disk("disco", 6, 20, 50, 1000, 4);
+  // megatron.new_disk("disco", 2, 5, 5, 120, 2);
   // //
   // megatron.load_disk("disco");
   // //
@@ -42,20 +42,24 @@ int main(int argc, char *argv[]) {
   // megatron.create_table("titanic", columns);
   // // megatron.create_table("titanic_var", columns_var);
   // // //
-  // // // megatron.create_table("chica", columns);
   // // //
-  // // // std::vector<std::pair<std::string, std::string>> columns_var = {{"col1", "INTEGER"},
-  // // //                                                                 {"col2", "INTEGER"},
-  // // //                                                                 {"col3", "INTEGER"},
-  // // //                                                                 {"col4", "VARCHAR(100)"},
-  // // //                                                                 {"col5", "VARCHAR(20)"}};
+  // std::vector<std::pair<std::string, std::string>> columns = {{"col1", "INTEGER"},
+  //                                                             {"col2", "INTEGER"},
+  //                                                             {"col3", "INTEGER"},
+  //                                                             {"col4", "CHAR(100)"},
+  //                                                             {"col5", "CHAR(20)"}};
+  // std::vector<std::pair<std::string, std::string>> columns_var = {{"col1", "INTEGER"},
+  //                                                                 {"col2", "INTEGER"},
+  //                                                                 {"col3", "INTEGER"},
+  //                                                                 {"col4", "VARCHAR(100)"},
+  //                                                                 {"col5", "VARCHAR(20)"}};
+  // megatron.create_table("chica", columns);
   // // //
-  // // // megatron.create_table("chica_var", columns_var);
+  // // megatron.create_table("chica_var", columns_var);
   // // //
   // // // // serial::TableMetadata table_metadata;
   // // // // std::cout << megatron.search_table("tabla2", table_metadata) << std::endl;
   // // // // megatron.load_disk("disco_ejemplo");
-  // // // megatron.load_CSV("csv/chica.csv", "chica");
   // // // megatron.load_CSV("csv/chica.csv", "chica_var");
   // // // megatron.load_CSV("csv/titanic_chica.csv", "titanic");
   // megatron.load_CSV("csv/titanic.csv", "titanic");
@@ -65,7 +69,15 @@ int main(int argc, char *argv[]) {
   // // //
   // // // // megatron.run();
   // // //
-  // std::string name1 = "titanic", name2 = "titanic_var", name3 = "chica_var", name4 = "pasajero_var", empty = "";
+  // std::string name1 = "titanic", name2 = "titanic_var", name3 = "housing",
+  //             name4 = "pasajero_var", empty = "", chica = "chica", col3 = "col3", cond = "100";
+  //
+  // megatron.load_CSV("csv/chica.csv", chica);
+  //
+  // megatron.delete_reg(chica, col3, cond);
+  //
+  // megatron.load_CSV("csv/chica.csv", chica);
+
   // // //
   // std::string col = "Pclass", value = "3";
   //
@@ -74,10 +86,10 @@ int main(int argc, char *argv[]) {
   // megatron.load_CSV("csv/titanic.csv", "titanic");
   // // megatron.delete_reg(name2, col, value);
   //
-  // megatron.select(name1, empty, empty);
+  // megatron.select(name3, empty, empty);
   // megatron.select(name2, empty, empty);
   // megatron.select(name3, col, value);
-  // megatron.select(name4, empty, empty);
+  // megatron.select(chica, empty, empty);
   megatron.run();
   return 0;
 }

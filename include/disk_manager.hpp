@@ -9,21 +9,18 @@
 // #include <sector>
 
 /*
+ * Representa toda operacion relacionada a disco
  * Toda operacion se realiza con el modelo Cylinder Head(superficie) Sector
  */
-class disk_manager {
+class DiskManager {
 
   size_t cur_head{}, cur_cylinder{}, cur_sector{};
 
   std::fstream curr_sector_file{}, curr_sector_txt_file{};
 
-  std::ofstream written_bytes_file, read_bytes_file;
-
   // ===========
   // Manejo disco
   // ===========
-
-  void create_disk_structure(bool bin);
 
   size_t get_zeros_sequence_bitset(boost::dynamic_bitset<unsigned char> &set, size_t begin, size_t end, size_t n);
   void store_fsb();
@@ -48,6 +45,8 @@ public:
   std::string disk_name, disk_name_txt;
 
   FreeBlockMap free_block_map;
+
+  void create_disk_structure(bool bin);
 
   // Representacion LBA(Logical Block Addresing)
   //  Cargado en memoria para busquedas rapidas, luego se guarda en disco
@@ -161,11 +160,13 @@ public:
 
   void clear_blocks_folder();
 
+  size_t calculate_free_space();
+
   /*
    * Como tal carga el disco actual, caso exista
    * TODO: disco en estado invalido
    */
-  disk_manager();
+  DiskManager();
 
-  ~disk_manager();
+  ~DiskManager();
 };

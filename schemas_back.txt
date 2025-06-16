@@ -1,6 +1,6 @@
-titanic#PassengerId#INTEGER#Survived#INTEGER#Pclass#INTEGER#Name#CHAR(100)#Sex#CHAR(20)#Age#DOUBLE#SibSp#INTEGER#Parch#INTEGER#Ticket#CHAR(20)#Fare#DOUBLE#Cabin#CHAR(20)#Embarked#CHAR(20)
+titanic#PassengerId#INTEGER#Survived#INTEGER#Pclass#INTEGER#Name#CHAR(100)#Sex#CHAR(10)#Age#DOUBLE#SibSp#INTEGER#Parch#INTEGER#Ticket#CHAR(20)#Fare#DOUBLE#Cabin#CHAR(5)#Embarked#CHAR(2)
 
-titanic_var#PassengerId#INTEGER#Survived#INTEGER#Pclass#INTEGER#Name#VARCHAR(100)#Sex#VARCHAR(20)#Age#DOUBLE#SibSp#INTEGER#Parch#INTEGER#Ticket#VARCHAR(20)#Fare#DOUBLE#Cabin#CHAR(20)#Embarked#VARCHAR(20)
+titanic_var#PassengerId#INTEGER#Survived#INTEGER#Pclass#INTEGER#Name#VARCHAR(100)#Sex#VARCHAR(10)#Age#DOUBLE#SibSp#INTEGER#Parch#INTEGER#Ticket#VARCHAR(20)#Fare#DOUBLE#Cabin#CHAR(5)#Embarked#VARCHAR(2)
 
 chica#col1#INTEGER#col2#INTEGER#col3#INTEGER#col4#CHAR(100)#col5#CHAR(20)
 chica_var#col1#INTEGER#col2#INTEGER#col3#INTEGER#col4#VARCHAR(100)#col5#CHAR(20)

@@ -12,14 +12,16 @@
 #include <vector>
 
 using namespace std;
+
+// FIXME: ?La causa de problemas en sqltype?
 void clearScreen() {
   system("clear");
 }
 
 void pauseAndReturn() {
-  cout << "\nENTER para regresar ...";
-  // cin.ignore(numeric_limits<streamsize>::max(), '\n');
-  cin.sync();
+  cout << "\nENTER para regresar ..." << flush;
+  cin.ignore(numeric_limits<streamsize>::max(), '\n');
+  // cin.sync();
   cin.get();
 }
 
@@ -168,12 +170,11 @@ void Megatron::ui_select_table() {
   cout << "Nombre de la tabla a consultar: ";
   getline(cin, table_name);
 
-  // Llamada a función respetando tipos
-  // selectTablaFunc(tabla);
   std::string cond = "", val = "";
+
+  std::cout << std::dec << std::resetiosflags(std::ios_base::floatfield);
   select(table_name, cond, val);
 
-  cout << "\"Mostrando resultados o tabla no existe\"\n";
   pauseAndReturn();
 }
 
@@ -269,6 +270,30 @@ void Megatron::ui_delete_data() {
   pauseAndReturn();
 }
 
+void Megatron::ui_delete_nth() {
+  clearScreen();
+
+  try {
+    string table_name;
+    cout << "Nombre de la tabla: ";
+    getline(cin, table_name);
+    cout << "N-esimo registro a eliminar: ";
+    size_t nth_reg;
+    if (!(std::cin >> nth_reg))
+      throw std::invalid_argument("Número de superficies inválido");
+
+    delete_nth_reg(table_name, nth_reg);
+
+  } catch (const std::exception &e) {
+    std::cerr << "\nError: " << e.what() << "\n";
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  }
+
+  cout << "\"Registros eliminados (si existían)\"\n";
+  pauseAndReturn();
+}
+
 void Megatron::ui_load_csv() {
   clearScreen();
   string csv_path, table_name;
@@ -298,6 +323,42 @@ void Megatron::ui_load_n_regs_csv() {
   pauseAndReturn();
 }
 
+void Megatron::ui_find_reg() {
+  clearScreen();
+
+  try {
+    string table_name;
+    cout << "Nombre de la tabla: ";
+    getline(cin, table_name);
+    cout << "N-esimo registro a encontrar: ";
+    size_t nth_reg;
+    if (!(std::cin >> nth_reg))
+      throw std::invalid_argument("Número de superficies inválido");
+
+    find_nth_reg(table_name, nth_reg);
+
+  } catch (const std::exception &e) {
+    std::cerr << "\nError: " << e.what() << "\n";
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  }
+
+  cout << "\"Registros eliminados (si existían)\"\n";
+  pauseAndReturn();
+}
+
+void Megatron::ui_show_table_metadata() {
+  clearScreen();
+
+  string table_name;
+  cout << "Nombre de la tabla: ";
+  getline(cin, table_name);
+
+  show_table_metadata(table_name);
+
+  pauseAndReturn();
+}
+
 void mostrarMenu() {
   cout << "=== Gestor de Base de Datos ===\n";
   cout << "1. Cargar disco\n";
@@ -305,13 +366,16 @@ void mostrarMenu() {
   cout << "3. Crear tabla\n";
   cout << "4. Select *\n";
   cout << "5. Select con condición\n";
-  cout << "6. Insertar registro individual\n";
-  cout << "7. Modificar\n";
-  cout << "8. Eliminar\n";
-  cout << "9. Cargar CSV\n";
-  cout << "10. Cargar n datos desde CSV\n";
-  cout << "11. Mostrar specs de disco\n";
-  cout << "12. Translate disco\n";
-  cout << "13. Salir\n";
+  cout << "6. Ubicar registro\n";
+  cout << "7. Insertar registro individual\n";
+  cout << "8. Modificar\n";
+  cout << "9. Eliminar condicion\n";
+  cout << "10. Eliminar n-esimo registro\n";
+  cout << "11. Cargar CSV\n";
+  cout << "12. Cargar n datos desde CSV\n";
+  cout << "13. Mostrar specs de disco\n";
+  cout << "14. Mostrar metadata de tabla\n";
+  cout << "15. Translate disco\n";
+  cout << "16. Salir\n";
   cout << "Seleccione una opción: ";
 }

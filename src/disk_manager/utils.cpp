@@ -5,7 +5,17 @@
 #include <stdexcept>
 #include <string>
 
-size_t disk_manager::logic_sector_to_byte(size_t logic_sector) {
+size_t DiskManager::calculate_free_space() {
+  size_t free_space{};
+  for (size_t i{}; i < TOTAL_SECTORS; ++i) {
+    if (!free_space_bitmap.at(i))
+      free_space += SECTOR_SIZE;
+  }
+
+  return free_space;
+}
+
+size_t DiskManager::logic_sector_to_byte(size_t logic_sector) {
   size_t cilinder = logic_sector / (SURFACES * SECTORS_PER_TRACK),
          head = (logic_sector / SECTORS_PER_TRACK) % SURFACES,
          sector = (logic_sector % SECTORS_PER_TRACK);
@@ -13,7 +23,7 @@ size_t disk_manager::logic_sector_to_byte(size_t logic_sector) {
   return SURFACE_SIZE * (head) + TRACK_SIZE * (cilinder) + SECTOR_SIZE * sector;
 }
 
-std::string disk_manager::logic_sector_to_CHS(size_t logic_sector) {
+std::string DiskManager::logic_sector_to_CHS(size_t logic_sector) {
   size_t cilinder = logic_sector / (SURFACES * SECTORS_PER_TRACK),
          head = (logic_sector / SECTORS_PER_TRACK) % SURFACES,
          sector = (logic_sector % SECTORS_PER_TRACK);
@@ -28,8 +38,8 @@ std::string disk_manager::logic_sector_to_CHS(size_t logic_sector) {
  * Busca secuencia de 0's de size n consecutivos en subrango [begin, end)
  * Devuelve primer indice de secuencia
  */
-size_t disk_manager::get_zeros_sequence_bitset(boost::dynamic_bitset<unsigned char> &set,
-                                               size_t begin, size_t end, size_t n) {
+size_t DiskManager::get_zeros_sequence_bitset(boost::dynamic_bitset<unsigned char> &set,
+                                              size_t begin, size_t end, size_t n) {
   size_t seq_start{end}, n_left{n};
 
   for (size_t i{begin}; i < end; ++i) {
@@ -50,7 +60,7 @@ size_t disk_manager::get_zeros_sequence_bitset(boost::dynamic_bitset<unsigned ch
   return boost::dynamic_bitset<>::npos;
 }
 
-void disk_manager::create_disk_structure(bool bin) {
+void DiskManager::create_disk_structure(bool bin) {
   namespace fs = std::filesystem;
 
   std::string disk_name_used = disk_name;
@@ -101,7 +111,7 @@ void disk_manager::create_disk_structure(bool bin) {
 /*
  * Cada vez que se realiza un translate, se debe limpiar esta carpeta
  */
-void disk_manager::clear_blocks_folder() {
+void DiskManager::clear_blocks_folder() {
   namespace fs = std::filesystem;
   if (free_block_map.blocks.empty())
     throw std::runtime_error("free_block_map no existe para crear bloques txt");
@@ -120,9 +130,11 @@ void disk_manager::clear_blocks_folder() {
   }
 }
 
-void disk_manager::create_free_block_map() {
+void DiskManager::create_free_block_map() {
   std::vector<uint32_t> curr_block;
   bool used = false; // 0 es libre
+
+  free_block_map.blocks.clear();
 
   for (int c = 0; c < TRACKS_PER_SURFACE; ++c) {
     for (int s = 0; s < SECTORS_PER_TRACK; ++s) { // por sectores separados
@@ -151,7 +163,7 @@ void disk_manager::create_free_block_map() {
   }
 }
 
-std::vector<unsigned char> disk_manager::merge_sectors_to_block(
+std::vector<unsigned char> DiskManager::merge_sectors_to_block(
     std::vector<std::vector<unsigned char>> &sectors_bytes) {
   std::vector<unsigned char> merged_block;
   merged_block.reserve(SECTORS_PER_BLOCK * SECTOR_SIZE);
@@ -166,7 +178,7 @@ std::vector<unsigned char> disk_manager::merge_sectors_to_block(
   return merged_block;
 }
 
-std::vector<std::vector<unsigned char>> disk_manager::split_block_to_sectors(
+std::vector<std::vector<unsigned char>> DiskManager::split_block_to_sectors(
     std::vector<unsigned char> &&block_bytes) {
   std::vector<std::vector<unsigned char>> sectors_bytes;
   sectors_bytes.reserve(SECTORS_PER_BLOCK);

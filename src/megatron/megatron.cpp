@@ -30,32 +30,45 @@ void Megatron::run() {
     else if (opcion == "5")
       ui_select_table_condition();
     else if (opcion == "6")
-      ui_insert_data();
+      ui_find_reg();
     else if (opcion == "7")
-      ui_update_reg();
+      ui_insert_data();
     else if (opcion == "8")
-      ui_delete_data();
+      ui_update_reg();
     else if (opcion == "9")
-      ui_load_csv();
+      ui_delete_data();
     else if (opcion == "10")
+      ui_delete_nth();
+    else if (opcion == "11")
+      ui_load_csv();
+    else if (opcion == "12")
       ui_load_n_regs_csv();
-    else if (opcion == "11") {
+    else if (opcion == "13") {
       clearScreen();
       cout << "Especificaciones de disco" << endl;
-      cout << "Capacidad del disco: " << disk.DISK_CAPACITY << " bytes    " << disk.DISK_CAPACITY / 8 << " KiB" << endl;
+      cout << "Superficies: " << disk.SURFACES << endl;
+      cout << "Pistas/superf: " << disk.TRACKS_PER_SURFACE << endl;
+      cout << "Sectores/pista: " << disk.SECTORS_PER_TRACK << endl;
+      cout << "Sectores totales: " << disk.TOTAL_SECTORS << endl;
+      cout << "Pistas totales: " << disk.TRACKS_PER_SURFACE * disk.SURFACES << endl;
       cout << "Capacidad de sector: " << disk.SECTOR_SIZE << endl;
       cout << "Capacidad de bloque: " << disk.BLOCK_SIZE << endl;
       cout << "Bloques por pista: " << disk.TRACK_SIZE / (disk.BLOCK_SIZE) << endl;
-      cout << "Bloques por plato: " << disk.SURFACE_SIZE / (disk.BLOCK_SIZE) << endl;
+      cout << "Bloques por superficie: " << disk.SURFACE_SIZE / (disk.BLOCK_SIZE) << endl;
+      cout << "Bloques totales: " << disk.DISK_CAPACITY / (disk.BLOCK_SIZE) << endl;
+      cout << "Bytes Usados: " << disk.calculate_free_space() << " / " << disk.DISK_CAPACITY << endl;
 
       pauseAndReturn();
 
       // ui_load_n_regs_csv();
-    } else if (opcion == "12") {
+    } else if (opcion == "14") {
+      ui_show_table_metadata();
+
+    } else if (opcion == "15") {
       translate();
       pauseAndReturn();
 
-    } else if (opcion == "13") {
+    } else if (opcion == "16") {
       clearScreen();
       cout << "\"Cerrando el programa\"\n";
       break;

@@ -2,8 +2,8 @@
 #include <cstddef>
 #include <cstdint>
 
-void disk_manager::read_block(std::vector<unsigned char> &block,
-                              uint32_t block_id) {
+void DiskManager::read_block(std::vector<unsigned char> &block,
+                             uint32_t block_id) {
   if (block_id >= free_block_map.blocks.size())
     throw std::runtime_error("Bloques y sectores a leer no concuerdan");
 

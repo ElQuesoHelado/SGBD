@@ -15,7 +15,7 @@
 #include <vector>
 
 class Megatron {
-  disk_manager disk;
+  DiskManager disk;
   std::ofstream important_bytes;
   // std::fstream schemas_file, metad_file;
 
@@ -93,10 +93,14 @@ public:
   void select_fixed(serial::TableMetadata &table_metadata, size_t col_index, SQL_type &cond_val);
   void select_slotted(serial::TableMetadata &table_metadata, size_t col_index, SQL_type &cond_val);
   // void update(std::string cond_col_name, std::string condition, std::string col_name, std::string new_value);
-  //
+
   void delete_reg(std::string &table_name, std::string &col_name, std::string &condition);
   void delete_fixed(serial::TableMetadata &table_metadata, size_t col_index, SQL_type &cond_val);
   void delete_slotted(serial::TableMetadata &table_metadata, size_t col_index, SQL_type &cond_val);
+
+  void delete_nth_reg(std::string &table_name, size_t nth);
+  void delete_nth_fixed(std::vector<unsigned char> &page_bytes, size_t nth);
+  void delete_nth_slotted(std::vector<unsigned char> &page_bytes, size_t nth);
 
   // Wrapper para inserts en tabla tanto fixed como slotted
   // void insert(std::string table_name, std::vector<std::string> &values);
@@ -106,6 +110,8 @@ public:
   void insert_slotted(serial::TableMetadata &table_metadata, std::vector<std::string> &values);
 
   void select_save(std::string table_name, std::string col_name, std::string condition, std::string new_table_name);
+
+  void find_nth_reg(std::string &table_name, size_t nth);
 
   /*
    * @brief Creacion y escritura de nueva tabla descrita en csv
@@ -168,8 +174,11 @@ public:
   void ui_insert_data();
   void ui_update_reg();
   void ui_delete_data();
+  void ui_delete_nth();
   void ui_load_csv();
   void ui_load_n_regs_csv();
+  void ui_find_reg();
+  void ui_show_table_metadata();
 
   void new_disk(std::string disk_name, size_t surfaces, size_t tracks, size_t sectors, size_t bytes, size_t sectors_block);
   void load_disk(std::string disk_name);
@@ -216,6 +225,8 @@ public:
       const serial::SlottedDataHeader &slotted_data_header,
       const std::vector<unsigned char> &page_bytes,
       size_t ith_reg);
+
+  void show_table_metadata(std::string &table_name);
 
   void translate();
   void translate_fixed_page(serial::TableMetadata &table_metadata,

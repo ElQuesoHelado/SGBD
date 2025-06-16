@@ -18,6 +18,8 @@ void Megatron::translate() {
   disk.read_sector(buffer, 0);
   auto sector0 = serial::deserialize_sector0(buffer);
 
+  disk.create_disk_structure(0);
+
   auto format_str =
       std::format("Superficies: {}, tracks: {}, sectores: {}, tamanio de sector: {},"
                   "sectores por bloque: {}  \n",
@@ -59,8 +61,8 @@ void Megatron::translate() {
       auto page_bytes_it = page_bytes.begin();
 
       auto page_header = serial::deserialize_page_header(page_bytes_it);
-      if (page_header.n_regs == 0) // Pagina vacia
-        continue;
+      // if (page_header.n_regs == 0) // Pagina vacia
+      //   continue;
 
       if (table_metadata.are_regs_fixed) {
         serial::FixedDataHeader fixed_data_header;
@@ -120,7 +122,7 @@ void Megatron::translate_fixed_page(
   out_str += "Next_page_id: " + std::to_string(page_header.next_block_id) + " ";
   out_str += "N_registers: " + std::to_string(page_header.n_regs) + " ";
   out_str += "Free_space/capacity: " + std::to_string(page_header.free_space) +
-             '/' + std::to_string(disk.SECTOR_SIZE - serial::calculate_fixed_data_header_size(fixed_data_header)) +
+             '/' + std::to_string(disk.BLOCK_SIZE - serial::calculate_fixed_data_header_size(fixed_data_header)) +
              "\n";
 
   // FixedDataHeader
@@ -145,7 +147,7 @@ void Megatron::translate_fixed_page(
 
       for (auto &v : register_values)
         // disk.write
-        out_str += SQL_type_to_string(v);
+        out_str += SQL_type_to_string(v) + " ";
 
       // out_str+='\n';
     } else { // Registro vacio/deleted
@@ -181,7 +183,7 @@ void Megatron::translate_slotted_page(
   out_str += "Next_page_id: " + std::to_string(page_header.next_block_id) + " ";
   out_str += "N_registers: " + std::to_string(page_header.n_regs) + " ";
   out_str += "Free_space/capacity: " + std::to_string(page_header.free_space) +
-             '/' + std::to_string(disk.SECTOR_SIZE - serial::calculate_slotted_data_header_size(slotted_data_header)) +
+             '/' + std::to_string(disk.BLOCK_SIZE - serial::calculate_slotted_data_header_size(slotted_data_header)) +
              "\n";
 
   // SlottedDataHeader
@@ -211,7 +213,7 @@ void Megatron::translate_slotted_page(
       // slotted_data_header.slots[i].
       for (auto &v : register_values)
         // disk.write
-        out_str += SQL_type_to_string(v);
+        out_str += SQL_type_to_string(v) + " ";
 
       sub = register_bytes.size();
       // out_str+='\n';

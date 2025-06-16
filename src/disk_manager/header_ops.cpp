@@ -5,7 +5,7 @@
 // Posiciona head en track, superficie no cuesta
 // TODO: como se simula disco, necesariamente deberia trabajar desde posicion actual
 // Puede moverse tanto adelante o atras
-void disk_manager::seek(size_t cilinder, size_t head, size_t sector) {
+void DiskManager::seek(size_t cilinder, size_t head, size_t sector) {
   if (head > SURFACES || cilinder > TRACKS_PER_SURFACE || sector > SECTORS_PER_TRACK)
     return;
 
@@ -75,7 +75,7 @@ void disk_manager::seek(size_t cilinder, size_t head, size_t sector) {
 // }
 
 // Posiciona cabeza en lugar exacto basado en LBA
-void disk_manager::logic_sector_move_CHS(size_t logic_sector) {
+void DiskManager::logic_sector_move_CHS(size_t logic_sector) {
   size_t cilinder = logic_sector / (SURFACES * SECTORS_PER_TRACK),
          head = (logic_sector / SECTORS_PER_TRACK) % SURFACES,
          sector = (logic_sector % SECTORS_PER_TRACK);
