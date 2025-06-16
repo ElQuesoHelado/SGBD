@@ -1,7 +1,0 @@
-5203"Nosworthy; Mr. Richard Cater"male21.00000000A/4. 398867.800000                    S
-5311"Harper; Mrs. Henry Sleeper (Myna Haxtun)"female49.00000010PC 1757276.729200D33                 C
-5501"Ostby; Mr. Engelhart Cornelius"male65.0000000111350961.979200B30                 C
-
-
-5311"Harper; Mrs. Henry Sleeper (Myna Haxtun)"female49.00000010PC 1757276.729200D33                 C
-5501"Ostby; Mr. Engelhart Cornelius"male65.0000000111350961.979200B30                 C

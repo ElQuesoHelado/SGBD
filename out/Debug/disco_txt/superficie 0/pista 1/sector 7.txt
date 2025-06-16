@@ -1,7 +1,0 @@
-73203"Hassan; Mr. Houssein G N"male11.00000000269918.787500                    C
-73302"Knight; Mr. Robert J"male0.000000002398550.000000                    S
-73402"Berriman; Mr. William John"male23.000000002842513.000000                    S
-
-
-73302"Knight; Mr. Robert J"male0.000000002398550.000000                    S
-73402"Berriman; Mr. William John"male23.000000002842513.000000                    S

@@ -1,9 +1,0 @@
-86403"Sage; Miss. Dorothy Edith ""Dolly"""female0.00000082CA. 234369.550000                    S
-86502"Gill; Mr. John William"male24.0000000023386613.000000                    S
-86612"Bystrom; Mrs. (Karolina)"female42.0000000023685213.000000                    S
-86712"Duran y More; Miss. Asuncion"female27.00000010SC/PARIS 214913.858300                    C
-
-
-86502"Gill; Mr. John William"male24.0000000023386613.000000                    S
-86612"Bystrom; Mrs. (Karolina)"female42.0000000023685213.000000                    S
-86712"Duran y More; Miss. Asuncion"female27.00000010SC/PARIS 214913.858300                    C

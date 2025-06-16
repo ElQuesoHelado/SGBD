@@ -1,2 +1,0 @@
-/usr/bin/ar qc libdisk_manager.a CMakeFiles/disk_manager.dir/src/disk_manager/disk_manager.o CMakeFiles/disk_manager.dir/src/disk_manager/block_reads.o CMakeFiles/disk_manager.dir/src/disk_manager/block_writes.o CMakeFiles/disk_manager.dir/src/disk_manager/folder_ops.o CMakeFiles/disk_manager.dir/src/disk_manager/header_ops.o CMakeFiles/disk_manager.dir/src/disk_manager/sector_reads.o CMakeFiles/disk_manager.dir/src/disk_manager/sector_writes.o CMakeFiles/disk_manager.dir/src/disk_manager/utils.o
-/usr/bin/ranlib libdisk_manager.a

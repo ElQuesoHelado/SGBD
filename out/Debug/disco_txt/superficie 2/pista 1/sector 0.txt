@@ -1,7 +1,0 @@
-54903"Goldsmith; Mr. Frank John"male33.0000001136329120.525000                    S
-55012"Davies; Master. John Morgan Jr"male8.00000011C.A. 3311236.750000                    S
-55111"Thayer; Mr. John Borland Jr"male17.0000000217421110.883300C70                 C
-
-
-55012"Davies; Master. John Morgan Jr"male8.00000011C.A. 3311236.750000                    S
-55111"Thayer; Mr. John Borland Jr"male17.0000000217421110.883300C70                 C

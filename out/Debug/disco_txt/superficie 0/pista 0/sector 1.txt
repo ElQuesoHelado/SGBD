@@ -1,4 +1,0 @@
-Numero total de tablas: 1
-Tabla #0 ubicada en bloque: 0
-Numero total de tablas: 1
-Tabla #0 ubicada en bloque: 0

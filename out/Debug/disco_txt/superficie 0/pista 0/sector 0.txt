@@ -1,4 +1,0 @@
-Superficies: 6, tracks: 20, sectores: 20, tamanio de sector: 500,sectores por bloque: 4  
-
-Superficies: 6, tracks: 20, sectores: 20, tamanio de sector: 500,sectores por bloque: 4  
-

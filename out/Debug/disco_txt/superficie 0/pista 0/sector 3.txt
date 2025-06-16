@@ -1,8 +1,0 @@
-7102"Jenkin; Mr. Stephen Curnow"male32.00000000C.A. 3311110.500000                    S
-7203"Goodwin; Miss. Lillian Amy"female16.00000052CA 214446.900000                    S
-7403"Chronopoulos; Mr. Apostolos"male26.00000010268014.454200                    C
-7102"Jenkin; Mr. Stephen Curnow"male32.00000000C.A. 3311110.500000                    S
-
-
-
-

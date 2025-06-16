@@ -1,1 +1,0 @@
-/usr/lib64/ccache/c++ -g -rdynamic -Wl,--dependency-file=CMakeFiles/runner.dir/link.d CMakeFiles/runner.dir/src/main.o -o runner  libmegatron.a libdisk_manager.a

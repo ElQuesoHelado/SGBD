@@ -1,9 +1,0 @@
-56703"Stoytcheff; Mr. Ilia"male19.000000003492057.895800                    S
-56803"Palsson; Mrs. Nils (Alma Cornelia Berglund)"female29.0000000434990921.075000                    S
-56903"Doharr; Mr. Tannous"male0.0000000026867.229200                    C
-
-
-
-
-
-
