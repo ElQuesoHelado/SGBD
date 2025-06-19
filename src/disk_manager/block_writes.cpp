@@ -7,7 +7,7 @@ void DiskManager::write_block(std::vector<unsigned char> &block_bytes, uint32_t 
     throw std::runtime_error("Bloques y sectores a escribir no concuerdan");
 
   std::vector<std::vector<unsigned char>>
-      vec_of_sectors = split_block_to_sectors(std::move(block_bytes));
+      vec_of_sectors = split_block_to_sectors(block_bytes);
   for (size_t i{}; i < vec_of_sectors.size(); ++i) {
     write_sector(vec_of_sectors[i], free_block_map.get_ith_lba(block_id, i));
   }

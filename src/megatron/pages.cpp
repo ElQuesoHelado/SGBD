@@ -8,11 +8,14 @@
 // Implica modificar page y metadata de tabla
 // Se inserta al final
 // @notes Escribe tanto un page_header nuevo y un Data_header(depende de fixed o slotted)
+// FIXME: Cambio a buffer_manager probablemente implique hacer un "reserve" de un bloque
 uint32_t Megatron::add_new_page_to_table(serial::TableMetadata &table_metadata) {
   // Se carga ultima pagina
   auto last_page_id = table_metadata.last_page_id;
-  std::vector<unsigned char> last_page_bytes;
 
+  // auto &frame = buffer_manager_ptr->get_block(last_page_id);
+  // std::vector<unsigned char> &last_page_bytes = frame.page_bytes;
+  std::vector<unsigned char> last_page_bytes;
   disk.read_block(last_page_bytes, table_metadata.last_page_id);
 
   auto page_header = serial::deserialize_page_header(last_page_bytes);
@@ -35,6 +38,8 @@ uint32_t Megatron::add_new_page_to_table(serial::TableMetadata &table_metadata) 
   auto table_block_bytes =
       serial::serialize_table_metadata(table_metadata, disk.BLOCK_SIZE);
   disk.write_block(table_block_bytes, table_metadata.table_block_id);
+
+  // frame.dirty = true;
 
   // Escribe la ultima pagina con puntero actualizado
   disk.write_block(last_page_bytes, last_page_id);

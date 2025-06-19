@@ -7,6 +7,7 @@
 #include <fstream>
 #include <ios>
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <string>
 #include <sys/types.h>
@@ -69,6 +70,9 @@ void Megatron::run() {
       pauseAndReturn();
 
     } else if (opcion == "16") {
+      set_buffer_manager_frames();
+
+    } else if (opcion == "20") {
       clearScreen();
       cout << "\"Cerrando el programa\"\n";
       break;
@@ -79,12 +83,28 @@ void Megatron::run() {
   }
 }
 
+// Set/Reset de frames en buffer pool
+// @note Implica un flush de todas las paginas, caso ya exista un buffer_manager asignado
+// FIXME: potencialmente peligroso en caso de SIGINT, check en manejo de seniales
+// Cambiar a unique_ptr a disk_manager, validar caso disk no este cargado
+void Megatron::set_buffer_manager_frames() {
+  std::cout << "Ingrese número de frames en buffer pool: ";
+  size_t frames;
+  if (!(std::cin >> frames) || frames == 0)
+    throw std::invalid_argument("Numero de frames inválido");
+
+  if (buffer_manager_ptr)
+    buffer_manager_ptr->flush_all();
+
+  buffer_manager_ptr = std::make_unique<BufferManager>(frames, disk);
+}
+
 void Megatron::load_disk(std::string disk_name) {
   disk.load_disk(disk_name);
-  // schemas_file.open("schema/schemas.txt", std::ios::in | std::ios::out | std::ios::app);
-  // // std::ifstream metad_file(metad_path);
-  // metad_file >> n_sectors_in_block;
+
   n_sectors_in_block = disk.SECTORS_PER_BLOCK;
+
+  set_buffer_manager_frames();
 }
 
 void Megatron::new_disk(std::string disk_name, size_t surfaces, size_t tracks, size_t sectors, size_t bytes, size_t sectors_block) {
@@ -101,4 +121,6 @@ void Megatron::new_disk(std::string disk_name, size_t surfaces, size_t tracks, s
 }
 
 Megatron::Megatron() {
+  // if (buffer_manager_ptr)
+  //   buffer_manager_ptr->flush_all();
 }

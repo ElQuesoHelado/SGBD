@@ -46,8 +46,10 @@ void Megatron::select_fixed(serial::TableMetadata &table_metadata,
   // Se iteran por todas las paginas
   size_t curr_page_id = table_metadata.first_page_id, n_regs{};
   while (curr_page_id != disk.NULL_BLOCK) {
-    std::vector<unsigned char> page_bytes;
-    disk.read_block(page_bytes, curr_page_id);
+    // disk.read_block(page_bytes, curr_page_id);
+    auto frame = buffer_manager_ptr->get_block(curr_page_id);
+    std::vector<unsigned char> &page_bytes = frame.page_bytes;
+
     auto page_bytes_it = page_bytes.begin();
 
     // Se saca metadata relevante
@@ -85,8 +87,10 @@ void Megatron::select_slotted(serial::TableMetadata &table_metadata, size_t col_
   // Se iteran por todas las paginas
   size_t curr_page_id = table_metadata.first_page_id, n_regs{};
   while (curr_page_id != disk.NULL_BLOCK) {
-    std::vector<unsigned char> page_bytes;
-    disk.read_block(page_bytes, curr_page_id);
+
+    auto frame = buffer_manager_ptr->get_block(curr_page_id);
+    std::vector<unsigned char> &page_bytes = frame.page_bytes;
+
     auto page_bytes_it = page_bytes.begin();
 
     // Se saca metadata relevante

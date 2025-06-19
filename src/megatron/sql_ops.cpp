@@ -57,6 +57,8 @@ bool Megatron::search_table(std::string table_name, serial::TableMetadata &table
   // Se lee todos los bloques con tablas
   for (size_t i{}; i < sector1_meta.n_tables; ++i) {
     std::vector<unsigned char> block_bytes;
+
+    // TODO: Cambio logica a buffer manager
     disk.read_block(block_bytes, sector1_meta.table_block_ids[i]);
 
     serial::TableMetadata curr_table_metadata =

@@ -41,11 +41,9 @@ void Megatron::insert_fixed(serial::TableMetadata &table_metadata, std::vector<s
     throw std::runtime_error("Registro serializado mas grande que size maximo de registro");
 
   // Se busca pagina a insertar
-  std::vector<unsigned char> page;
   uint32_t insert_page_id;
 
-  insert_page_id = get_insertable_page(page,
-                                       table_metadata.first_page_id,
+  insert_page_id = get_insertable_page(table_metadata.first_page_id,
                                        table_metadata.max_reg_size);
 
   // Paginas sin espacio suficiente
@@ -56,8 +54,10 @@ void Megatron::insert_fixed(serial::TableMetadata &table_metadata, std::vector<s
   serial::PageHeader page_header;
   serial::FixedDataHeader fixed_data_header;
 
-  std::vector<unsigned char> insert_page_bytes;
-  disk.read_block(insert_page_bytes, insert_page_id);
+  auto &frame = buffer_manager_ptr->get_block(insert_page_id);
+  std::vector<unsigned char> &insert_page_bytes = frame.page_bytes;
+
+  // disk.read_block(insert_page_bytes, insert_page_id);
 
   size_t byte_offset_free_reg;
 
@@ -73,6 +73,9 @@ void Megatron::insert_fixed(serial::TableMetadata &table_metadata, std::vector<s
   if (free_reg_pos >= fixed_data_header.max_n_regs) {
     throw std::runtime_error("No hay registros libres en bitmap pero se intentó insertar");
   }
+
+  // El write si procede
+  frame.dirty = true;
 
   fixed_data_header.free_bytes -= fixed_data_header.reg_size;
   fixed_data_header.free_register_bitmap[free_reg_pos] = true;
@@ -92,7 +95,7 @@ void Megatron::insert_fixed(serial::TableMetadata &table_metadata, std::vector<s
   // Copia registro como tal
   std::copy(register_bytes.begin(), register_bytes.end(), page_it);
 
-  disk.write_block(insert_page_bytes, insert_page_id);
+  // disk.write_block(insert_page_bytes, insert_page_id);
 }
 
 void Megatron::insert_slotted(serial::TableMetadata &table_metadata, std::vector<std::string> &values) {
@@ -110,12 +113,10 @@ void Megatron::insert_slotted(serial::TableMetadata &table_metadata, std::vector
     throw std::runtime_error("Registro serializado mas grande que size maximo de registro");
 
   // Se busca pagina a insertar
-  std::vector<unsigned char> page;
   uint32_t insert_page_id;
 
   // Peor caso, siempre se crea nuevo Slot
-  insert_page_id = get_insertable_page(page,
-                                       table_metadata.first_page_id,
+  insert_page_id = get_insertable_page(table_metadata.first_page_id,
                                        register_bytes.size() + sizeof(serial::Slot));
 
   // Paginas sin espacio suficiente
@@ -126,8 +127,12 @@ void Megatron::insert_slotted(serial::TableMetadata &table_metadata, std::vector
   serial::PageHeader page_header;
   serial::SlottedDataHeader slotted_data_header;
 
-  std::vector<unsigned char> insert_page_bytes;
-  disk.read_block(insert_page_bytes, insert_page_id);
+  auto &frame = buffer_manager_ptr->get_block(insert_page_id);
+  std::vector<unsigned char> &insert_page_bytes = frame.page_bytes;
+
+  frame.dirty = true;
+
+  // disk.read_block(insert_page_bytes, insert_page_id);
 
   size_t byte_offset_free_reg;
 
@@ -142,8 +147,6 @@ void Megatron::insert_slotted(serial::TableMetadata &table_metadata, std::vector
   byte_offset_free_reg = serial::insert_into_slotted(slotted_data_header,
                                                      free_slot,
                                                      register_bytes.size());
-
-  // byte_offset_free_reg
 
   page_header.free_space -= register_bytes.size();
   page_header.n_regs++;
@@ -160,5 +163,5 @@ void Megatron::insert_slotted(serial::TableMetadata &table_metadata, std::vector
   // Copia registro como tal
   std::copy(register_bytes.begin(), register_bytes.end(), page_it);
 
-  disk.write_block(insert_page_bytes, insert_page_id);
+  // disk.write_block(insert_page_bytes, insert_page_id);
 }

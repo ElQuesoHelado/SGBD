@@ -179,22 +179,15 @@ std::vector<unsigned char> DiskManager::merge_sectors_to_block(
 }
 
 std::vector<std::vector<unsigned char>> DiskManager::split_block_to_sectors(
-    std::vector<unsigned char> &&block_bytes) {
+    std::vector<unsigned char> &block_bytes) {
   std::vector<std::vector<unsigned char>> sectors_bytes;
   sectors_bytes.reserve(SECTORS_PER_BLOCK);
 
   auto block_it = block_bytes.begin();
 
-  for (size_t i{}; i < SECTORS_PER_BLOCK; ++i) {
-    std::vector<unsigned char> sector;
-    sector.reserve(SECTOR_SIZE);
-
-    auto block_it_end = block_it + SECTOR_SIZE;
-    sector.insert(sector.end(),
-                  std::make_move_iterator(block_it),
-                  std::make_move_iterator(block_it_end));
-    sectors_bytes.push_back(sector);
-    block_it = block_it_end;
+  for (size_t i = 0; i < SECTORS_PER_BLOCK; ++i) {
+    sectors_bytes.emplace_back(block_it, block_it + SECTOR_SIZE);
+    block_it += SECTOR_SIZE;
   }
 
   return sectors_bytes;

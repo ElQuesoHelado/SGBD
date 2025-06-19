@@ -92,6 +92,7 @@ void Megatron::init_table_metadata(serial::TableMetadata &table_metadata,
   serial::SlottedDataHeader slotted_data_header;
   serial::PageHeader page_header;
 
+  // buffer_manager_ptr->get_block(size_t block_id);
   std::vector<unsigned char> page_bytes(disk.BLOCK_SIZE);
   auto page_it = page_bytes.begin();
 
@@ -110,6 +111,7 @@ void Megatron::init_table_metadata(serial::TableMetadata &table_metadata,
     serial::serialize_slotted_data_header(slotted_data_header, page_it);
   }
 
+  // TODO: logica en buffer manager, deberia ser una dirty page mas del resto
   auto page_id = disk.write_block(page_bytes);
 
   table_metadata.first_page_id = page_id;

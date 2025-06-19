@@ -1,5 +1,6 @@
 #pragma once
 
+#include "buffer/buffer_manager.hpp"
 #include "disk_manager.hpp"
 #include "types.hpp"
 // #include "relation.hpp"
@@ -10,12 +11,15 @@
 #include <cstddef>
 #include <cstdint>
 #include <fstream>
+#include <memory>
 #include <string>
 #include <tuple>
 #include <vector>
 
 class Megatron {
   DiskManager disk;
+  std::unique_ptr<BufferManager> buffer_manager_ptr{};
+
   std::ofstream important_bytes;
   // std::fstream schemas_file, metad_file;
 
@@ -183,6 +187,8 @@ public:
   void new_disk(std::string disk_name, size_t surfaces, size_t tracks, size_t sectors, size_t bytes, size_t sectors_block);
   void load_disk(std::string disk_name);
 
+  void set_buffer_manager_frames();
+
   // =====
   // Operaciones de buscar un bloque
   // =====
@@ -193,7 +199,7 @@ public:
   bool is_fixed_block_insertable(std::vector<unsigned char> &block_bytes);
   bool is_slotted_block_insertable(std::vector<unsigned char> &block_bytes);
 
-  uint32_t get_insertable_page(std::vector<unsigned char> &page, uint32_t block_id, uint32_t reg_size);
+  uint32_t get_insertable_page(uint32_t block_id, uint32_t reg_size);
 
   uint32_t create_page(serial::TableMetadata &table_metadata);
 

@@ -376,6 +376,7 @@ void mostrarMenu() {
   cout << "13. Mostrar specs de disco\n";
   cout << "14. Mostrar metadata de tabla\n";
   cout << "15. Translate disco\n";
-  cout << "16. Salir\n";
+  cout << "16. Set #frames por buffer pool\n";
+  cout << "20. Salir\n";
   cout << "Seleccione una opción: ";
 }

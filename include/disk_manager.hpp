@@ -156,7 +156,7 @@ public:
   std::string logic_sector_to_CHS(size_t logic_sector);
 
   std::vector<unsigned char> merge_sectors_to_block(std::vector<std::vector<unsigned char>> &sectors_bytes);
-  std::vector<std::vector<unsigned char>> split_block_to_sectors(std::vector<unsigned char> &&block_bytes);
+  std::vector<std::vector<unsigned char>> split_block_to_sectors(std::vector<unsigned char> &block_bytes);
 
   void clear_blocks_folder();
 
