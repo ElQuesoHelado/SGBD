@@ -42,7 +42,6 @@ public:
 
 private:
   void load_block(size_t block_id) {
-    // Intenta hacer espacio hasta que tengamos suficiente
     while (pool_.size() >= pool_.capacity()) {
       if (!try_evict_one_frame()) {
         throw std::runtime_error("Failed to make space in buffer pool");
