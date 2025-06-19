@@ -19,6 +19,7 @@ size_t DiskManager::get_free_logic_sectors_storable(size_t n_sectors) {
 }
 
 // Busca un bloque libre
+// @note NO reserva
 uint32_t DiskManager::get_free_block() {
   for (size_t i{}; i < TOTAL_BLOCKS; ++i) {
     if (free_block_map.is_block_free(i))
@@ -34,9 +35,20 @@ uint32_t DiskManager::get_free_block() {
 uint32_t DiskManager::reserve_free_block() {
   uint32_t block_id = get_free_block();
 
-  free_block_map.set_block_used(block_id);
+  set_block_used(block_id);
 
   return block_id;
+}
+
+void DiskManager::set_block_used(uint32_t block_id) {
+  if (block_id >= NULL_BLOCK)
+    throw std::runtime_error("block_id fuera de rango");
+
+  for (auto sector : free_block_map.blocks[block_id].second) {
+    free_space_bitmap.set(sector, 1, true);
+  }
+
+  free_block_map.blocks[block_id].first = true;
 }
 
 void DiskManager::store_fsb() {

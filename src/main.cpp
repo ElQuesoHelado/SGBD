@@ -4,7 +4,7 @@
 int main(int argc, char *argv[]) {
   Megatron megatron;
   // //
-  megatron.new_disk("disco2", 10, 10, 10, 500, 3);
+  // megatron.new_disk("disco2", 10, 10, 10, 500, 3);
   // //
   // megatron.load_disk("disco");
   // megatron.load_CSV("csv/titanic.csv", "titanic", 50);
@@ -14,20 +14,20 @@ int main(int argc, char *argv[]) {
   // megatron.select(str, cond, val);
   // //
   // // //
-  std::vector<std::pair<std::string, std::string>>
-      columns = {
-          {"PassengerId", "INTEGER"},
-          {"Survived", "INTEGER"},
-          {"Pclass", "INTEGER"},
-          {"Name", "CHAR(100)"},
-          {"Sex", "CHAR(20)"},
-          {"Age", "DOUBLE"},
-          {"SibSp", "INTEGER"},
-          {"Parch", "INTEGER"},
-          {"Ticket", "CHAR(20)"},
-          {"Fare", "DOUBLE"},
-          {"Cabin", "CHAR(20)"},
-          {"Embarked", "CHAR(20)"}};
+  // std::vector<std::pair<std::string, std::string>>
+  //     columns = {
+  //         {"PassengerId", "INTEGER"},
+  //         {"Survived", "INTEGER"},
+  //         {"Pclass", "INTEGER"},
+  //         {"Name", "CHAR(100)"},
+  //         {"Sex", "CHAR(20)"},
+  //         {"Age", "DOUBLE"},
+  //         {"SibSp", "INTEGER"},
+  //         {"Parch", "INTEGER"},
+  //         {"Ticket", "CHAR(20)"},
+  //         {"Fare", "DOUBLE"},
+  //         {"Cabin", "CHAR(20)"},
+  //         {"Embarked", "CHAR(20)"}};
   // //
   // // std::vector<std::pair<std::string, std::string>>
   // //     columns_var = {
@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
   // //         {"Cabin", "VARCHAR(20)"},
   // //         {"Embarked", "VARCHAR(20)"}};
   // //
-  megatron.create_table("titanic", columns);
+  // megatron.create_table("titanic", columns);
   // // megatron.create_table("titanic_var", columns_var);
   // // //
   // // //
@@ -88,13 +88,14 @@ int main(int argc, char *argv[]) {
   //
   // megatron.delete_reg(name1, col, value);
   //
-  megatron.load_CSV("csv/titanic.csv", "titanic", 24);
+  // megatron.load_CSV("csv/titanic.csv", "titanic");
+  // megatron.translate();
   // // megatron.delete_reg(name2, col, value);
   //
   // megatron.select(name3, empty, empty);
   // megatron.select(name2, empty, empty);
   // megatron.select(name3, col, value);
   // megatron.select(chica, empty, empty);
-  // megatron.run();
+  megatron.run();
   return 0;
 }

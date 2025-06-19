@@ -24,9 +24,9 @@ void Megatron::insert(std::string table_name, std::vector<std::string> &values) 
 
 // Inserta un solo registro en tabla
 void Megatron::insert_fixed(serial::TableMetadata &table_metadata, std::vector<std::string> &values) {
-  // std::cout << values[0] << std::endl;
-  // if (values[0] == "17")
-  //   int x = 5;
+  std::cout << values[0] << std::endl;
+  if (values[0] == "27")
+    int x = 5;
 
   if (table_metadata.columns.size() != values.size()) {
     std::cerr << "Numero de valores diferente a columnas" << std::endl;

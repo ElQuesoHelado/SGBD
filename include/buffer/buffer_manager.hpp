@@ -11,10 +11,10 @@ public:
       : pool_(capacity), disk_manager_(disk_manager) {}
 
   Frame &get_block(size_t block_id) {
-    if (pool_.contains(block_id)) {
-      return pool_.get_frame(block_id);
+    if (!pool_.contains(block_id)) {
+      load_block(block_id);
     }
-    return load_block(block_id);
+    return pool_.get_frame(block_id);
   }
 
   void mark_dirty(size_t block_id) {
@@ -32,32 +32,38 @@ public:
   }
 
   void flush_all() {
-    while (auto dirty_frame = pool_.evict_lru()) {
-      disk_manager_.write_block(dirty_frame->page_bytes, dirty_frame->page_id);
+    while (auto frame = pool_.get_frame_to_evict()) {
+      if (frame->dirty) {
+        disk_manager_.write_block(frame->page_bytes, frame->page_id);
+      }
     }
   }
 
 private:
-  Frame &load_block(size_t block_id) {
-    if (pool_.size() >= pool_.capacity()) {
-      make_space();
+  void load_block(size_t block_id) {
+    // Intenta hacer espacio hasta que tengamos suficiente
+    while (pool_.size() >= pool_.capacity()) {
+      if (!try_evict_one_frame()) {
+        throw std::runtime_error("Failed to make space in buffer pool");
+      }
     }
 
-    auto frame = std::make_unique<Frame>();
-    frame->page_id = block_id;
-    frame->dirty = false;
-    disk_manager_.read_block(frame->page_bytes, block_id);
+    std::vector<unsigned char> data;
+    disk_manager_.read_block(data, block_id);
 
-    auto &ref = *frame;
+    auto frame = std::make_unique<Frame>(block_id, std::move(data));
     pool_.add_frame(block_id, std::move(frame));
-    return ref;
   }
 
-  void make_space() {
-    while (auto dirty_frame = pool_.evict_lru()) {
-      disk_manager_.write_block(dirty_frame->page_bytes, dirty_frame->page_id);
-      // std::cout << "EVICTED DIRTY" << std::endl;
+  bool try_evict_one_frame() {
+    auto frame = pool_.get_frame_to_evict();
+    if (!frame)
+      return false;
+
+    if (frame->dirty) {
+      disk_manager_.write_block(frame->page_bytes, frame->page_id);
     }
+    return true;
   }
 
   BufferPool pool_;

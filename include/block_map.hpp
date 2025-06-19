@@ -24,11 +24,4 @@ struct FreeBlockMap {
 
     return blocks[block_id].second[ith_lba];
   }
-
-  void set_block_used(uint32_t block_id) {
-    if (block_id >= blocks.size())
-      throw std::runtime_error("block_id fuera de rango");
-
-    blocks[block_id].first = true;
-  }
 };

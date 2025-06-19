@@ -71,6 +71,8 @@ public:
 
   uint32_t get_free_block();
 
+  void set_block_used(uint32_t block_id);
+
   /*
    * Se marcan sectores como ocupados y los devuelve en un bloque
    * TODO: es lineal por ahora
