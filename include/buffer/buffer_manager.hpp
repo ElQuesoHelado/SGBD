@@ -38,6 +38,7 @@ public:
       }
     }
   }
+  BufferPool pool_;
 
 private:
   void load_block(size_t block_id) {
@@ -66,6 +67,5 @@ private:
     return true;
   }
 
-  BufferPool pool_;
   DiskManager &disk_manager_;
 };

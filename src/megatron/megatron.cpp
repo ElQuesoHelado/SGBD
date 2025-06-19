@@ -100,7 +100,6 @@ void Megatron::set_buffer_manager_frames() {
     buffer_manager_ptr->flush_all();
 
   buffer_manager_ptr = std::make_unique<BufferManager>(frames, disk);
-  buffer_ui = std::make_unique<BufferUI>(frames);
 }
 
 void Megatron::load_disk(std::string disk_name) {

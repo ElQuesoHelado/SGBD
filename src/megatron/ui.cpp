@@ -2,10 +2,10 @@
 #include "megatron.hpp"
 #include <cstddef>
 #include <cstdlib>
-#include <filesystem>
-#include <fstream>
+#include <iomanip>
 #include <ios>
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <string>
 #include <sys/types.h>
@@ -371,8 +371,15 @@ void Megatron::ui_interact_buffer_manager() {
     return;
   }
 
+  buffer_manager_ptr->flush_all();
+  translate();
+
+  buffer_ui = std::make_unique<BufferUI>(buffer_manager_ptr->pool_.capacity(),
+                                         disk, table_metadata);
+
   int opcion;
   while (true) {
+    buffer_manager_ptr->flush_all();
     clearScreen();
     buffer_ui->printBuffer();
     buffer_ui->printLRU();
@@ -386,12 +393,21 @@ void Megatron::ui_interact_buffer_manager() {
     cout << "4. Mostrar contenido pagina\n";
     cout << "5. Ubicar Registros Condicion\n";
     cout << "6. Ubicar nth registro\n";
+    cout << "7. Ubicar free page\n";
+    cout << "8. Adicionar 1 registro a pagina\n";
+    cout << "9. Modificar el nth registro en pagina\n";
+    cout << "10. Eliminar el nth registro en pagina\n";
+    cout << "11. Guardad una pagina\n";
+    cout << "12. Guardad TODAS las pagina\n";
     cout << "0. Salir\n";
     cout << "Opcion: ";
     cin >> opcion;
 
-    if (opcion == 0)
+    if (opcion == 0) {
+
+      // buffer_ui->forceFlush();
       break;
+    }
 
     if (opcion == 1) {
       int page_id, operacion, pinea;
@@ -422,7 +438,8 @@ void Megatron::ui_interact_buffer_manager() {
       int page_id;
       cout << "ID de pagina a mostrar: ";
       cin >> page_id;
-      show_block(table_metadata, page_id);
+      // show_block(table_metadata, page_id);
+      buffer_ui->show_block(table_metadata, page_id);
       // buffer_ui->setPinFijo(page_id, false);
 
     } else if (opcion == 5) {
@@ -437,6 +454,7 @@ void Megatron::ui_interact_buffer_manager() {
       auto res = locate_regs_cond(table_name, cond, val);
       for (auto e : res) {
         std::cout << e << " ";
+        buffer_ui->loadPage(e, 0);
       }
       std::cout << std::endl;
 
@@ -448,8 +466,68 @@ void Megatron::ui_interact_buffer_manager() {
       auto res = locate_nth_reg(table_name, nth);
 
       std::cout << "Bloque: " << res.first << " Posicion: " << res.second << std::endl;
+      buffer_ui->loadPage(res.first, 0);
 
     } else if (opcion == 7) {
+
+      auto block_id = locate_free_page(table_metadata);
+      buffer_ui->loadPage(block_id, 0);
+      std::cout << "Bloque con espacio para insertar: " << block_id << std::endl;
+
+    } else if (opcion == 8) {
+      std::string reg = "";
+      cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      cout << "Ingresa registro en formato csv:\n";
+      getline(cin, reg);
+
+      auto block_data_pair = insert_reg_in_page(table_metadata, reg);
+      std::cout << "Insertando en bloque: " << block_data_pair.first
+                << std::endl;
+      buffer_ui->loadPage(block_data_pair.first, 1);
+      auto entry_ptr = buffer_ui->get_Entry(block_data_pair.first);
+      entry_ptr->data = std::move(block_data_pair.second);
+
+    } else if (opcion == 9) { // Modificar
+
+      // auto block_id = locate_free_page(table_metadata);
+      // std::cout << "Bloque con espacio para insertar: " << block_id << std::endl;
+
+    } else if (opcion == 10) { // Eliminar nth de toda tabla
+      int nth;
+      cout << "Nth registro a eliminar: ";
+      cin >> nth;
+
+      auto block_id = locate_free_page(table_metadata);
+      std::cout << "Bloque con espacio para insertar: " << block_id << std::endl;
+
+      auto blockid_pages = locate_nth_reg(table_name, nth);
+      buffer_ui->loadPage(blockid_pages.first, 0);
+
+      auto pos = delete_nth_reg_in_page(buffer_ui->get_Entry(blockid_pages.first)->data, blockid_pages.second);
+
+      std::cout << "Registro eliminado en bloque: " << blockid_pages.first << " en posicion: " << pos << std::endl;
+
+      auto entry = buffer_ui->get_Entry(blockid_pages.first);
+      entry->dirty = true;
+
+      // auto block_id = locate_free_page(table_metadata);
+
+    } else if (opcion == 11) { // Guardar
+      int page_id;
+      cout << "ID de pagina a guardar: ";
+      cin >> page_id;
+
+      buffer_ui->savePage(page_id);
+
+      // auto block_id = locate_free_page(table_metadata);
+      // std::cout << "Bloque con espacio para insertar: " << block_id << std::endl;
+
+    } else if (opcion == 12) { // Guardar todas
+
+      buffer_ui->forceFlush();
+
+      // auto block_id = locate_free_page(table_metadata);
+      std::cout << "Se guardaron todas las paginas dirty" << std::endl;
 
     } else {
       cout << "Opcion invalida.\n";

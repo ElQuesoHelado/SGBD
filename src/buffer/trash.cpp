@@ -67,6 +67,10 @@ std::vector<uint32_t> Megatron::locate_regs_cond(std::string &table_name, std::s
     curr_page_id = page_header.next_block_id;
   }
   std::cout << "Numero de registros encontrados: " << n_regs << std::endl;
+  std::sort(blocks.begin(), blocks.end());
+  auto it = std::unique(blocks.begin(), blocks.end());
+
+  blocks.erase(it, blocks.end());
   return blocks;
 }
 
@@ -127,125 +131,128 @@ std::pair<uint32_t, uint32_t> Megatron::locate_nth_reg(std::string &table_name, 
   return {disk.NULL_BLOCK, 0};
 }
 
-void Megatron::show_block(serial::TableMetadata &table_metadata, uint32_t block_id) {
-  // Se itera por toda pagina de tabla
-  uint32_t curr_page_id = block_id;
+// Inserta un solo registro en tabla
+uint32_t Megatron::locate_free_page(serial::TableMetadata &table_metadata) {
+  return get_insertable_page(table_metadata.first_page_id,
+                             table_metadata.max_reg_size);
+}
 
-  std::vector<unsigned char> page_bytes;
-  disk.read_block(page_bytes, curr_page_id);
+// SOLO carga y modifica, no guarda
+std::pair<uint32_t, std::vector<unsigned char>> Megatron::insert_reg_in_page(serial::TableMetadata &table_metadata, std::string &csv_values) {
+  std::istringstream line_ss;
 
+  line_ss.str(csv_values);
+
+  // Columnas
+  std::string token;
+  std::vector<std::string> values;
+  while (std::getline(line_ss, token, ','))
+    values.push_back(token);
+
+  if (values.size() != table_metadata.columns.size())
+    values.resize(table_metadata.columns.size());
+
+  if (table_metadata.columns.size() != values.size()) {
+    std::cerr << "Numero de valores diferente a columnas" << std::endl;
+    return {disk.NULL_BLOCK, {}};
+  }
+
+  // Serializamos todo el registro
+  auto register_bytes = serialize_register(table_metadata,
+                                           values);
+
+  if (register_bytes.size() > table_metadata.max_reg_size)
+    throw std::runtime_error("Registro serializado mas grande que size maximo de registro");
+
+  // Se busca pagina a insertar
+  uint32_t insert_page_id;
+
+  insert_page_id = get_insertable_page(table_metadata.first_page_id,
+                                       table_metadata.max_reg_size);
+
+  // Paginas sin espacio suficiente
+  // if (insert_page_id == disk.NULL_BLOCK)
+  //   insert_page_id = add_new_page_to_table(table_metadata);
+
+  // Se lee pagina y saca metadata relevante
+  serial::PageHeader page_header;
+  serial::FixedDataHeader fixed_data_header;
+
+  // auto &frame = buffer_manager_ptr->get_block(insert_page_id);
+  std::vector<unsigned char> insert_page_bytes;
+  disk.read_block(insert_page_bytes, insert_page_id);
+
+  size_t byte_offset_free_reg;
+
+  page_header = serial::deserialize_page_header(insert_page_bytes);
+
+  fixed_data_header = serial::deserialize_fixed_data_header(insert_page_bytes);
+
+  // Calculamos posicion donde insertar
+  size_t free_reg_pos = serial::find_free_reg_pos(fixed_data_header);
+  byte_offset_free_reg = serial::calculate_reg_offset(fixed_data_header,
+                                                      free_reg_pos);
+
+  if (free_reg_pos >= fixed_data_header.max_n_regs) {
+    throw std::runtime_error("No hay registros libres en bitmap pero se intentó insertar");
+  }
+
+  // El write si procede
+  // frame.dirty = true;
+
+  fixed_data_header.free_bytes -= fixed_data_header.reg_size;
+  fixed_data_header.free_register_bitmap[free_reg_pos] = true;
+
+  page_header.free_space -= fixed_data_header.reg_size;
+  page_header.n_regs++;
+
+  // Reemplazamos headers modificados
+  auto page_it = insert_page_bytes.begin();
+  {
+    serial::serialize_page_header(page_header, page_it);
+    serial::serialize_fixed_block_header(fixed_data_header, page_it);
+  }
+
+  page_it = insert_page_bytes.begin() + byte_offset_free_reg;
+
+  // Copia registro como tal
+  std::copy(register_bytes.begin(), register_bytes.end(), page_it);
+
+  // disk.write_block(insert_page_bytes, insert_page_id);
+
+  return {insert_page_id, insert_page_bytes};
+}
+
+uint32_t Megatron::delete_nth_reg_in_page(std::vector<unsigned char> &page_bytes, size_t nth) {
   auto page_bytes_it = page_bytes.begin();
 
-  auto page_header = serial::deserialize_page_header(page_bytes_it);
-  // if (page_header.n_regs == 0) // Pagina vacia
-  //   continue;
-
-  serial::FixedDataHeader fixed_data_header;
-  fixed_data_header = serial::deserialize_fixed_data_header(page_bytes_it);
-
-  show_fixed_page(table_metadata, page_header,
-                  fixed_data_header, page_bytes, curr_page_id);
-
-  // curr_page_id = page_header.next_block_id;
-  // std::cout << curr_page_id << std::endl;
-}
-
-// Es una pagina completa, implica varios sectores, el primero es afectado por el header
-void Megatron::show_fixed_page(
-    serial::TableMetadata &table_metadata,
-    serial::PageHeader &page_header,
-    serial::FixedDataHeader &fixed_data_header,
-    std::vector<unsigned char> &page_bytes, uint32_t curr_page_id) {
-
-  int remm_sector_bytes =
-      disk.SECTOR_SIZE -
-      serial::calculate_fixed_data_header_size(fixed_data_header); // Deberia restarse size de header
-  size_t ith_sector_in_block{};
-
-  // PageHeader
-  std::string out_str{};
-  out_str += "Next_page_id: " + std::to_string(page_header.next_block_id) + " ";
-  out_str += "N_registers: " + std::to_string(page_header.n_regs) + " ";
-  out_str += "Free_space/capacity: " + std::to_string(page_header.free_space) +
-             '/' + std::to_string(disk.BLOCK_SIZE - serial::calculate_fixed_data_header_size(fixed_data_header)) +
-             "\n";
-
-  // FixedDataHeader
-  out_str += "Register size: " + std::to_string(fixed_data_header.reg_size) + " ";
-  out_str += "Max registers: " + std::to_string(fixed_data_header.max_n_regs) + " ";
-  std::string bitmap_str;
-  boost::to_string(fixed_data_header.free_register_bitmap, bitmap_str);
-  out_str += "Free_register_bitmap: " + bitmap_str + "\n";
-
-  std::cout << out_str << std::endl;
-  std::cout << disk.logic_sector_to_CHS(
-                   disk.free_block_map.get_ith_lba(curr_page_id, ith_sector_in_block))
-            << std::endl;
-
-  // disk.write_block_txt(out_str, curr_page_id);
-  // disk.write_block_txt(disk.logic_sector_to_CHS(
-  //                          disk.free_block_map.get_ith_lba(curr_page_id, ith_sector_in_block)),
-  //                      curr_page_id);
+  serial::PageHeader page_header = serial::deserialize_page_header(page_bytes_it);
+  serial::FixedDataHeader fixed_data_header = serial::deserialize_fixed_data_header(page_bytes_it);
 
   for (size_t i{}; i < fixed_data_header.max_n_regs; ++i) {
-    out_str = "";
     if (fixed_data_header.free_register_bitmap.at(i)) { // Registro existe
-      auto register_bytes = get_ith_register_bytes(table_metadata,
-                                                   page_header,
-                                                   fixed_data_header, page_bytes, i);
-      auto register_values = deserialize_register(table_metadata, register_bytes);
+      if (nth > 1) {
+        nth--;
+        continue;
+      }
 
-      for (auto &v : register_values)
-        // disk.write
-        out_str += SQL_type_to_string(v) + " ";
+      // Solo marcamos como libre, ya que todo es fijo se reescribira luego
+      fixed_data_header.free_bytes += fixed_data_header.reg_size;
+      fixed_data_header.free_register_bitmap[i] = false;
+      page_header.free_space += fixed_data_header.reg_size;
+      page_header.n_regs--;
 
-      // out_str+='\n';
-    } else { // Registro vacio/deleted
-      out_str += '\n';
+      // Se reescribe tanto page header y fixed_data_header de pagina
+      auto page_it = page_bytes.begin();
+      {
+        serial::serialize_page_header(page_header, page_it);
+        serial::serialize_fixed_block_header(fixed_data_header, page_it);
+      }
+
+      return nth;
+      break;
     }
-    remm_sector_bytes -= fixed_data_header.reg_size;
-    if (remm_sector_bytes < 0) {
-      remm_sector_bytes = disk.SECTOR_SIZE;
-      ith_sector_in_block++;
-      std::cout << "\n" + disk.logic_sector_to_CHS(
-                              disk.free_block_map.get_ith_lba(curr_page_id, ith_sector_in_block))
-                << std::endl;
-    }
-
-    cout << out_str << std::endl;
-    // disk.write_sector_txt(
-    //     out_str,
-    //     disk.free_block_map.get_ith_lba(curr_page_id, ith_sector_in_block));
-    // disk.write_block_txt(out_str, curr_page_id);
   }
-}
 
-// void Megatron::delete_nth_fixed(std::vector<unsigned char> &page_bytes, size_t nth) {
-//   auto page_bytes_it = page_bytes.begin();
-//
-//   serial::PageHeader page_header = serial::deserialize_page_header(page_bytes_it);
-//   serial::FixedDataHeader fixed_data_header = serial::deserialize_fixed_data_header(page_bytes_it);
-//
-//   for (size_t i{}; i < fixed_data_header.max_n_regs; ++i) {
-//     if (fixed_data_header.free_register_bitmap.at(i)) { // Registro existe
-//       if (nth > 1) {
-//         nth--;
-//         continue;
-//       }
-//
-//       // Solo marcamos como libre, ya que todo es fijo se reescribira luego
-//       fixed_data_header.free_bytes += fixed_data_header.reg_size;
-//       fixed_data_header.free_register_bitmap[i] = false;
-//       page_header.free_space += fixed_data_header.reg_size;
-//       page_header.n_regs--;
-//       break;
-//     }
-//   }
-//
-//   // Se reescribe tanto page header y fixed_data_header de pagina
-//   auto page_it = page_bytes.begin();
-//   {
-//     serial::serialize_page_header(page_header, page_it);
-//     serial::serialize_fixed_block_header(fixed_data_header, page_it);
-//   }
-// }
+  return 0;
+}

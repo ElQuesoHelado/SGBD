@@ -1,9 +1,9 @@
 #pragma once
 
-#include "serial/fixed_data.hpp"
 #include "serial/generic.hpp"
 #include <cstdint>
 #include <vector>
+
 namespace serial {
 
 #pragma pack(push, 1)

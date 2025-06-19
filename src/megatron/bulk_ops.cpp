@@ -24,8 +24,8 @@ void Megatron::load_CSV(std::string path, std::string table_name, size_t n_regs)
     size_t records_inserted = 0;
     while (std::getline(file, line)) {
 
-      if (records_inserted == 330)
-        std::cout << "hola" << std::endl;
+      // if (records_inserted == 330)
+      //   std::cout << "hola" << std::endl;
 
       if (n_regs > 0 && records_inserted >= n_regs) {
         break;

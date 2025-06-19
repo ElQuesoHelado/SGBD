@@ -253,12 +253,16 @@ public:
   // TRASH
   std::vector<uint32_t> locate_regs_cond(std::string &table_name, std::string &col_name, std::string &condition);
   std::pair<uint32_t, uint32_t> locate_nth_reg(std::string &table_name, size_t nth);
+  uint32_t locate_free_page(serial::TableMetadata &table_metadata);
   void show_block(serial::TableMetadata &table_metadata, uint32_t block_id);
   void show_fixed_page(
       serial::TableMetadata &table_metadata,
       serial::PageHeader &page_header,
       serial::FixedDataHeader &fixed_data_header,
       std::vector<unsigned char> &page_bytes, uint32_t curr_page_id);
+  std::pair<uint32_t, std::vector<unsigned char>> insert_reg_in_page(serial::TableMetadata &table_metadata, std::string &csv_values);
+  std::pair<uint32_t, std::vector<unsigned char>> delete_nth_reg_in_table(serial::TableMetadata &table_metadata, size_t nth);
+  uint32_t delete_nth_reg_in_page(std::vector<unsigned char> &page_bytes, size_t nth);
 
   void run();
   Megatron();
