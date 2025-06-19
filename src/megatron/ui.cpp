@@ -13,9 +13,8 @@
 
 using namespace std;
 
-// FIXME: ?La causa de problemas en sqltype?
 void clearScreen() {
-  system("clear");
+  std::cout << "\033[2J\033[H";
 }
 
 void pauseAndReturn() {
@@ -357,6 +356,57 @@ void Megatron::ui_show_table_metadata() {
   show_table_metadata(table_name);
 
   pauseAndReturn();
+}
+
+void Megatron::ui_interact_buffer_manager() {
+  int opcion;
+  while (true) {
+    clearScreen();
+    buffer.printBuffer();
+    buffer.printLRU();
+    buffer.printHitRate();
+
+    cout << "\n\033[1m=== MENU ===\033[0m\n";
+    cout << "1. Cargar pagina\n";
+    cout << "2. Establecer pin fijo\n";
+    cout << "3. Quitar pin fijo\n";
+    cout << "0. Salir\n";
+    cout << "Opcion: ";
+    cin >> opcion;
+
+    if (opcion == 0)
+      break;
+
+    if (opcion == 1) {
+      int page_id, operacion, pinea;
+      cout << "ID de pagina: ";
+      cin >> page_id;
+      cout << "Operacion (0 = lectura, 1 = escritura): ";
+      cin >> operacion;
+
+      if (buffer.loadPage(page_id, operacion)) {
+        cout << "?Se fija pagina?(0, 1): ";
+        cin >> pinea;
+        buffer.setPinFijo(page_id, pinea);
+      }
+
+    } else if (opcion == 2) {
+      int page_id;
+      cout << "ID de pagina a fijar: ";
+      cin >> page_id;
+      buffer.setPinFijo(page_id, true);
+
+    } else if (opcion == 3) {
+      int page_id;
+      cout << "ID de pagina a desfijar: ";
+      cin >> page_id;
+      buffer.setPinFijo(page_id, false);
+
+    } else {
+      cout << "Opcion invalida.\n";
+    }
+    pause();
+  }
 }
 
 void mostrarMenu() {

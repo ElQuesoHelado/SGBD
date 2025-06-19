@@ -183,6 +183,7 @@ public:
   void ui_load_n_regs_csv();
   void ui_find_reg();
   void ui_show_table_metadata();
+  void ui_interact_buffer_manager();
 
   void new_disk(std::string disk_name, size_t surfaces, size_t tracks, size_t sectors, size_t bytes, size_t sectors_block);
   void load_disk(std::string disk_name);
@@ -246,6 +247,9 @@ public:
                               std::vector<unsigned char> &page_bytes, uint32_t curr_page_id);
 
   void translate_table_page(serial::TableMetadata &table_metadata);
+
+  // TRASH
+  std::vector<uint32_t> locate_regs_cond(std::string &table_name, std::string &col_name, std::string &condition);
 
   void run();
   Megatron();

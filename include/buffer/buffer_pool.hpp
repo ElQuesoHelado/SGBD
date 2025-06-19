@@ -57,8 +57,9 @@ public:
   size_t size() const { return frame_map_.size(); }
   size_t capacity() const { return capacity_; }
 
-private:
   size_t capacity_;
   std::list<size_t> lru_list_;
   std::unordered_map<size_t, std::pair<std::unique_ptr<Frame>, std::list<size_t>::iterator>> frame_map_;
+
+private:
 };
