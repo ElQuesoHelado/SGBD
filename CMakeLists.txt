@@ -18,7 +18,8 @@ add_library(megatron src/megatron/megatron.cpp
     src/megatron/pages.cpp
     src/megatron/registers.cpp
     src/megatron/translate.cpp
-    src/megatron/misc.cpp)
+    src/megatron/misc.cpp
+    src/buffer/trash.cpp)
 
 add_library(disk_manager src/disk_manager/disk_manager.cpp
     src/disk_manager/block_reads.cpp

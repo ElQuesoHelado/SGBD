@@ -359,17 +359,33 @@ void Megatron::ui_show_table_metadata() {
 }
 
 void Megatron::ui_interact_buffer_manager() {
+  string table_name;
+  cout << "Nombre de tabla para interpretar\n";
+  getline(cin, table_name);
+
+  serial::TableMetadata table_metadata;
+
+  // No existe
+  if (!search_table(table_name, table_metadata)) {
+    std::cerr << "Tabla: " << table_name << " no existe" << std::endl;
+    return;
+  }
+
   int opcion;
   while (true) {
     clearScreen();
-    buffer.printBuffer();
-    buffer.printLRU();
-    buffer.printHitRate();
+    buffer_ui->printBuffer();
+    buffer_ui->printLRU();
+    buffer_ui->printHitRate();
 
+    // cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cout << "\n\033[1m=== MENU ===\033[0m\n";
     cout << "1. Cargar pagina\n";
     cout << "2. Establecer pin fijo\n";
     cout << "3. Quitar pin fijo\n";
+    cout << "4. Mostrar contenido pagina\n";
+    cout << "5. Ubicar Registros Condicion\n";
+    cout << "6. Ubicar nth registro\n";
     cout << "0. Salir\n";
     cout << "Opcion: ";
     cin >> opcion;
@@ -384,28 +400,61 @@ void Megatron::ui_interact_buffer_manager() {
       cout << "Operacion (0 = lectura, 1 = escritura): ";
       cin >> operacion;
 
-      if (buffer.loadPage(page_id, operacion)) {
+      if (buffer_ui->loadPage(page_id, operacion)) {
         cout << "?Se fija pagina?(0, 1): ";
         cin >> pinea;
-        buffer.setPinFijo(page_id, pinea);
+        buffer_ui->setPinFijo(page_id, pinea);
       }
 
     } else if (opcion == 2) {
       int page_id;
       cout << "ID de pagina a fijar: ";
       cin >> page_id;
-      buffer.setPinFijo(page_id, true);
+      buffer_ui->setPinFijo(page_id, true);
 
     } else if (opcion == 3) {
       int page_id;
       cout << "ID de pagina a desfijar: ";
       cin >> page_id;
-      buffer.setPinFijo(page_id, false);
+      buffer_ui->setPinFijo(page_id, false);
+
+    } else if (opcion == 4) {
+      int page_id;
+      cout << "ID de pagina a mostrar: ";
+      cin >> page_id;
+      show_block(table_metadata, page_id);
+      // buffer_ui->setPinFijo(page_id, false);
+
+    } else if (opcion == 5) {
+      std::string cond = "", val = "";
+      cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      cout << "Columna a evaluar:\n";
+      getline(cin, cond);
+
+      cout << "Valor a evaluar\n";
+      getline(cin, val);
+
+      auto res = locate_regs_cond(table_name, cond, val);
+      for (auto e : res) {
+        std::cout << e << " ";
+      }
+      std::cout << std::endl;
+
+    } else if (opcion == 6) {
+      size_t nth{};
+      cout << "Numero de registro a encontrar:\n";
+      cin >> nth;
+
+      auto res = locate_nth_reg(table_name, nth);
+
+      std::cout << "Bloque: " << res.first << " Posicion: " << res.second << std::endl;
+
+    } else if (opcion == 7) {
 
     } else {
       cout << "Opcion invalida.\n";
     }
-    pause();
+    pauseAndReturn();
   }
 }
 
@@ -427,6 +476,7 @@ void mostrarMenu() {
   cout << "14. Mostrar metadata de tabla\n";
   cout << "15. Translate disco\n";
   cout << "16. Set #frames por buffer pool\n";
+  cout << "17. Interactuar Buffer Manager\n";
   cout << "20. Salir\n";
   cout << "Seleccione una opción: ";
 }

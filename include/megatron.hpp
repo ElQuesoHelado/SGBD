@@ -1,6 +1,7 @@
 #pragma once
 
 #include "buffer/buffer_manager.hpp"
+#include "buffer/buffer_ui.hpp"
 #include "disk_manager.hpp"
 #include "types.hpp"
 // #include "relation.hpp"
@@ -19,6 +20,7 @@
 class Megatron {
   DiskManager disk;
   std::unique_ptr<BufferManager> buffer_manager_ptr{};
+  std::unique_ptr<BufferUI> buffer_ui{};
 
   std::ofstream important_bytes;
   // std::fstream schemas_file, metad_file;
@@ -250,6 +252,13 @@ public:
 
   // TRASH
   std::vector<uint32_t> locate_regs_cond(std::string &table_name, std::string &col_name, std::string &condition);
+  std::pair<uint32_t, uint32_t> locate_nth_reg(std::string &table_name, size_t nth);
+  void show_block(serial::TableMetadata &table_metadata, uint32_t block_id);
+  void show_fixed_page(
+      serial::TableMetadata &table_metadata,
+      serial::PageHeader &page_header,
+      serial::FixedDataHeader &fixed_data_header,
+      std::vector<unsigned char> &page_bytes, uint32_t curr_page_id);
 
   void run();
   Megatron();
