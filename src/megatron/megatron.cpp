@@ -71,9 +71,16 @@ void Megatron::run() {
 
     } else if (opcion == "16") {
       set_buffer_manager_frames();
+      pauseAndReturn();
 
     } else if (opcion == "17") {
       ui_interact_buffer_manager();
+      pauseAndReturn();
+
+    } else if (opcion == "18") {
+      // std::cout << "Hits/totales : "
+      //           << buffer_manager_ptr->hit + 163 << " / " << buffer_manager_ptr->total << std::endl;
+      pauseAndReturn();
 
     } else if (opcion == "20") {
       clearScreen();

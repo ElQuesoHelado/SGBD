@@ -40,7 +40,7 @@ void Megatron::delete_fixed(serial::TableMetadata &table_metadata, size_t col_in
     // std::vector<unsigned char> page_bytes;
     // disk.read_block(page_bytes, curr_page_id);
 
-    auto &frame = buffer_manager_ptr->get_block(curr_page_id);
+    auto &frame = buffer_manager_ptr->load_pin_page(curr_page_id);
     std::vector<unsigned char> &page_bytes = frame.page_bytes;
     auto page_bytes_it = page_bytes.begin();
 
@@ -76,7 +76,9 @@ void Megatron::delete_fixed(serial::TableMetadata &table_metadata, size_t col_in
       serial::serialize_fixed_block_header(fixed_data_header, page_it);
     }
 
-    frame.dirty = true;
+    buffer_manager_ptr->free_unpin_page(curr_page_id, true);
+
+    // frame.dirty = true;
 
     // disk.write_block(page_bytes, curr_page_id);
 
@@ -89,7 +91,7 @@ void Megatron::delete_slotted(serial::TableMetadata &table_metadata, size_t col_
   size_t curr_page_id = table_metadata.first_page_id;
   while (curr_page_id != disk.NULL_BLOCK) {
 
-    auto &frame = buffer_manager_ptr->get_block(curr_page_id);
+    auto &frame = buffer_manager_ptr->load_pin_page(curr_page_id);
     std::vector<unsigned char> &page_bytes = frame.page_bytes;
     auto page_bytes_it = page_bytes.begin();
 
@@ -127,7 +129,8 @@ void Megatron::delete_slotted(serial::TableMetadata &table_metadata, size_t col_
       serial::serialize_slotted_data_header(slotted_data_header, page_it);
     }
 
-    frame.dirty = true;
+    buffer_manager_ptr->free_unpin_page(curr_page_id, true);
+    // frame.dirty = true;
     // disk.write_block(page_bytes, curr_page_id);
     curr_page_id = page_header.next_block_id;
   }
@@ -147,7 +150,7 @@ void Megatron::delete_nth_reg(std::string &table_name, size_t nth) {
 
   // std::vector<unsigned char> page_bytes;
   while (curr_page_id != disk.NULL_BLOCK) {
-    auto &frame = buffer_manager_ptr->get_block(curr_page_id);
+    auto &frame = buffer_manager_ptr->load_pin_page(curr_page_id);
     std::vector<unsigned char> &page_bytes = frame.page_bytes;
     auto page_bytes_it = page_bytes.begin();
 
@@ -166,7 +169,8 @@ void Megatron::delete_nth_reg(std::string &table_name, size_t nth) {
       else
         delete_nth_slotted(page_bytes, nth);
 
-      frame.dirty = true;
+      buffer_manager_ptr->free_unpin_page(curr_page_id, true);
+      // frame.dirty = true;
       // disk.write_block(page_bytes, curr_page_id);
       break;
     }
@@ -179,8 +183,8 @@ void Megatron::delete_nth_reg(std::string &table_name, size_t nth) {
 void Megatron::delete_nth_fixed(std::vector<unsigned char> &page_bytes, size_t nth) {
   auto page_bytes_it = page_bytes.begin();
 
-  serial::PageHeader page_header = serial::deserialize_page_header(page_bytes_it);
-  serial::FixedDataHeader fixed_data_header = serial::deserialize_fixed_data_header(page_bytes_it);
+  auto page_header = serial::deserialize_page_header(page_bytes_it);
+  auto fixed_data_header = serial::deserialize_fixed_data_header(page_bytes_it);
 
   for (size_t i{}; i < fixed_data_header.max_n_regs; ++i) {
     if (fixed_data_header.free_register_bitmap.at(i)) { // Registro existe
@@ -209,12 +213,10 @@ void Megatron::delete_nth_fixed(std::vector<unsigned char> &page_bytes, size_t n
 void Megatron::delete_nth_slotted(std::vector<unsigned char> &page_bytes, size_t nth) {
   auto page_bytes_it = page_bytes.begin();
   // Se saca metadata relevante
-  serial::PageHeader page_header;
-  serial::SlottedDataHeader slotted_data_header;
 
-  page_header = serial::deserialize_page_header(page_bytes_it);
+  auto page_header = serial::deserialize_page_header(page_bytes_it);
+  auto slotted_data_header = serial::deserialize_slotted_data_header(page_bytes_it);
 
-  slotted_data_header = serial::deserialize_slotted_data_header(page_bytes_it);
   for (size_t i{}; i < slotted_data_header.n_slots; ++i) {
     if (slotted_data_header.slots[i].is_used) { // Registro existe
       if (nth > 1) {

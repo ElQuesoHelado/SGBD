@@ -43,7 +43,7 @@ inline size_t base_slotted_data_header_size(const SlottedDataHeader &header) {
  * El slot a elegir tiene que estar libre y existir
  * @return offset donde empieza dicho registro
  */
-inline size_t insert_into_slotted(SlottedDataHeader &header, size_t n_slot, size_t reg_size) {
+inline size_t prepare_slotted_insert(SlottedDataHeader &header, size_t n_slot, size_t reg_size) {
   if (n_slot >= header.slots.size())
     throw std::runtime_error("Slot fuera de rango");
 

@@ -46,20 +46,15 @@ void Megatron::select_fixed(serial::TableMetadata &table_metadata,
   // Se iteran por todas las paginas
   size_t curr_page_id = table_metadata.first_page_id, n_regs{};
   while (curr_page_id != disk.NULL_BLOCK) {
-    // disk.read_block(page_bytes, curr_page_id);
-    auto frame = buffer_manager_ptr->get_block(curr_page_id);
+    auto frame = buffer_manager_ptr->load_pin_page(curr_page_id);
     std::vector<unsigned char> &page_bytes = frame.page_bytes;
 
     auto page_bytes_it = page_bytes.begin();
 
     // Se saca metadata relevante
-    serial::PageHeader page_header;
-    serial::FixedDataHeader fixed_data_header;
-    serial::SlottedDataHeader slotted_data_header;
+    auto page_header = serial::deserialize_page_header(page_bytes_it);
+    auto fixed_data_header = serial::deserialize_fixed_data_header(page_bytes_it);
 
-    page_header = serial::deserialize_page_header(page_bytes_it);
-
-    fixed_data_header = serial::deserialize_fixed_data_header(page_bytes_it);
     for (size_t i{}; i < fixed_data_header.max_n_regs; ++i) {
 
       if (fixed_data_header.free_register_bitmap.at(i)) { // Registro existe
@@ -78,6 +73,7 @@ void Megatron::select_fixed(serial::TableMetadata &table_metadata,
       }
     }
 
+    buffer_manager_ptr->free_unpin_page(curr_page_id);
     curr_page_id = page_header.next_block_id;
   }
   std::cout << "Numero de registros: " << n_regs << std::endl;
@@ -87,20 +83,15 @@ void Megatron::select_slotted(serial::TableMetadata &table_metadata, size_t col_
   // Se iteran por todas las paginas
   size_t curr_page_id = table_metadata.first_page_id, n_regs{};
   while (curr_page_id != disk.NULL_BLOCK) {
-
-    auto frame = buffer_manager_ptr->get_block(curr_page_id);
+    auto frame = buffer_manager_ptr->load_pin_page(curr_page_id);
     std::vector<unsigned char> &page_bytes = frame.page_bytes;
 
     auto page_bytes_it = page_bytes.begin();
 
     // Se saca metadata relevante
-    serial::PageHeader page_header;
-    serial::FixedDataHeader fixed_data_header;
-    serial::SlottedDataHeader slotted_data_header;
+    auto page_header = serial::deserialize_page_header(page_bytes_it);
+    auto slotted_data_header = serial::deserialize_slotted_data_header(page_bytes_it);
 
-    page_header = serial::deserialize_page_header(page_bytes_it);
-
-    slotted_data_header = serial::deserialize_slotted_data_header(page_bytes_it);
     for (size_t i{}; i < slotted_data_header.n_slots; ++i) {
       if (slotted_data_header.slots[i].is_used) { // Registro existe
         auto register_bytes = get_ith_register_bytes(table_metadata, page_header,
@@ -118,6 +109,8 @@ void Megatron::select_slotted(serial::TableMetadata &table_metadata, size_t col_
         std::cout << std::endl;
       }
     }
+
+    buffer_manager_ptr->free_unpin_page(curr_page_id);
 
     curr_page_id = page_header.next_block_id;
   }

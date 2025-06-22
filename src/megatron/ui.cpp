@@ -374,8 +374,8 @@ void Megatron::ui_interact_buffer_manager() {
   buffer_manager_ptr->flush_all();
   translate();
 
-  buffer_ui = std::make_unique<BufferUI>(buffer_manager_ptr->pool_.capacity(),
-                                         disk, table_metadata);
+  // buffer_ui = std::make_unique<BufferUI>(buffer_manager_ptr->pool_.capacity(),
+  //                                        disk, table_metadata);
 
   int opcion;
   while (true) {
@@ -555,6 +555,7 @@ void mostrarMenu() {
   cout << "15. Translate disco\n";
   cout << "16. Set #frames por buffer pool\n";
   cout << "17. Interactuar Buffer Manager\n";
+  cout << "18. Mostrar hits\n";
   cout << "20. Salir\n";
   cout << "Seleccione una opción: ";
 }

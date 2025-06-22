@@ -54,7 +54,7 @@ void Megatron::insert_fixed(serial::TableMetadata &table_metadata, std::vector<s
   serial::PageHeader page_header;
   serial::FixedDataHeader fixed_data_header;
 
-  auto &frame = buffer_manager_ptr->get_block(insert_page_id);
+  auto &frame = buffer_manager_ptr->load_pin_page(insert_page_id);
   std::vector<unsigned char> &insert_page_bytes = frame.page_bytes;
 
   // disk.read_block(insert_page_bytes, insert_page_id);
@@ -75,7 +75,6 @@ void Megatron::insert_fixed(serial::TableMetadata &table_metadata, std::vector<s
   }
 
   // El write si procede
-  frame.dirty = true;
 
   fixed_data_header.free_bytes -= fixed_data_header.reg_size;
   fixed_data_header.free_register_bitmap[free_reg_pos] = true;
@@ -95,12 +94,12 @@ void Megatron::insert_fixed(serial::TableMetadata &table_metadata, std::vector<s
   // Copia registro como tal
   std::copy(register_bytes.begin(), register_bytes.end(), page_it);
 
+  buffer_manager_ptr->free_unpin_page(insert_page_id, true);
+  // frame.dirty = true;
   // disk.write_block(insert_page_bytes, insert_page_id);
 }
 
 void Megatron::insert_slotted(serial::TableMetadata &table_metadata, std::vector<std::string> &values) {
-
-  // FIXME: caso ultima col vacia
   if (table_metadata.columns.size() != values.size()) {
     std::cerr << "Numero de valores diferente a columnas" << std::endl;
     return;
@@ -124,29 +123,20 @@ void Megatron::insert_slotted(serial::TableMetadata &table_metadata, std::vector
     insert_page_id = add_new_page_to_table(table_metadata);
 
   // Se lee pagina y saca metadata relevante
-  serial::PageHeader page_header;
-  serial::SlottedDataHeader slotted_data_header;
-
-  auto &frame = buffer_manager_ptr->get_block(insert_page_id);
+  auto &frame = buffer_manager_ptr->load_pin_page(insert_page_id);
   std::vector<unsigned char> &insert_page_bytes = frame.page_bytes;
 
-  frame.dirty = true;
+  auto page_header = serial::deserialize_page_header(insert_page_bytes);
+  auto slotted_data_header = serial::deserialize_slotted_data_header(insert_page_bytes);
 
-  // disk.read_block(insert_page_bytes, insert_page_id);
-
-  size_t byte_offset_free_reg;
-
-  page_header = serial::deserialize_page_header(insert_page_bytes);
-
-  slotted_data_header = serial::deserialize_slotted_data_header(insert_page_bytes);
-
+  // Se actualiza headers para aceptar un registro nuevo
   size_t free_slot = serial::get_free_slot(slotted_data_header);
   if (free_slot == slotted_data_header.n_slots)
     free_slot = serial::add_free_slot(page_header, slotted_data_header);
 
-  byte_offset_free_reg = serial::insert_into_slotted(slotted_data_header,
-                                                     free_slot,
-                                                     register_bytes.size());
+  size_t byte_offset_free_reg = serial::prepare_slotted_insert(slotted_data_header,
+                                                               free_slot,
+                                                               register_bytes.size());
 
   page_header.free_space -= register_bytes.size();
   page_header.n_regs++;
@@ -158,10 +148,12 @@ void Megatron::insert_slotted(serial::TableMetadata &table_metadata, std::vector
     serial::serialize_slotted_data_header(slotted_data_header, page_it);
   }
 
+  // Insercion de registro en offset correcto
   page_it = insert_page_bytes.begin() + byte_offset_free_reg;
-
-  // Copia registro como tal
   std::copy(register_bytes.begin(), register_bytes.end(), page_it);
 
+  buffer_manager_ptr->free_unpin_page(insert_page_id, true);
+
+  // frame.dirty = true;
   // disk.write_block(insert_page_bytes, insert_page_id);
 }

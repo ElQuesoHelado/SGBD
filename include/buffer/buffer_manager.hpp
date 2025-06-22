@@ -1,6 +1,5 @@
 #pragma once
 
-#include "buffer_pool.hpp"
 #include "disk_manager.hpp"
 #include "frame.hpp"
 #include <iostream>
@@ -8,63 +7,90 @@
 class BufferManager {
 public:
   BufferManager(size_t capacity, DiskManager &disk_manager)
-      : pool_(capacity), disk_manager_(disk_manager) {}
+      : capacity(capacity), disk_manager(disk_manager) {}
 
-  Frame &get_block(size_t block_id) {
-    if (!pool_.contains(block_id)) {
-      load_block(block_id);
-    }
-    return pool_.get_frame(block_id);
-  }
+  // Carga de pagina, necesariamente incrementa pin_count
+  Frame &load_pin_page(size_t page_id) {
+    auto it = frame_map.find(page_id);
 
-  void mark_dirty(size_t block_id) {
-    pool_.get_frame(block_id).dirty = true;
-  }
-
-  void flush_block(size_t block_id) {
-    if (pool_.contains(block_id)) {
-      auto &frame = pool_.get_frame(block_id);
-      if (frame.dirty) {
-        disk_manager_.write_block(frame.page_bytes, block_id);
-        frame.dirty = false;
+    // Si la página no está en buffer, cargarla
+    if (it == frame_map.end()) {
+      if (frame_map.size() >= capacity) {
+        evict_page();
       }
+      load_page(page_id);
+      it = frame_map.find(page_id);
+    }
+
+    // Mueve frame al frente
+    lru_list.splice(lru_list.begin(), lru_list, it->second.lru_it);
+    it->second.pin_count++;
+
+    return *(it->second.frame);
+  }
+
+  // Libera frame
+  void free_unpin_page(size_t page_id, bool is_dirty = false) {
+    auto it = frame_map.find(page_id);
+    if (it == frame_map.end()) {
+      throw std::runtime_error("Free de pagina no en buffer");
+    }
+
+    it->second.pin_count--;
+    if (is_dirty) {
+      it->second.frame->dirty = true;
     }
   }
 
+  // Escribe todas las páginas sucias a disco, no limpia buffer
   void flush_all() {
-    while (auto frame = pool_.get_frame_to_evict()) {
-      if (frame->dirty) {
-        disk_manager_.write_block(frame->page_bytes, frame->page_id);
+    for (auto &[page_id, entry] : frame_map) {
+      if (entry.frame->dirty) {
+        disk_manager.write_block(entry.frame->page_bytes, page_id);
+        entry.frame->dirty = false;
       }
     }
   }
-  BufferPool pool_;
 
 private:
-  void load_block(size_t block_id) {
-    while (pool_.size() >= pool_.capacity()) {
-      if (!try_evict_one_frame()) {
-        throw std::runtime_error("Failed to make space in buffer pool");
+  void load_page(size_t page_id) {
+    std::vector<unsigned char> data;
+
+    // TODO: algun check de bloque_id valido?
+    disk_manager.read_block(data, page_id);
+
+    auto frame = std::make_unique<Frame>(page_id, std::move(data));
+    lru_list.push_front(page_id);
+
+    frame_map[page_id] = {
+        std::move(frame),
+        lru_list.begin(),
+        0 // pin_count en 0, se incrementa al hacer pin
+    };
+  }
+
+  void evict_page() {
+    // Busqueda de pagina menos usada que no este pinned
+    for (auto it = lru_list.rbegin(); it != lru_list.rend(); ++it) {
+      auto &entry = frame_map[*it];
+
+      if (entry.pin_count == 0) {
+        if (entry.frame->dirty) {
+          disk_manager.write_block(entry.frame->page_bytes, *it);
+        }
+
+        frame_map.erase(*it);
+        lru_list.erase(std::next(it).base()); // Rev_it a forward
+        return;
       }
     }
 
-    std::vector<unsigned char> data;
-    disk_manager_.read_block(data, block_id);
-
-    auto frame = std::make_unique<Frame>(block_id, std::move(data));
-    pool_.add_frame(block_id, std::move(frame));
+    throw std::runtime_error("Todas las paginas estan pineadas, imposible insertar");
   }
 
-  bool try_evict_one_frame() {
-    auto frame = pool_.get_frame_to_evict();
-    if (!frame)
-      return false;
+  DiskManager &disk_manager;
+  size_t capacity;
 
-    if (frame->dirty) {
-      disk_manager_.write_block(frame->page_bytes, frame->page_id);
-    }
-    return true;
-  }
-
-  DiskManager &disk_manager_;
+  std::list<size_t> lru_list;
+  std::unordered_map<size_t, BufferFrame> frame_map;
 };
