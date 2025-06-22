@@ -78,8 +78,8 @@ void Megatron::run() {
       pauseAndReturn();
 
     } else if (opcion == "18") {
-      // std::cout << "Hits/totales : "
-      //           << buffer_manager_ptr->hit + 163 << " / " << buffer_manager_ptr->total << std::endl;
+      std::cout << "Hits/totales : "
+                << buffer_manager_ptr->get_hits() << " / " << buffer_manager_ptr->get_total_accesses() << std::endl;
       pauseAndReturn();
 
     } else if (opcion == "20") {

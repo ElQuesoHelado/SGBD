@@ -2,6 +2,7 @@
 
 #include "disk_manager.hpp"
 #include "frame.hpp"
+#include <cstddef>
 #include <iostream>
 
 class BufferManager {
@@ -52,6 +53,10 @@ public:
     }
   }
 
+  size_t get_hits() { return hits; }
+
+  size_t get_total_accesses() { return total; }
+
 private:
   void load_page(size_t page_id) {
     std::vector<unsigned char> data;
@@ -63,8 +68,7 @@ private:
     lru_list.push_front(page_id);
 
     frame_map[page_id] = {
-        std::move(frame),
-        lru_list.begin(),
+        std::move(frame), lru_list.begin(),
         0 // pin_count en 0, se incrementa al hacer pin
     };
   }
@@ -85,11 +89,14 @@ private:
       }
     }
 
-    throw std::runtime_error("Todas las paginas estan pineadas, imposible insertar");
+    throw std::runtime_error(
+        "Todas las paginas estan pineadas, imposible insertar");
   }
 
   DiskManager &disk_manager;
   size_t capacity;
+
+  int hits, total;
 
   std::list<size_t> lru_list;
   std::unordered_map<size_t, BufferFrame> frame_map;
