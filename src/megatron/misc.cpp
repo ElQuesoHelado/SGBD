@@ -15,8 +15,8 @@ void Megatron::find_nth_reg(std::string &table_name, size_t nth) {
   size_t curr_page_id = table_metadata.first_page_id;
 
   std::vector<unsigned char> page_bytes;
-  while (curr_page_id != disk.NULL_BLOCK) {
-    disk.read_block(page_bytes, curr_page_id);
+  while (curr_page_id != disk_manager->NULL_BLOCK) {
+    disk_manager->read_block(page_bytes, curr_page_id);
     auto page_bytes_it = page_bytes.begin();
 
     // Se lee PageHeader para contar registros
@@ -66,8 +66,8 @@ void Megatron::show_table_metadata(std::string &table_name) {
   size_t curr_page_id = table_metadata.first_page_id, total_size{}, n_regs{};
 
   std::vector<unsigned char> page_bytes;
-  while (curr_page_id != disk.NULL_BLOCK) {
-    disk.read_block(page_bytes, curr_page_id);
+  while (curr_page_id != disk_manager->NULL_BLOCK) {
+    disk_manager->read_block(page_bytes, curr_page_id);
     auto page_bytes_it = page_bytes.begin();
 
     // Se lee PageHeader para contar registros
@@ -75,7 +75,7 @@ void Megatron::show_table_metadata(std::string &table_name) {
 
     page_header = serial::deserialize_page_header(page_bytes_it);
 
-    total_size += disk.BLOCK_SIZE - page_header.free_space;
+    total_size += disk_manager->BLOCK_SIZE - page_header.free_space;
     n_regs += page_header.n_regs;
 
     std::cout << " -> " << curr_page_id;

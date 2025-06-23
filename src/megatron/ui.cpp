@@ -371,7 +371,7 @@ void Megatron::ui_interact_buffer_manager() {
     return;
   }
 
-  buffer_manager_ptr->flush_all();
+  buffer_manager->flush_all();
   translate();
 
   // buffer_ui = std::make_unique<BufferUI>(buffer_manager_ptr->pool_.capacity(),
@@ -379,7 +379,7 @@ void Megatron::ui_interact_buffer_manager() {
 
   int opcion;
   while (true) {
-    buffer_manager_ptr->flush_all();
+    buffer_manager->flush_all();
     clearScreen();
     buffer_ui->printBuffer();
     buffer_ui->printLRU();

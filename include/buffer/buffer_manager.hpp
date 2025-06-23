@@ -4,11 +4,12 @@
 #include "frame.hpp"
 #include <cstddef>
 #include <iostream>
+#include <memory>
 
 class BufferManager {
 public:
-  BufferManager(size_t capacity, DiskManager &disk_manager)
-      : capacity(capacity), disk_manager(disk_manager) {}
+  BufferManager(size_t capacity, std::unique_ptr<DiskManager> &disk_manager)
+      : capacity(capacity), disk_manager(disk_manager.get()) {}
 
   // Carga de pagina, necesariamente incrementa pin_count
   Frame &load_pin_page(size_t page_id) {
@@ -47,7 +48,7 @@ public:
   void flush_all() {
     for (auto &[page_id, entry] : frame_map) {
       if (entry.frame->dirty) {
-        disk_manager.write_block(entry.frame->page_bytes, page_id);
+        disk_manager->write_block(entry.frame->page_bytes, page_id);
         entry.frame->dirty = false;
       }
     }
@@ -62,7 +63,7 @@ private:
     std::vector<unsigned char> data;
 
     // TODO: algun check de bloque_id valido?
-    disk_manager.read_block(data, page_id);
+    disk_manager->read_block(data, page_id);
 
     auto frame = std::make_unique<Frame>(page_id, std::move(data));
     lru_list.push_front(page_id);
@@ -80,7 +81,7 @@ private:
 
       if (entry.pin_count == 0) {
         if (entry.frame->dirty) {
-          disk_manager.write_block(entry.frame->page_bytes, *it);
+          disk_manager->write_block(entry.frame->page_bytes, *it);
         }
 
         frame_map.erase(*it);
@@ -93,7 +94,7 @@ private:
         "Todas las paginas estan pineadas, imposible insertar");
   }
 
-  DiskManager &disk_manager;
+  DiskManager *disk_manager{};
   size_t capacity;
 
   int hits, total;

@@ -1,6 +1,7 @@
 #include "megatron.hpp"
 #include "disk_manager.hpp"
 #include "ui.cpp"
+#include <csignal>
 #include <cstddef>
 #include <cstdlib>
 #include <filesystem>
@@ -15,7 +16,7 @@
 
 void Megatron::run() {
   string opcion;
-  while (true) {
+  while (!global_shutdown.load()) {
     clearScreen();
     mostrarMenu();
     getline(cin, opcion);
@@ -47,17 +48,17 @@ void Megatron::run() {
     else if (opcion == "13") {
       clearScreen();
       cout << "Especificaciones de disco" << endl;
-      cout << "Superficies: " << disk.SURFACES << endl;
-      cout << "Pistas/superf: " << disk.TRACKS_PER_SURFACE << endl;
-      cout << "Sectores/pista: " << disk.SECTORS_PER_TRACK << endl;
-      cout << "Sectores totales: " << disk.TOTAL_SECTORS << endl;
-      cout << "Pistas totales: " << disk.TRACKS_PER_SURFACE * disk.SURFACES << endl;
-      cout << "Capacidad de sector: " << disk.SECTOR_SIZE << endl;
-      cout << "Capacidad de bloque: " << disk.BLOCK_SIZE << endl;
-      cout << "Bloques por pista: " << disk.TRACK_SIZE / (disk.BLOCK_SIZE) << endl;
-      cout << "Bloques por superficie: " << disk.SURFACE_SIZE / (disk.BLOCK_SIZE) << endl;
-      cout << "Bloques totales: " << disk.DISK_CAPACITY / (disk.BLOCK_SIZE) << endl;
-      cout << "Bytes Usados: " << disk.calculate_free_space() << " / " << disk.DISK_CAPACITY << endl;
+      cout << "Superficies: " << disk_manager->SURFACES << endl;
+      cout << "Pistas/superf: " << disk_manager->TRACKS_PER_SURFACE << endl;
+      cout << "Sectores/pista: " << disk_manager->SECTORS_PER_TRACK << endl;
+      cout << "Sectores totales: " << disk_manager->TOTAL_SECTORS << endl;
+      cout << "Pistas totales: " << disk_manager->TRACKS_PER_SURFACE * disk_manager->SURFACES << endl;
+      cout << "Capacidad de sector: " << disk_manager->SECTOR_SIZE << endl;
+      cout << "Capacidad de bloque: " << disk_manager->BLOCK_SIZE << endl;
+      cout << "Bloques por pista: " << disk_manager->TRACK_SIZE / (disk_manager->BLOCK_SIZE) << endl;
+      cout << "Bloques por superficie: " << disk_manager->SURFACE_SIZE / (disk_manager->BLOCK_SIZE) << endl;
+      cout << "Bloques totales: " << disk_manager->DISK_CAPACITY / (disk_manager->BLOCK_SIZE) << endl;
+      cout << "Bytes Usados: " << disk_manager->calculate_free_space() << " / " << disk_manager->DISK_CAPACITY << endl;
 
       pauseAndReturn();
 
@@ -79,7 +80,7 @@ void Megatron::run() {
 
     } else if (opcion == "18") {
       std::cout << "Hits/totales : "
-                << buffer_manager_ptr->get_hits() << " / " << buffer_manager_ptr->get_total_accesses() << std::endl;
+                << buffer_manager->get_hits() << " / " << buffer_manager->get_total_accesses() << std::endl;
       pauseAndReturn();
 
     } else if (opcion == "20") {
@@ -91,46 +92,72 @@ void Megatron::run() {
       pauseAndReturn();
     }
   }
+
+  clean_managers();
 }
 
 // Set/Reset de frames en buffer pool
 // @note Implica un flush de todas las paginas, caso ya exista un buffer_manager asignado
-// FIXME: potencialmente peligroso en caso de SIGINT, check en manejo de seniales
-// Cambiar a unique_ptr a disk_manager, validar caso disk no este cargado
+// FIXME: ?Sin pedir a usuario?
 void Megatron::set_buffer_manager_frames() {
   std::cout << "Ingrese número de frames en buffer pool: ";
   size_t frames;
   if (!(std::cin >> frames) || frames == 0)
     throw std::invalid_argument("Numero de frames inválido");
 
-  if (buffer_manager_ptr)
-    buffer_manager_ptr->flush_all();
+  if (buffer_manager)
+    buffer_manager->flush_all();
 
-  buffer_manager_ptr = std::make_unique<BufferManager>(frames, disk);
+  buffer_manager = std::make_unique<BufferManager>(frames, disk_manager);
 }
 
-void Megatron::load_disk(std::string disk_name) {
-  disk.load_disk(disk_name);
+// FIXME: IMPLEMENTAR
+void Megatron::load_disk(std::string disk_name, size_t n_frames) {
+  if (!disk_manager)
+    disk_manager = std::make_unique<DiskManager>();
 
-  n_sectors_in_block = disk.SECTORS_PER_BLOCK;
+  disk_manager->load_disk(disk_name);
+
+  n_sectors_in_block = disk_manager->SECTORS_PER_BLOCK;
 
   set_buffer_manager_frames();
 }
 
+// FIXME: IMPLEMENTAR
 void Megatron::new_disk(std::string disk_name, size_t surfaces, size_t tracks, size_t sectors, size_t bytes, size_t sectors_block) {
-  n_sectors_in_block = sectors_block;
+  if (surfaces == 0 || tracks == 0 || sectors == 0 || bytes == 0 || sectors_block == 0) {
+    throw std::invalid_argument("Parámetros del disco no pueden ser cero");
+  }
 
-  disk.new_disk(disk_name,
-                surfaces,
-                tracks,
-                sectors,
-                bytes,
-                n_sectors_in_block);
+  if (buffer_manager)
+    buffer_manager->flush_all();
 
-  load_disk(disk_name);
+  if (!disk_manager)
+
+    n_sectors_in_block = sectors_block;
+
+  disk_manager->new_disk(disk_name,
+                         surfaces,
+                         tracks,
+                         sectors,
+                         bytes,
+                         n_sectors_in_block);
+
+  // load_disk(disk_name);
+}
+
+void Megatron::clean_managers() {
+  if (buffer_manager) {
+    buffer_manager->flush_all();
+    buffer_manager.reset();
+  }
 }
 
 Megatron::Megatron() {
-  // if (buffer_manager_ptr)
-  //   buffer_manager_ptr->flush_all();
+  std::signal(SIGINT, [](int) {
+    global_shutdown.store(true);
+  });
+}
+
+Megatron::~Megatron() {
 }

@@ -45,8 +45,8 @@ void Megatron::select_fixed(serial::TableMetadata &table_metadata,
                             size_t col_index, SQL_type &cond_val) {
   // Se iteran por todas las paginas
   size_t curr_page_id = table_metadata.first_page_id, n_regs{};
-  while (curr_page_id != disk.NULL_BLOCK) {
-    auto frame = buffer_manager_ptr->load_pin_page(curr_page_id);
+  while (curr_page_id != disk_manager->NULL_BLOCK) {
+    auto frame = buffer_manager->load_pin_page(curr_page_id);
     std::vector<unsigned char> &page_bytes = frame.page_bytes;
 
     auto page_bytes_it = page_bytes.begin();
@@ -73,7 +73,7 @@ void Megatron::select_fixed(serial::TableMetadata &table_metadata,
       }
     }
 
-    buffer_manager_ptr->free_unpin_page(curr_page_id);
+    buffer_manager->free_unpin_page(curr_page_id);
     curr_page_id = page_header.next_block_id;
   }
   std::cout << "Numero de registros: " << n_regs << std::endl;
@@ -82,8 +82,8 @@ void Megatron::select_fixed(serial::TableMetadata &table_metadata,
 void Megatron::select_slotted(serial::TableMetadata &table_metadata, size_t col_index, SQL_type &cond_val) {
   // Se iteran por todas las paginas
   size_t curr_page_id = table_metadata.first_page_id, n_regs{};
-  while (curr_page_id != disk.NULL_BLOCK) {
-    auto frame = buffer_manager_ptr->load_pin_page(curr_page_id);
+  while (curr_page_id != disk_manager->NULL_BLOCK) {
+    auto frame = buffer_manager->load_pin_page(curr_page_id);
     std::vector<unsigned char> &page_bytes = frame.page_bytes;
 
     auto page_bytes_it = page_bytes.begin();
@@ -110,7 +110,7 @@ void Megatron::select_slotted(serial::TableMetadata &table_metadata, size_t col_
       }
     }
 
-    buffer_manager_ptr->free_unpin_page(curr_page_id);
+    buffer_manager->free_unpin_page(curr_page_id);
 
     curr_page_id = page_header.next_block_id;
   }

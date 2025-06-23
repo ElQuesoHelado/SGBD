@@ -47,14 +47,14 @@ void Megatron::insert_fixed(serial::TableMetadata &table_metadata, std::vector<s
                                        table_metadata.max_reg_size);
 
   // Paginas sin espacio suficiente
-  if (insert_page_id == disk.NULL_BLOCK)
+  if (insert_page_id == disk_manager->NULL_BLOCK)
     insert_page_id = add_new_page_to_table(table_metadata);
 
   // Se lee pagina y saca metadata relevante
   serial::PageHeader page_header;
   serial::FixedDataHeader fixed_data_header;
 
-  auto &frame = buffer_manager_ptr->load_pin_page(insert_page_id);
+  auto &frame = buffer_manager->load_pin_page(insert_page_id);
   std::vector<unsigned char> &insert_page_bytes = frame.page_bytes;
 
   // disk.read_block(insert_page_bytes, insert_page_id);
@@ -94,7 +94,7 @@ void Megatron::insert_fixed(serial::TableMetadata &table_metadata, std::vector<s
   // Copia registro como tal
   std::copy(register_bytes.begin(), register_bytes.end(), page_it);
 
-  buffer_manager_ptr->free_unpin_page(insert_page_id, true);
+  buffer_manager->free_unpin_page(insert_page_id, true);
   // frame.dirty = true;
   // disk.write_block(insert_page_bytes, insert_page_id);
 }
@@ -119,11 +119,11 @@ void Megatron::insert_slotted(serial::TableMetadata &table_metadata, std::vector
                                        register_bytes.size() + sizeof(serial::Slot));
 
   // Paginas sin espacio suficiente
-  if (insert_page_id == disk.NULL_BLOCK)
+  if (insert_page_id == disk_manager->NULL_BLOCK)
     insert_page_id = add_new_page_to_table(table_metadata);
 
   // Se lee pagina y saca metadata relevante
-  auto &frame = buffer_manager_ptr->load_pin_page(insert_page_id);
+  auto &frame = buffer_manager->load_pin_page(insert_page_id);
   std::vector<unsigned char> &insert_page_bytes = frame.page_bytes;
 
   auto page_header = serial::deserialize_page_header(insert_page_bytes);
@@ -152,7 +152,7 @@ void Megatron::insert_slotted(serial::TableMetadata &table_metadata, std::vector
   page_it = insert_page_bytes.begin() + byte_offset_free_reg;
   std::copy(register_bytes.begin(), register_bytes.end(), page_it);
 
-  buffer_manager_ptr->free_unpin_page(insert_page_id, true);
+  buffer_manager->free_unpin_page(insert_page_id, true);
 
   // frame.dirty = true;
   // disk.write_block(insert_page_bytes, insert_page_id);

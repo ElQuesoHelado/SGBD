@@ -25,22 +25,22 @@ bool Megatron::create_table(std::string name, std::vector<std::pair<std::string,
 
   // Se carga todo sector 1
   std::vector<unsigned char> sector1_bytes;
-  disk.read_sector(sector1_bytes, 1);
+  disk_manager->read_sector(sector1_bytes, 1);
 
   auto sector1_meta = serial::deserialize_sector1(sector1_bytes);
 
   // Bloque donde se va a almacenar tabla
   sector1_meta.n_tables++;
-  sector1_meta.table_block_ids.push_back(disk.reserve_free_block());
+  sector1_meta.table_block_ids.push_back(disk_manager->reserve_free_block());
 
   init_table_metadata(table_metadata, name, sector1_meta.table_block_ids.back(), columns);
 
-  auto table_block_bytes = serial::serialize_table_metadata(table_metadata, disk.BLOCK_SIZE);
+  auto table_block_bytes = serial::serialize_table_metadata(table_metadata, disk_manager->BLOCK_SIZE);
 
-  disk.write_block(table_block_bytes, table_metadata.table_block_id);
+  disk_manager->write_block(table_block_bytes, table_metadata.table_block_id);
 
   sector1_bytes = serial::serialize_sector1(sector1_meta);
-  disk.write_sector(sector1_bytes, 1);
+  disk_manager->write_sector(sector1_bytes, 1);
 
   return 1;
 }
@@ -50,7 +50,7 @@ bool Megatron::search_table(std::string table_name, serial::TableMetadata &table
 
   // Se carga todo sector 1
   std::vector<unsigned char> sector1_bytes;
-  disk.read_sector(sector1_bytes, 1);
+  disk_manager->read_sector(sector1_bytes, 1);
 
   auto sector1_meta = serial::deserialize_sector1(sector1_bytes);
 
@@ -59,7 +59,7 @@ bool Megatron::search_table(std::string table_name, serial::TableMetadata &table
     std::vector<unsigned char> block_bytes;
 
     // TODO: Cambio logica a buffer manager
-    disk.read_block(block_bytes, sector1_meta.table_block_ids[i]);
+    disk_manager->read_block(block_bytes, sector1_meta.table_block_ids[i]);
 
     serial::TableMetadata curr_table_metadata =
         serial::deserialize_table_metadata(block_bytes);

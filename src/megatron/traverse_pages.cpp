@@ -8,10 +8,10 @@
 uint32_t Megatron::get_insertable_page(uint32_t first_block_id, uint32_t reg_size) {
   uint32_t curr_block_id = first_block_id;
 
-  while (curr_block_id != disk.NULL_BLOCK) {
+  while (curr_block_id != disk_manager->NULL_BLOCK) {
     // disk.read_block(block, curr_block_id);
 
-    auto &frame = buffer_manager_ptr->load_pin_page(curr_block_id);
+    auto &frame = buffer_manager->load_pin_page(curr_block_id);
     std::vector<unsigned char> &block = frame.page_bytes;
 
     auto page_header = serial::deserialize_page_header(block);
@@ -20,10 +20,10 @@ uint32_t Megatron::get_insertable_page(uint32_t first_block_id, uint32_t reg_siz
       return curr_block_id;
     }
 
-    buffer_manager_ptr->free_unpin_page(curr_block_id);
+    buffer_manager->free_unpin_page(curr_block_id);
 
     curr_block_id = page_header.next_block_id;
   }
 
-  return disk.NULL_BLOCK;
+  return disk_manager->NULL_BLOCK;
 }

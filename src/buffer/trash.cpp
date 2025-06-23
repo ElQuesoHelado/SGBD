@@ -30,9 +30,9 @@ std::vector<uint32_t> Megatron::locate_regs_cond(std::string &table_name, std::s
 
   // Se iteran por todas las paginas
   size_t curr_page_id = table_metadata.first_page_id, n_regs{};
-  while (curr_page_id != disk.NULL_BLOCK) {
+  while (curr_page_id != disk_manager->NULL_BLOCK) {
     // disk.read_block(page_bytes, curr_page_id);
-    auto frame = buffer_manager_ptr->load_pin_page(curr_page_id);
+    auto frame = buffer_manager->load_pin_page(curr_page_id);
     std::vector<unsigned char> &page_bytes = frame.page_bytes;
 
     auto page_bytes_it = page_bytes.begin();
@@ -64,7 +64,7 @@ std::vector<uint32_t> Megatron::locate_regs_cond(std::string &table_name, std::s
       }
     }
 
-    buffer_manager_ptr->free_unpin_page(curr_page_id);
+    buffer_manager->free_unpin_page(curr_page_id);
     curr_page_id = page_header.next_block_id;
   }
   std::cout << "Numero de registros encontrados: " << n_regs << std::endl;
@@ -82,15 +82,15 @@ std::pair<uint32_t, uint32_t> Megatron::locate_nth_reg(std::string &table_name, 
   // No existe
   if (!search_table(table_name, table_metadata)) {
     std::cerr << "Tabla: " << table_name << " no existe" << std::endl;
-    return {disk.NULL_BLOCK, 0};
+    return {disk_manager->NULL_BLOCK, 0};
   }
 
   // Se iteran por todas las paginas
   size_t curr_page_id = table_metadata.first_page_id;
 
   // std::vector<unsigned char> page_bytes;
-  while (curr_page_id != disk.NULL_BLOCK) {
-    auto &frame = buffer_manager_ptr->load_pin_page(curr_page_id);
+  while (curr_page_id != disk_manager->NULL_BLOCK) {
+    auto &frame = buffer_manager->load_pin_page(curr_page_id);
     std::vector<unsigned char> &page_bytes = frame.page_bytes;
     auto page_bytes_it = page_bytes.begin();
 
@@ -125,13 +125,13 @@ std::pair<uint32_t, uint32_t> Megatron::locate_nth_reg(std::string &table_name, 
       break;
     }
 
-    buffer_manager_ptr->free_unpin_page(curr_page_id);
+    buffer_manager->free_unpin_page(curr_page_id);
 
     nth -= page_header.n_regs;
     curr_page_id = page_header.next_block_id;
   }
 
-  return {disk.NULL_BLOCK, 0};
+  return {disk_manager->NULL_BLOCK, 0};
 }
 
 // Inserta un solo registro en tabla
@@ -157,7 +157,7 @@ std::pair<uint32_t, std::vector<unsigned char>> Megatron::insert_reg_in_page(ser
 
   if (table_metadata.columns.size() != values.size()) {
     std::cerr << "Numero de valores diferente a columnas" << std::endl;
-    return {disk.NULL_BLOCK, {}};
+    return {disk_manager->NULL_BLOCK, {}};
   }
 
   // Serializamos todo el registro
@@ -183,7 +183,7 @@ std::pair<uint32_t, std::vector<unsigned char>> Megatron::insert_reg_in_page(ser
 
   // auto &frame = buffer_manager_ptr->get_block(insert_page_id);
   std::vector<unsigned char> insert_page_bytes;
-  disk.read_block(insert_page_bytes, insert_page_id);
+  disk_manager->read_block(insert_page_bytes, insert_page_id);
 
   size_t byte_offset_free_reg;
 

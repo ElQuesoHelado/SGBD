@@ -12,14 +12,14 @@ uint32_t Megatron::add_new_page_to_table(serial::TableMetadata &table_metadata) 
   // Se carga ultima pagina
   auto last_page_id = table_metadata.last_page_id;
 
-  auto &last_frame = buffer_manager_ptr->load_pin_page(last_page_id);
+  auto &last_frame = buffer_manager->load_pin_page(last_page_id);
   std::vector<unsigned char> &last_page_bytes = last_frame.page_bytes;
   // std::vector<unsigned char> last_page_bytes;
   // disk.read_block(last_page_bytes, table_metadata.last_page_id);
 
   auto page_header = serial::deserialize_page_header(last_page_bytes);
 
-  if (page_header.next_block_id != disk.NULL_BLOCK)
+  if (page_header.next_block_id != disk_manager->NULL_BLOCK)
     throw std::runtime_error("Ultima pagina de tabla no tiene puntero a null");
 
   // Se crea nueva pagina de acuerdo a formato de table_metadata
@@ -34,15 +34,15 @@ uint32_t Megatron::add_new_page_to_table(serial::TableMetadata &table_metadata) 
   serial::serialize_page_header(page_header, overwrite_it);
 
   // Escribe tabla con nuevo puntero a pagina nueva(la ultima)
-  auto &table_frame = buffer_manager_ptr->load_pin_page(table_metadata.table_block_id);
+  auto &table_frame = buffer_manager->load_pin_page(table_metadata.table_block_id);
   auto &table_block_bytes = table_frame.page_bytes;
-  table_block_bytes = serial::serialize_table_metadata(table_metadata, disk.BLOCK_SIZE);
+  table_block_bytes = serial::serialize_table_metadata(table_metadata, disk_manager->BLOCK_SIZE);
 
   // last_frame.dirty = true;
   // table_frame.dirty = true;
 
-  buffer_manager_ptr->free_unpin_page(last_page_id, true);
-  buffer_manager_ptr->free_unpin_page(table_metadata.table_block_id, true);
+  buffer_manager->free_unpin_page(last_page_id, true);
+  buffer_manager->free_unpin_page(table_metadata.table_block_id, true);
 
   // disk.write_block(table_block_bytes, table_metadata.table_block_id);
 
@@ -64,12 +64,12 @@ uint32_t Megatron::create_page(serial::TableMetadata &table_metadata) {
   serial::SlottedDataHeader slotted_data_header;
   serial::PageHeader page_header;
 
-  uint32_t free_block_id = disk.get_free_block();
+  uint32_t free_block_id = disk_manager->get_free_block();
 
-  if (free_block_id == disk.NULL_BLOCK)
+  if (free_block_id == disk_manager->NULL_BLOCK)
     throw std::runtime_error("Ya no hay bloques libres para agregar pagina a tabla");
 
-  auto &new_frame = buffer_manager_ptr->load_pin_page(free_block_id);
+  auto &new_frame = buffer_manager->load_pin_page(free_block_id);
   std::vector<unsigned char> &page_bytes = new_frame.page_bytes;
 
   auto write_it = page_bytes.begin();
@@ -90,8 +90,8 @@ uint32_t Megatron::create_page(serial::TableMetadata &table_metadata) {
   }
 
   // new_frame.dirty = true;
-  buffer_manager_ptr->free_unpin_page(free_block_id, true);
-  disk.set_block_used(free_block_id);
+  buffer_manager->free_unpin_page(free_block_id, true);
+  disk_manager->set_block_used(free_block_id);
 
   return free_block_id;
 }

@@ -3,12 +3,11 @@
 #include "buffer/buffer_manager.hpp"
 #include "buffer/buffer_ui.hpp"
 #include "disk_manager.hpp"
-#include "types.hpp"
-// #include "relation.hpp"
-// #include "serial/file.hpp"
 #include "serial/fixed_data.hpp"
 #include "serial/slotted_data.hpp"
 #include "serial/table.hpp"
+#include "types.hpp"
+#include <atomic>
 #include <cstddef>
 #include <cstdint>
 #include <fstream>
@@ -18,41 +17,13 @@
 #include <vector>
 
 class Megatron {
-  DiskManager disk;
-  std::unique_ptr<BufferManager> buffer_manager_ptr{};
+  std::unique_ptr<DiskManager> disk_manager;
+  std::unique_ptr<BufferManager> buffer_manager{};
   std::unique_ptr<BufferUI> buffer_ui{};
 
-  std::ofstream important_bytes;
-  // std::fstream schemas_file, metad_file;
-
-  // const std::string schema_dir_path = "schema/",
-  //                   schemas_path = schema_dir_path + "schemas.txt",
-  //                   metad_path = schema_dir_path + "generic_metadata.txt";
+  static inline std::atomic<bool> global_shutdown{false};
 
   size_t n_sectors_in_block;
-
-  // Relation load_relation_metadata(std::string name);
-
-  /*
-   * @brief Escribe archivo en espacio libre en disco(contiguo), se asigna metadata a cada bloque
-   * @return size_t Primer sector LBA de archivo/header de archivo
-   * TODO: optimizar
-   */
-  // size_t write_empty_file(serial::FileHeader &file_header, serial::FixedDataHeader &fixed_block_header);
-
-  // size_t write_file_page(serial::TableMetadata &table_metadata,
-  //                        serial::FileHeader &file_header,
-  //                        serial::FixedDataHeader &fixed_block_header, std::vector<unsigned char> &bytes, size_t index);
-
-  // serial::FileHeader get_file_header(serial::TableMetadata &table_metadata, size_t n_file = 0);
-  // std::vector<unsigned char> get_n_page_from_file(size_t file_header_lba, serial::FileHeader &file_header, size_t n);
-
-  /*
-   * @brief Busca tabla en schemas, caso no exista retorna metadata vacia
-   * @return TableMetadata
-   * Optimizar
-   * Lo ideal seria guardar en un buffer de metadata de tablas, esto en un hashmap
-   */
 
   //====
   // Funciones para llenado de todo campo de headers/metadata,
@@ -67,12 +38,13 @@ class Megatron {
                            std::string name, uint32_t block_id,
                            std::vector<std::pair<std::string, std::string>> &columns);
 
-  // void init_file_header(serial::TableMetadata &table_metadata, serial::FileHeader &file_header,
-  //                       size_t block_type, size_t next_file_lba);
   void init_page_header(serial::PageHeader &page_header, uint32_t initial_free_space);
 
   void init_fixed_data_header(serial::TableMetadata &table_metadata, serial::FixedDataHeader &fixed_data_header);
   void init_slotted_data_header(serial::TableMetadata &table_metadata, serial::SlottedDataHeader &slotted_data_header);
+
+  // Guarda toda pagina sucia y free_space_bitmap, setea managers a null
+  void clean_managers();
 
 public:
   // ====
@@ -107,9 +79,6 @@ public:
   void delete_nth_reg(std::string &table_name, size_t nth);
   void delete_nth_fixed(std::vector<unsigned char> &page_bytes, size_t nth);
   void delete_nth_slotted(std::vector<unsigned char> &page_bytes, size_t nth);
-
-  // Wrapper para inserts en tabla tanto fixed como slotted
-  // void insert(std::string table_name, std::vector<std::string> &values);
 
   void insert(std::string table_name, std::vector<std::string> &values);
   void insert_fixed(serial::TableMetadata &table_metadata, std::vector<std::string> &values);
@@ -188,7 +157,7 @@ public:
   void ui_interact_buffer_manager();
 
   void new_disk(std::string disk_name, size_t surfaces, size_t tracks, size_t sectors, size_t bytes, size_t sectors_block);
-  void load_disk(std::string disk_name);
+  void load_disk(std::string disk_name, size_t n_frames);
 
   void set_buffer_manager_frames();
 
@@ -266,4 +235,5 @@ public:
 
   void run();
   Megatron();
+  ~Megatron();
 };
