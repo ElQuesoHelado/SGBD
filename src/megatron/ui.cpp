@@ -55,13 +55,20 @@ void Megatron::ui_load_disk() {
     std::string disk_name;
     std::getline(std::cin, disk_name);
 
-    load_disk(disk_name);
+    std::cout << "Ingrese número de frames en buffer pool: ";
+    size_t frames;
+    if (!(std::cin >> frames) || frames == 0)
+      throw std::invalid_argument("Numero de frames inválido");
+
+    load_disk(disk_name, frames);
 
     std::cout << "Disco cargado correctamente" << std::endl;
   } catch (const std::exception &e) {
     std::cerr << "\nError: " << e.what() << "\n";
     std::cin.clear();
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+    // FIXME: Set nulls con managers
   }
 
   pauseAndReturn();
@@ -70,7 +77,7 @@ void Megatron::ui_load_disk() {
 void Megatron::ui_new_disk() {
   clearScreen();
   try {
-    std::cout << "=== Crear Disco ===\n";
+    std::cout << "=== Crear y Cargar Disco ===\n";
 
     std::cout << "Nombre de disco a crear: ";
 
@@ -104,7 +111,12 @@ void Megatron::ui_new_disk() {
 
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-    new_disk(disk_name, surfaces, tracks, sectors, bytes, sectors_block);
+    std::cout << "Ingrese número de frames en buffer pool: ";
+    size_t frames;
+    if (!(std::cin >> frames) || frames == 0)
+      throw std::invalid_argument("Numero de frames inválido");
+
+    new_disk(disk_name, surfaces, tracks, sectors, bytes, sectors_block, frames);
 
     std::cout << "\nDisco creado exitosamente\n";
 

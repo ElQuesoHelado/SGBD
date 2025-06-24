@@ -1,3 +1,4 @@
+#include "disk_manager.hpp"
 #include "megatron.hpp"
 #include "serial/fixed_data.hpp"
 #include "serial/generic.hpp"
@@ -18,7 +19,10 @@ void Megatron::translate() {
   disk_manager->read_sector(buffer, 0);
   auto sector0 = serial::deserialize_sector0(buffer);
 
-  disk_manager->create_disk_structure(0);
+  DiskManager::create_disk_structure(
+      0, disk_manager->disk_name,
+      sector0.surfaces, sector0.tracks_per_surf,
+      sector0.sectors_per_track, sector0.sector_size);
 
   auto format_str =
       std::format("Superficies: {}, tracks: {}, sectores: {}, tamanio de sector: {},"

@@ -18,8 +18,23 @@ void Megatron::run() {
   string opcion;
   while (!global_shutdown.load()) {
     clearScreen();
+
+    if (!disk_manager)
+      std::cout << "\033[1;31mNo hay un disco cargado\033[0m" << std::endl;
+    if (!buffer_manager)
+      std::cout << "\033[1;31mNo hay un buffer manager asignado\033[0m" << std::endl;
+
     mostrarMenu();
-    getline(cin, opcion);
+
+    if (global_shutdown.load())
+      break;
+
+    if (!getline(cin, opcion)) {
+      if (global_shutdown.load())
+        break;
+      cin.clear();
+      continue;
+    }
 
     if (opcion == "1")
       ui_load_disk();
@@ -93,6 +108,7 @@ void Megatron::run() {
     }
   }
 
+  std::cout << "Cerrado correctamente" << std::endl;
   clean_managers();
 }
 
@@ -111,45 +127,72 @@ void Megatron::set_buffer_manager_frames() {
   buffer_manager = std::make_unique<BufferManager>(frames, disk_manager);
 }
 
-// FIXME: IMPLEMENTAR
+// Carga de disco ya existente, caso disco a cargar invalido,
+// el cargado se mantiene intacto(tanto disco como buffer)
 void Megatron::load_disk(std::string disk_name, size_t n_frames) {
-  if (!disk_manager)
-    disk_manager = std::make_unique<DiskManager>();
+  try {
+    if (n_frames == 0 || n_frames > 20000)
+      throw std::invalid_argument("Numero de frames para buffer manager fuera de rango");
 
-  disk_manager->load_disk(disk_name);
+    if (disk_manager && buffer_manager) {
+      buffer_manager->flush_all();
+      disk_manager->persist();
+    }
 
-  n_sectors_in_block = disk_manager->SECTORS_PER_BLOCK;
+    // TODO: Throws
+    auto new_disk_manager = std::make_unique<DiskManager>(disk_name);
+    auto new_buffer_manager =
+        std::make_unique<BufferManager>(n_frames, new_disk_manager);
 
-  set_buffer_manager_frames();
+    n_sectors_in_block = new_disk_manager->SECTORS_PER_BLOCK;
+    disk_manager = std::move(new_disk_manager);
+    buffer_manager = std::move(new_buffer_manager);
+  } catch (...) {
+    n_sectors_in_block = 0;
+    std::cout << "Error al cargar disco/asignar buffer manager" << std::endl;
+  }
 }
 
-// FIXME: IMPLEMENTAR
-void Megatron::new_disk(std::string disk_name, size_t surfaces, size_t tracks, size_t sectors, size_t bytes, size_t sectors_block) {
-  if (surfaces == 0 || tracks == 0 || sectors == 0 || bytes == 0 || sectors_block == 0) {
-    throw std::invalid_argument("Parámetros del disco no pueden ser cero");
+void Megatron::new_disk(std::string disk_name, size_t surfaces, size_t tracks,
+                        size_t sectors, size_t bytes, size_t sectors_block, size_t n_frames) {
+  try {
+    if (n_frames == 0 || n_frames > 20000)
+      throw std::invalid_argument("Numero de frames para buffer manager fuera de rango");
+
+    if (surfaces == 0 || tracks == 0 || sectors == 0 || bytes == 0 || sectors_block == 0)
+      throw std::invalid_argument("Parámetros del disco no pueden ser cero");
+
+    if (disk_manager && buffer_manager) {
+      buffer_manager->flush_all();
+      disk_manager->persist();
+    }
+
+    // TODO: Throws
+    auto new_disk_manager =
+        std::make_unique<DiskManager>(
+            disk_name, surfaces, tracks,
+            sectors, bytes, sectors_block);
+    auto new_buffer_manager =
+        std::make_unique<BufferManager>(n_frames, new_disk_manager);
+
+    n_sectors_in_block = new_disk_manager->SECTORS_PER_BLOCK;
+    disk_manager = std::move(new_disk_manager);
+    buffer_manager = std::move(new_buffer_manager);
+  } catch (...) {
+    n_sectors_in_block = 0;
+    std::cout << "Error al crear/cargar disco/asignar buffer manager" << std::endl;
   }
-
-  if (buffer_manager)
-    buffer_manager->flush_all();
-
-  if (!disk_manager)
-
-    n_sectors_in_block = sectors_block;
-
-  disk_manager->new_disk(disk_name,
-                         surfaces,
-                         tracks,
-                         sectors,
-                         bytes,
-                         n_sectors_in_block);
-
-  // load_disk(disk_name);
 }
 
 void Megatron::clean_managers() {
   if (buffer_manager) {
     buffer_manager->flush_all();
     buffer_manager.reset();
+  }
+
+  if (disk_manager) {
+    disk_manager->persist();
+    disk_manager.reset();
   }
 }
 

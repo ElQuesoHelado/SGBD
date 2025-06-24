@@ -13,9 +13,7 @@
  * Toda operacion se realiza con el modelo Cylinder Head(superficie) Sector
  */
 class DiskManager {
-
   size_t cur_head{}, cur_cylinder{}, cur_sector{};
-
   std::fstream curr_sector_file{}, curr_sector_txt_file{};
 
   // ===========
@@ -25,6 +23,20 @@ class DiskManager {
   size_t get_zeros_sequence_bitset(boost::dynamic_bitset<unsigned char> &set, size_t begin, size_t end, size_t n);
   void store_fsb();
   void load_fsb();
+
+  /*
+   * Crea disco nuevo, crea estructura completa, free_space_bitmap
+   * y guarda specs en sector 0(superficies, ... )
+   */
+  void new_disk(std::string new_disk_name, size_t surfaces,
+                size_t tracks_per_surf, size_t sectors_per_track,
+                size_t sector_size, size_t sectors_per_block);
+
+  /*
+   * Carga y calcula specs disco basado en carpetas/files
+   * Se carga free_space_bitmap
+   */
+  void load_disk(std::string load_disk_name);
 
 public:
   size_t
@@ -46,12 +58,14 @@ public:
 
   FreeBlockMap free_block_map;
 
-  void create_disk_structure(bool bin);
+  boost::dynamic_bitset<unsigned char> free_space_bitmap;
+
+  static void create_disk_structure(bool bin, std::string disk_name, size_t surfaces,
+                                    size_t tracks_per_surf, size_t sectors_per_track,
+                                    size_t sector_size);
 
   // Representacion LBA(Logical Block Addresing)
   //  Cargado en memoria para busquedas rapidas, luego se guarda en disco
-  //  TODO: Por ahora se trabaja su guardado de forma diferente(directa), sin usar sectores, bloques, etc
-  //  Concuerda con el tamanio de 8 tracks
 
   // ===========
   // Operaciones de cabecera
@@ -62,10 +76,6 @@ public:
    * caso al menos un sector este usado, se asume bloque como ocupado
    */
   void create_free_block_map();
-
-  boost::dynamic_bitset<unsigned char> free_space_bitmap;
-
-  // size_t get_free_logic_sectors_dbms(size_t n_sectors);
 
   size_t get_free_logic_sectors_storable(size_t n_sectors);
 
@@ -115,7 +125,7 @@ public:
   // Dependiendo de bloques libres
   uint32_t write_block(std::vector<unsigned char> &block_bytes);
 
-  // Por ahora es correcto, en deletes cambia
+  // TODO: Por ahora es correcto, en deletes cambia
   void write_sector_txt(std::string str, size_t logic_sector);
   void write_block_txt(std::string str, uint32_t block_id);
 
@@ -137,24 +147,6 @@ public:
 
   void read_block(std::vector<unsigned char> &block, uint32_t block_id);
 
-  // ===========
-  // Disks
-  // ===========
-
-  /*
-   * Crea disco con cierto nombre, implica crear estructura completa, free_space_bitmap
-   * y guardar datos en sector 0(superficies, )
-   */
-  void new_disk(std::string new_disk_name, size_t surfaces,
-                size_t tracks_per_surf, size_t sectors_per_track,
-                size_t sector_size, size_t sectors_per_block);
-
-  /*
-   * Carga y calcula specs disco basado en carpetas/files
-   * Se carga free_space_bitmap
-   */
-  void load_disk(std::string load_disk_name);
-
   std::string logic_sector_to_CHS(size_t logic_sector);
 
   std::vector<unsigned char> merge_sectors_to_block(std::vector<std::vector<unsigned char>> &sectors_bytes);
@@ -164,11 +156,17 @@ public:
 
   size_t calculate_free_space();
 
+  void persist();
+
   /*
-   * Como tal carga el disco actual, caso exista
-   * TODO: disco en estado invalido
+   * Crea/Reemplaza disco, lo carga
    */
-  DiskManager();
+  DiskManager(std::string new_disk_name, size_t surfaces,
+              size_t tracks_per_surf, size_t sectors_per_track,
+              size_t sector_size, size_t sectors_per_block);
+
+  // Carga disco basado en estructura de carpetas
+  DiskManager(std::string new_disk_name);
 
   ~DiskManager();
 };

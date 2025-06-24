@@ -5,11 +5,15 @@
 #include <cstddef>
 #include <iostream>
 #include <memory>
+#include <vector>
 
 class BufferManager {
 public:
-  BufferManager(size_t capacity, std::unique_ptr<DiskManager> &disk_manager)
-      : capacity(capacity), disk_manager(disk_manager.get()) {}
+  BufferManager(size_t capacity, bool is_clock, std::unique_ptr<DiskManager> &disk_manager)
+      : capacity(capacity), disk_manager(disk_manager.get()), is_clock(is_clock) {
+    if (is_clock)
+      clock.resize(capacity, disk_manager->NULL_BLOCK);
+  }
 
   // Carga de pagina, necesariamente incrementa pin_count
   Frame &load_pin_page(size_t page_id) {
@@ -25,7 +29,11 @@ public:
     }
 
     // Mueve frame al frente
-    lru_list.splice(lru_list.begin(), lru_list, it->second.lru_it);
+    if (!is_clock)
+      lru_list.splice(lru_list.begin(), lru_list, it->second.lru_it);
+    else {
+      it->second.reference_bit = 1;
+    }
     it->second.pin_count++;
 
     return *(it->second.frame);
@@ -66,39 +74,58 @@ private:
     disk_manager->read_block(data, page_id);
 
     auto frame = std::make_unique<Frame>(page_id, std::move(data));
-    lru_list.push_front(page_id);
 
-    frame_map[page_id] = {
-        std::move(frame), lru_list.begin(),
-        0 // pin_count en 0, se incrementa al hacer pin
-    };
+    if (!is_clock) {
+      lru_list.push_front(page_id);
+
+      frame_map[page_id] = {
+          std::move(frame), lru_list.begin(),
+          0 // pin_count en 0, se incrementa al hacer pin
+      };
+    } else {
+      frame_map[page_id] = {
+          std::move(frame), lru_list.end(),
+          0 // pin_count en 0, se incrementa al hacer pin
+      };
+    }
   }
 
   void evict_page() {
-    // Busqueda de pagina menos usada que no este pinned
-    for (auto it = lru_list.rbegin(); it != lru_list.rend(); ++it) {
-      auto &entry = frame_map[*it];
+    if (is_clock) {
 
-      if (entry.pin_count == 0) {
-        if (entry.frame->dirty) {
-          disk_manager->write_block(entry.frame->page_bytes, *it);
+      for (auto &e : frame_map) {
+      }
+
+      hand += 1;
+
+    } else {
+      // Busqueda de pagina menos usada que no este pinned
+      for (auto it = lru_list.rbegin(); it != lru_list.rend(); ++it) {
+        auto &entry = frame_map[*it];
+
+        if (entry.pin_count == 0) {
+          if (entry.frame->dirty) {
+            disk_manager->write_block(entry.frame->page_bytes, *it);
+          }
+
+          frame_map.erase(*it);
+          lru_list.erase(std::next(it).base()); // Rev_it a forward
+          return;
         }
-
-        frame_map.erase(*it);
-        lru_list.erase(std::next(it).base()); // Rev_it a forward
-        return;
       }
     }
 
-    throw std::runtime_error(
-        "Todas las paginas estan pineadas, imposible insertar");
+    throw std::runtime_error("Todas las paginas estan pineadas, imposible insertar");
   }
 
   DiskManager *disk_manager{};
   size_t capacity;
+  bool is_clock{};
 
   int hits, total;
+  size_t hand{};
 
   std::list<size_t> lru_list;
+  std::vector<size_t> clock;
   std::unordered_map<size_t, BufferFrame> frame_map;
 };

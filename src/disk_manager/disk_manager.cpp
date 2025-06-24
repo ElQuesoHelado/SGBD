@@ -97,62 +97,58 @@ void DiskManager::load_fsb() {
 void DiskManager::new_disk(std::string new_disk_name, size_t surfaces,
                            size_t tracks_per_surf, size_t sectors_per_track,
                            size_t sector_size, size_t sectors_per_block) {
-  SURFACES = surfaces;
-  TRACKS_PER_SURFACE = tracks_per_surf;
-  SECTORS_PER_TRACK = sectors_per_track;
-  SECTOR_SIZE = sector_size;
-  SECTORS_PER_BLOCK = sectors_per_block;
-  BLOCK_SIZE = SECTORS_PER_BLOCK * SECTOR_SIZE;
-  TRACK_SIZE = SECTORS_PER_TRACK * SECTOR_SIZE;
-  SURFACE_SIZE = TRACKS_PER_SURFACE * TRACK_SIZE;
-  DISK_CAPACITY = SURFACES * SURFACE_SIZE;
-  TOTAL_SECTORS = SECTORS_PER_TRACK * TRACKS_PER_SURFACE * SURFACES,
-  TOTAL_BLOCKS = TOTAL_SECTORS / SECTORS_PER_BLOCK;
+  DiskManager::create_disk_structure(0, new_disk_name, surfaces, tracks_per_surf, sectors_per_track,
+                                     sector_size);
+  DiskManager::create_disk_structure(1, new_disk_name, surfaces, tracks_per_surf, sectors_per_track,
+                                     sector_size);
 
-  NULL_BLOCK = TOTAL_BLOCKS;
+  // Crear sector 0
+  {
+    serial::Sector_0 sector0;
+    sector0.surfaces = surfaces;
+    sector0.tracks_per_surf = tracks_per_surf;
+    sector0.sectors_per_track = sectors_per_track;
+    sector0.sector_size = sector_size;
+    sector0.sectors_per_block = sectors_per_block;
 
-  disk_name = new_disk_name;
-  disk_name_txt = new_disk_name + "_txt";
+    auto bytes = serial::serialize_sector0(sector0);
+    bytes.resize(sector_size);
 
-  create_disk_structure(0);
-  create_disk_structure(1);
+    std::ofstream out_file(new_disk_name + "/superficie 0/pista 0/sector 0", std::ios::binary);
+    if (!out_file)
+      throw std::runtime_error("No se pudo abrir sector0 para escritura: ");
 
-  size_t fsb_bytes_used = (TOTAL_SECTORS + CHAR_BIT - 1) / CHAR_BIT;
-  // fbm_bytes_used = (TOTAL_BLOCKS + CHAR_BIT - 1) / CHAR_BIT;
+    out_file.write(reinterpret_cast<const char *>(bytes.data()), sector_size);
+    if (!out_file)
+      throw std::runtime_error("Error al escribir sector0: ");
+  }
 
-  // Cuantos sectores ocuparia un fsb
-  // n_sectors = (fsb_bytes_used + SECTOR_SIZE - 1) / SECTOR_SIZE;
+  // Guardar bitmap
+  {
+    size_t total_sectors = sectors_per_track * tracks_per_surf * surfaces,
+           fsb_bytes_used = (total_sectors + CHAR_BIT - 1) / CHAR_BIT;
 
-  // Escritura de metadada de disco en sector 0
-  serial::Sector_0 sector0;
-  sector0.surfaces = SURFACES;
-  sector0.tracks_per_surf = TRACKS_PER_SURFACE;
-  sector0.sectors_per_track = SECTORS_PER_TRACK;
-  sector0.sector_size = SECTOR_SIZE;
-  sector0.sectors_per_block = SECTORS_PER_BLOCK;
+    std::ofstream out_file(disk_name + "/free_space_bitmap", std::ios::binary | std::ios::trunc);
 
-  free_space_bitmap.resize(TOTAL_SECTORS);
+    if (!out_file)
+      throw std::runtime_error(
+          "No se pudo abrir free_space_bitmap para escritura: " + disk_name + "/free_space_bitmap");
 
-  auto bytes = serial::serialize_sector0(sector0);
-  write_sector(bytes, 0);
+    std::vector<char> zeros(fsb_bytes_used, 0);
 
-  //  Caso se guarde bitmap en disco mismo
-  //   free_space_bitmap.set(0, n_sectors, true);
+    out_file.write(zeros.data(), fsb_bytes_used);
+    out_file.close();
 
-  // Bitmap sectores libres
-
-  // free_space_bitmap.set(0, 1, true);
-
-  store_fsb();
-
-  create_free_block_map();
+    if (!out_file)
+      throw std::runtime_error("Error al escribir free_space_bitmap: " + disk_name + "/free_space_bitmap");
+  }
 }
 
 void DiskManager::load_disk(std::string load_disk_name) {
   // Caso se haga un switch a otro disco, se tiene que guardar su FSB
   // TODO: check si de verdad valida que se tenia cargado un disco valido
-  if (DISK_CAPACITY > 0 && TOTAL_SECTORS > 0 && free_space_bitmap.size() == TOTAL_SECTORS)
-    store_fsb();
+  // if (DISK_CAPACITY > 0 && TOTAL_SECTORS > 0 && free_space_bitmap.size() == TOTAL_SECTORS)
+  //   store_fsb();
 
   namespace fs = std::filesystem;
   std::string sector0_path = load_disk_name + "/superficie 0/pista 0/sector 0",
@@ -169,7 +165,6 @@ void DiskManager::load_disk(std::string load_disk_name) {
   // Necesitamos leer el tamanio del primer sector desde filesystem
   size_t sector0_size = fs::file_size(sector0_path);
   std::vector<unsigned char> bytes(sector0_size);
-  // read_block(bytes, sector0_size, 0);
 
   std::ifstream sect0_file(sector0_path, std::ios::binary);
 
@@ -180,7 +175,7 @@ void DiskManager::load_disk(std::string load_disk_name) {
   serial::Sector_0 sector0 = serial::deserialize_sector0(bytes);
 
   if (sector0_size != sector0.sector_size)
-    throw std::runtime_error("sector 0 corrupto");
+    throw std::runtime_error("Sector 0 corrupto");
 
   SURFACES = sector0.surfaces;
   TRACKS_PER_SURFACE = sector0.tracks_per_surf;
@@ -200,58 +195,23 @@ void DiskManager::load_disk(std::string load_disk_name) {
   create_free_block_map();
 }
 
-DiskManager::DiskManager() {
-  // // Creamos un disco vacio
-  // if (!std::filesystem::exists(DISK_NAME)) {
-  //   std::ofstream(DISK_NAME, std::ios::binary).close();
-  // }
-  //
-  // // TODO: Caso cambie tamanio se pierde estructura de disco, ??Alguna forma de preservar data??
-  // if (std::filesystem::file_size(DISK_NAME) != DISK_CAP) {
-  //   // if (1) {
-  //   std::cout << "Disco resized" << std::endl;
-  //   std::filesystem::resize_file(DISK_NAME, DISK_CAP);
-  //
-  //   // free_space_bitmap asociado, el espacio usado por este este se guarda en disco como ocupado
-  //   // Se deberia encontrar en primeros bytes del disco(primera supercifie, primeros tracks y sectores)
-  //   // TODO: Por ahora se asume como un disco nuevo, de igual forma escribimos dos veces(crear bitmap -> escribirlo -> cargar bitmap)
-  //   // Mejorar, usar write para sobreescritura, forzando LBA en 0
-  //
-  //   // Vacio por defecto
-  //   free_space_bitmap.resize(TOTAL_SECTORS);
-  //
-  //   // Se ocupa el espacio ocupado por bitmap
-  //   size_t n_bytes = (free_space_bitmap.size() + CHAR_BIT - 1) / CHAR_BIT,
-  //          n_sectors = (n_bytes + SECTOR_SIZE - 1) / SECTOR_SIZE;
-  //
-  //   free_space_bitmap.set(0, n_sectors, true);
-  //
-  //   std::vector<unsigned char> bytes(n_bytes);
-  //
-  //   // Serializacion de bitmap
-  //   boost::to_block_range(free_space_bitmap, bytes.begin());
-  //
-  //   // write_block(bytes);
-  //
-  //   disk_file.open(DISK_NAME, std::ios::binary | std::ios::in | std::ios::out);
-  //   disk_file.write(reinterpret_cast<const char *>(bytes.data()), n_bytes);
-  //   // store_fsb();
-  //
-  //   disk_file.close();
-  // }
-  //
-  // disk_file.open(DISK_NAME, std::ios::binary | std::ios::in | std::ios::out);
-  // written_bytes_file.open("written_bytes.txt");
-  // read_bytes_file.open("read_bytes.txt");
-  //
-  // // Carga de free_space_bitmap
-  // load_fsb();
-  //
-  // if (!disk_file.is_open())
-  //   std::cout << "Error al abrir archivo disco" << std::endl;
+void DiskManager::persist() {
+  store_fsb();
+}
+
+DiskManager::DiskManager(std::string new_disk_name, size_t surfaces,
+                         size_t tracks_per_surf, size_t sectors_per_track,
+                         size_t sector_size, size_t sectors_per_block) {
+  new_disk(new_disk_name, surfaces, tracks_per_surf, sectors_per_track,
+           sector_size, sectors_per_block);
+}
+
+// Carga disco basado en estructura de carpetas
+DiskManager::DiskManager(std::string load_disk_name) {
+  load_disk(load_disk_name);
 }
 
 DiskManager::~DiskManager() {
   // Se guarda free_space_bitmap
-  store_fsb();
+  persist();
 }

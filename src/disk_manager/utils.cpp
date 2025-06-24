@@ -60,12 +60,13 @@ size_t DiskManager::get_zeros_sequence_bitset(boost::dynamic_bitset<unsigned cha
   return boost::dynamic_bitset<>::npos;
 }
 
-void DiskManager::create_disk_structure(bool bin) {
+void DiskManager::create_disk_structure(bool bin, std::string disk_name_used, size_t surfaces,
+                                        size_t tracks_per_surf, size_t sectors_per_track,
+                                        size_t sector_size) {
   namespace fs = std::filesystem;
 
-  std::string disk_name_used = disk_name;
-  if (!bin)
-    disk_name_used = disk_name_txt;
+  if (bin)
+    disk_name_used += "_txt";
 
   // Eliminamos el disco caso se quiera reemplazar(nombre==disco que ya existe)
   if (fs::exists(disk_name_used))
@@ -76,32 +77,32 @@ void DiskManager::create_disk_structure(bool bin) {
   // Se borra todo excepto metadatas
   for (const auto &entry : fs::directory_iterator(disk_name_used)) {
     if (entry.is_directory()) {
-      std::string nombre = entry.path().filename().string();
-      if (nombre.find("superficie ") == 0) {
+      std::string name = entry.path().filename().string();
+      if (name.find("superficie ") == 0) {
         fs::remove_all(entry.path());
       }
     }
   }
 
   // Se crea toda la estructura
-  for (int s = 0; s < SURFACES; ++s) {
-    std::string carpetaSuperficie = disk_name_used + "/superficie " + std::to_string(s);
-    fs::create_directory(carpetaSuperficie);
+  for (int s = 0; s < surfaces; ++s) {
+    std::string surf_folder = disk_name_used + "/superficie " + std::to_string(s);
+    fs::create_directory(surf_folder);
 
-    for (int p = 0; p < TRACKS_PER_SURFACE; ++p) {
-      std::string carpetaPista = carpetaSuperficie + "/pista " + std::to_string(p);
-      fs::create_directory(carpetaPista);
+    for (int p = 0; p < tracks_per_surf; ++p) {
+      std::string track_folder = surf_folder + "/pista " + std::to_string(p);
+      fs::create_directory(track_folder);
 
-      for (int sec = 0; sec < SECTORS_PER_TRACK; ++sec) {
-        std::string archivoSector = carpetaPista + "/sector " + std::to_string(sec);
+      for (int sec = 0; sec < sectors_per_track; ++sec) {
+        std::string sector_file = track_folder + "/sector " + std::to_string(sec);
 
         if (bin) {
-          std::ofstream out(archivoSector, std::ios::binary | std::ios::trunc);
-          std::vector<char> zeros(SECTOR_SIZE, 0);
-          out.write(zeros.data(), SECTOR_SIZE);
+          std::ofstream out(sector_file, std::ios::binary | std::ios::trunc);
+          std::vector<char> zeros(sector_size, 0);
+          out.write(zeros.data(), sector_size);
           out.close();
         } else {
-          std::ofstream(archivoSector + ".txt").close();
+          std::ofstream(sector_file + ".txt").close();
         }
       }
     }
