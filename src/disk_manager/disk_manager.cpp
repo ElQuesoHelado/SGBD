@@ -128,11 +128,11 @@ void DiskManager::new_disk(std::string new_disk_name, size_t surfaces,
     size_t total_sectors = sectors_per_track * tracks_per_surf * surfaces,
            fsb_bytes_used = (total_sectors + CHAR_BIT - 1) / CHAR_BIT;
 
-    std::ofstream out_file(disk_name + "/free_space_bitmap", std::ios::binary | std::ios::trunc);
+    std::ofstream out_file(new_disk_name + "/free_space_bitmap", std::ios::binary);
 
     if (!out_file)
       throw std::runtime_error(
-          "No se pudo abrir free_space_bitmap para escritura: " + disk_name + "/free_space_bitmap");
+          "No se pudo abrir free_space_bitmap para escritura: " + new_disk_name + "/free_space_bitmap");
 
     std::vector<char> zeros(fsb_bytes_used, 0);
 
@@ -140,7 +140,7 @@ void DiskManager::new_disk(std::string new_disk_name, size_t surfaces,
     out_file.close();
 
     if (!out_file)
-      throw std::runtime_error("Error al escribir free_space_bitmap: " + disk_name + "/free_space_bitmap");
+      throw std::runtime_error("Error al escribir free_space_bitmap: " + new_disk_name + "/free_space_bitmap");
   }
 }
 
@@ -199,11 +199,13 @@ void DiskManager::persist() {
   store_fsb();
 }
 
+// Crea y carga disco
 DiskManager::DiskManager(std::string new_disk_name, size_t surfaces,
                          size_t tracks_per_surf, size_t sectors_per_track,
                          size_t sector_size, size_t sectors_per_block) {
   new_disk(new_disk_name, surfaces, tracks_per_surf, sectors_per_track,
            sector_size, sectors_per_block);
+  load_disk(new_disk_name);
 }
 
 // Carga disco basado en estructura de carpetas

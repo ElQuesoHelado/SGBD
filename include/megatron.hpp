@@ -156,8 +156,8 @@ public:
   void ui_show_table_metadata();
   void ui_interact_buffer_manager();
 
-  void new_disk(std::string disk_name, size_t surfaces, size_t tracks, size_t sectors, size_t bytes, size_t sectors_block, size_t n_frames);
-  void load_disk(std::string disk_name, size_t n_frames);
+  void new_disk(std::string disk_name, size_t surfaces, size_t tracks, size_t sectors, size_t bytes, size_t sectors_block, size_t n_frames, bool is_clock);
+  void load_disk(std::string disk_name, size_t n_frames, bool is_clock);
 
   void set_buffer_manager_frames();
 

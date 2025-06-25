@@ -65,7 +65,7 @@ void DiskManager::create_disk_structure(bool bin, std::string disk_name_used, si
                                         size_t sector_size) {
   namespace fs = std::filesystem;
 
-  if (bin)
+  if (!bin)
     disk_name_used += "_txt";
 
   // Eliminamos el disco caso se quiera reemplazar(nombre==disco que ya existe)

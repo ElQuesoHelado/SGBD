@@ -60,7 +60,12 @@ void Megatron::ui_load_disk() {
     if (!(std::cin >> frames) || frames == 0)
       throw std::invalid_argument("Numero de frames inválido");
 
-    load_disk(disk_name, frames);
+    std::cout << "LRU o Clock?(0,1):  ";
+    size_t is_clock;
+    if (!(std::cin >> is_clock))
+      throw std::invalid_argument("Tipo de buffer invalido");
+
+    load_disk(disk_name, frames, is_clock);
 
     std::cout << "Disco cargado correctamente" << std::endl;
   } catch (const std::exception &e) {
@@ -116,7 +121,12 @@ void Megatron::ui_new_disk() {
     if (!(std::cin >> frames) || frames == 0)
       throw std::invalid_argument("Numero de frames inválido");
 
-    new_disk(disk_name, surfaces, tracks, sectors, bytes, sectors_block, frames);
+    std::cout << "LRU o Clock?(0,1):  ";
+    size_t is_clock;
+    if (!(std::cin >> is_clock))
+      throw std::invalid_argument("Tipo de buffer invalido");
+
+    new_disk(disk_name, surfaces, tracks, sectors, bytes, sectors_block, frames, is_clock);
 
     std::cout << "\nDisco creado exitosamente\n";
 

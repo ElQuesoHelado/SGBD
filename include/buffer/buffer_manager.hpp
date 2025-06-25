@@ -9,123 +9,50 @@
 
 class BufferManager {
 public:
-  BufferManager(size_t capacity, bool is_clock, std::unique_ptr<DiskManager> &disk_manager)
-      : capacity(capacity), disk_manager(disk_manager.get()), is_clock(is_clock) {
-    if (is_clock)
-      clock.resize(capacity, disk_manager->NULL_BLOCK);
-  }
+  BufferManager(size_t capacity, bool is_clock, std::unique_ptr<DiskManager> &disk_manager);
 
   // Carga de pagina, necesariamente incrementa pin_count
-  Frame &load_pin_page(size_t page_id) {
-    auto it = frame_map.find(page_id);
-
-    // Si la página no está en buffer, cargarla
-    if (it == frame_map.end()) {
-      if (frame_map.size() >= capacity) {
-        evict_page();
-      }
-      load_page(page_id);
-      it = frame_map.find(page_id);
-    }
-
-    // Mueve frame al frente
-    if (!is_clock)
-      lru_list.splice(lru_list.begin(), lru_list, it->second.lru_it);
-    else {
-      it->second.reference_bit = 1;
-    }
-    it->second.pin_count++;
-
-    return *(it->second.frame);
-  }
+  Frame &load_pin_page(size_t page_id);
 
   // Libera frame
-  void free_unpin_page(size_t page_id, bool is_dirty = false) {
-    auto it = frame_map.find(page_id);
-    if (it == frame_map.end()) {
-      throw std::runtime_error("Free de pagina no en buffer");
-    }
-
-    it->second.pin_count--;
-    if (is_dirty) {
-      it->second.frame->dirty = true;
-    }
-  }
+  void free_unpin_page(size_t page_id, bool is_dirty);
 
   // Escribe todas las páginas sucias a disco, no limpia buffer
-  void flush_all() {
-    for (auto &[page_id, entry] : frame_map) {
-      if (entry.frame->dirty) {
-        disk_manager->write_block(entry.frame->page_bytes, page_id);
-        entry.frame->dirty = false;
-      }
-    }
-  }
+  void flush_all();
 
-  size_t get_hits() { return hits; }
+  // Flush + reset de tanto lru_list y clock vector/hand
+  // TODO: Implementar, li
+  void flush_all_clean();
 
-  size_t get_total_accesses() { return total; }
+  void set_fixed_pin(int page_id, bool value);
+
+  size_t get_hits();
+  size_t get_total_accesses();
+
+  // UI
+  void printBuffer() const;
+  void printLRU() const;
+  void printHitRate() const;
 
 private:
-  void load_page(size_t page_id) {
-    std::vector<unsigned char> data;
+  size_t find_free_slot();
 
-    // TODO: algun check de bloque_id valido?
-    disk_manager->read_block(data, page_id);
-
-    auto frame = std::make_unique<Frame>(page_id, std::move(data));
-
-    if (!is_clock) {
-      lru_list.push_front(page_id);
-
-      frame_map[page_id] = {
-          std::move(frame), lru_list.begin(),
-          0 // pin_count en 0, se incrementa al hacer pin
-      };
-    } else {
-      frame_map[page_id] = {
-          std::move(frame), lru_list.end(),
-          0 // pin_count en 0, se incrementa al hacer pin
-      };
-    }
-  }
-
-  void evict_page() {
-    if (is_clock) {
-
-      for (auto &e : frame_map) {
-      }
-
-      hand += 1;
-
-    } else {
-      // Busqueda de pagina menos usada que no este pinned
-      for (auto it = lru_list.rbegin(); it != lru_list.rend(); ++it) {
-        auto &entry = frame_map[*it];
-
-        if (entry.pin_count == 0) {
-          if (entry.frame->dirty) {
-            disk_manager->write_block(entry.frame->page_bytes, *it);
-          }
-
-          frame_map.erase(*it);
-          lru_list.erase(std::next(it).base()); // Rev_it a forward
-          return;
-        }
-      }
-    }
-
-    throw std::runtime_error("Todas las paginas estan pineadas, imposible insertar");
-  }
+  // Operaciones directas en disco
+  void load_page(size_t page_id);
+  void evict_page();
 
   DiskManager *disk_manager{};
-  size_t capacity;
+  size_t capacity{};
   bool is_clock{};
+  bool verbose{};
 
-  int hits, total;
-  size_t hand{};
+  int hits{}, total{};
+  size_t clock_hand{};
 
   std::list<size_t> lru_list;
-  std::vector<size_t> clock;
+
+  // Estructura usada para mantener un orden de frames/ operaciones en clock
+  std::vector<size_t> frame_slots;
+
   std::unordered_map<size_t, BufferFrame> frame_map;
 };

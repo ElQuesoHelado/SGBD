@@ -23,6 +23,13 @@ void Megatron::load_CSV(std::string path, std::string table_name, size_t n_regs)
      */
     size_t records_inserted = 0;
     while (std::getline(file, line)) {
+      // std::cout << line << std::endl;
+
+      // if (line.empty() || !file.good()) {
+      //   break; // Salir si hay error o EOF real
+      // }
+
+      // std::cout << "aea" << std::endl;
 
       // if (records_inserted == 330)
       //   std::cout << "hola" << std::endl;

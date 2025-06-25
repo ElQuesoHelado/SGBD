@@ -124,12 +124,12 @@ void Megatron::set_buffer_manager_frames() {
   if (buffer_manager)
     buffer_manager->flush_all();
 
-  buffer_manager = std::make_unique<BufferManager>(frames, disk_manager);
+  buffer_manager = std::make_unique<BufferManager>(frames, 0, disk_manager);
 }
 
 // Carga de disco ya existente, caso disco a cargar invalido,
 // el cargado se mantiene intacto(tanto disco como buffer)
-void Megatron::load_disk(std::string disk_name, size_t n_frames) {
+void Megatron::load_disk(std::string disk_name, size_t n_frames, bool is_clock) {
   try {
     if (n_frames == 0 || n_frames > 20000)
       throw std::invalid_argument("Numero de frames para buffer manager fuera de rango");
@@ -142,19 +142,21 @@ void Megatron::load_disk(std::string disk_name, size_t n_frames) {
     // TODO: Throws
     auto new_disk_manager = std::make_unique<DiskManager>(disk_name);
     auto new_buffer_manager =
-        std::make_unique<BufferManager>(n_frames, new_disk_manager);
+        std::make_unique<BufferManager>(n_frames, is_clock, new_disk_manager);
 
     n_sectors_in_block = new_disk_manager->SECTORS_PER_BLOCK;
     disk_manager = std::move(new_disk_manager);
     buffer_manager = std::move(new_buffer_manager);
-  } catch (...) {
+  } catch (const std::exception &e) {
     n_sectors_in_block = 0;
+
+    std::cerr << e.what() << std::endl;
     std::cout << "Error al cargar disco/asignar buffer manager" << std::endl;
   }
 }
 
 void Megatron::new_disk(std::string disk_name, size_t surfaces, size_t tracks,
-                        size_t sectors, size_t bytes, size_t sectors_block, size_t n_frames) {
+                        size_t sectors, size_t bytes, size_t sectors_block, size_t n_frames, bool is_clock) {
   try {
     if (n_frames == 0 || n_frames > 20000)
       throw std::invalid_argument("Numero de frames para buffer manager fuera de rango");
@@ -173,13 +175,14 @@ void Megatron::new_disk(std::string disk_name, size_t surfaces, size_t tracks,
             disk_name, surfaces, tracks,
             sectors, bytes, sectors_block);
     auto new_buffer_manager =
-        std::make_unique<BufferManager>(n_frames, new_disk_manager);
+        std::make_unique<BufferManager>(n_frames, is_clock, new_disk_manager);
 
     n_sectors_in_block = new_disk_manager->SECTORS_PER_BLOCK;
     disk_manager = std::move(new_disk_manager);
     buffer_manager = std::move(new_buffer_manager);
-  } catch (...) {
+  } catch (const std::exception &e) {
     n_sectors_in_block = 0;
+    std::cerr << e.what() << std::endl;
     std::cout << "Error al crear/cargar disco/asignar buffer manager" << std::endl;
   }
 }

@@ -73,7 +73,7 @@ void Megatron::select_fixed(serial::TableMetadata &table_metadata,
       }
     }
 
-    buffer_manager->free_unpin_page(curr_page_id);
+    buffer_manager->free_unpin_page(curr_page_id, 0);
     curr_page_id = page_header.next_block_id;
   }
   std::cout << "Numero de registros: " << n_regs << std::endl;
@@ -110,7 +110,7 @@ void Megatron::select_slotted(serial::TableMetadata &table_metadata, size_t col_
       }
     }
 
-    buffer_manager->free_unpin_page(curr_page_id);
+    buffer_manager->free_unpin_page(curr_page_id, 0);
 
     curr_page_id = page_header.next_block_id;
   }

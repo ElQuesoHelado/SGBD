@@ -64,7 +64,7 @@ std::vector<uint32_t> Megatron::locate_regs_cond(std::string &table_name, std::s
       }
     }
 
-    buffer_manager->free_unpin_page(curr_page_id);
+    buffer_manager->free_unpin_page(curr_page_id, 0);
     curr_page_id = page_header.next_block_id;
   }
   std::cout << "Numero de registros encontrados: " << n_regs << std::endl;
@@ -125,7 +125,7 @@ std::pair<uint32_t, uint32_t> Megatron::locate_nth_reg(std::string &table_name, 
       break;
     }
 
-    buffer_manager->free_unpin_page(curr_page_id);
+    buffer_manager->free_unpin_page(curr_page_id, 0);
 
     nth -= page_header.n_regs;
     curr_page_id = page_header.next_block_id;

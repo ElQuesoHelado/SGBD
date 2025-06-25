@@ -22,7 +22,7 @@ add_library(megatron src/megatron/megatron.cpp
     src/megatron/registers.cpp
     src/megatron/translate.cpp
     src/megatron/misc.cpp
-    src/buffer/trash.cpp)
+    src/buffer_manager/trash.cpp)
 
 add_library(disk_manager src/disk_manager/disk_manager.cpp
     src/disk_manager/block_reads.cpp
@@ -34,18 +34,29 @@ add_library(disk_manager src/disk_manager/disk_manager.cpp
     src/disk_manager/utils.cpp
 )
 
+add_library(buffer_manager
+    src/buffer_manager/buffer_manager.cpp
+    src/buffer_manager/prints.cpp
+    src/buffer_manager/trash.cpp
+)
+
 target_include_directories(megatron PUBLIC include)
 
 target_include_directories(disk_manager PUBLIC include)
 target_include_directories(disk_manager PRIVATE ${Boost_INCLUDE_DIRS})
+
+target_include_directories(buffer_manager PUBLIC include)
 
 add_executable(runner src/main.cpp)
 add_executable(tests src/test.cpp)
 
 target_link_libraries(runner PUBLIC megatron)
 target_link_libraries(runner PUBLIC disk_manager)
+target_link_libraries(runner PUBLIC buffer_manager)
+
 target_link_libraries(tests PUBLIC megatron)
 target_link_libraries(tests PUBLIC disk_manager)
+target_link_libraries(tests PUBLIC buffer_manager)
 
 add_custom_command(
     TARGET runner
