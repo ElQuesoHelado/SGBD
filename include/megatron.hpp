@@ -156,7 +156,8 @@ public:
   void ui_show_table_metadata();
   void ui_interact_buffer_manager();
 
-  void new_disk(std::string disk_name, size_t surfaces, size_t tracks, size_t sectors, size_t bytes, size_t sectors_block, size_t n_frames, bool is_clock);
+  void new_disk(std::string disk_name, size_t surfaces, size_t tracks, size_t sectors,
+                size_t bytes, size_t sectors_block, size_t n_frames, bool is_clock);
   void load_disk(std::string disk_name, size_t n_frames, bool is_clock);
 
   void set_buffer_manager_frames();
@@ -176,6 +177,8 @@ public:
   uint32_t create_page(serial::TableMetadata &table_metadata);
 
   uint32_t add_new_page_to_table(serial::TableMetadata &table_metadata);
+
+  std::vector<size_t> get_used_pages(serial::TableMetadata &table_metadata);
 
   // =====
   // Operaciones de registros
@@ -207,15 +210,17 @@ public:
   void show_table_metadata(std::string &table_name);
 
   void translate();
-  void translate_fixed_page(serial::TableMetadata &table_metadata,
-                            serial::PageHeader &page_header,
-                            serial::FixedDataHeader &fixed_data_header,
-                            std::vector<unsigned char> &page_bytes, uint32_t curr_page_id);
+  std::string translate_data_page();
 
-  void translate_slotted_page(serial::TableMetadata &table_metadata,
-                              serial::PageHeader &page_header,
-                              serial::SlottedDataHeader &slotted_data_header,
-                              std::vector<unsigned char> &page_bytes, uint32_t curr_page_id);
+  std::string translate_fixed_page(serial::TableMetadata &table_metadata,
+                                   serial::PageHeader &page_header,
+                                   serial::FixedDataHeader &fixed_data_header,
+                                   std::vector<unsigned char> &page_bytes, uint32_t curr_page_id);
+
+  std::string translate_slotted_page(serial::TableMetadata &table_metadata,
+                                     serial::PageHeader &page_header,
+                                     serial::SlottedDataHeader &slotted_data_header,
+                                     std::vector<unsigned char> &page_bytes, uint32_t curr_page_id);
 
   void translate_table_page(serial::TableMetadata &table_metadata);
 

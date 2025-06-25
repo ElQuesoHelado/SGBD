@@ -28,17 +28,19 @@ public:
 
   size_t get_hits();
   size_t get_total_accesses();
+  bool is_buffer_clock();
 
   // UI
-  void printBuffer() const;
-  void printLRU() const;
-  void printHitRate() const;
+  void print_buffer_LRU() const;
+  void print_buffer_clock() const;
+  void print_LRU_list() const;
+  void print_hit_rate() const;
 
 private:
   size_t find_free_slot();
 
   // Operaciones directas en disco
-  void load_page(size_t page_id);
+  void load_page(size_t page_id, bool fixed_pin = false);
   void evict_page();
 
   DiskManager *disk_manager{};

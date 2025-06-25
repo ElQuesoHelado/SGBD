@@ -4,6 +4,8 @@ BufferManager::BufferManager(size_t capacity, bool is_clock, std::unique_ptr<Dis
     : capacity(capacity), disk_manager(disk_manager.get()), is_clock(is_clock), frame_slots(capacity, disk_manager->NULL_BLOCK) {
 }
 
+bool BufferManager::is_buffer_clock() { return is_clock; }
+
 // Carga de pagina, necesariamente incrementa pin_count
 Frame &BufferManager::load_pin_page(size_t page_id) {
   total++;
@@ -37,7 +39,7 @@ Frame &BufferManager::load_pin_page(size_t page_id) {
   return *(it->second.frame);
 }
 
-// Libera frame
+// Libera frame, reduce pin_count
 void BufferManager::free_unpin_page(size_t page_id, bool is_dirty = false) {
   auto it = frame_map.find(page_id);
   if (it == frame_map.end()) {
@@ -82,7 +84,7 @@ size_t BufferManager::find_free_slot() {
   return disk_manager->NULL_BLOCK;
 }
 
-void BufferManager::load_page(size_t page_id) {
+void BufferManager::load_page(size_t page_id, bool fixed_pin) {
   std::vector<unsigned char> data;
 
   // TODO: algun check de bloque_id valido?
@@ -111,13 +113,18 @@ void BufferManager::load_page(size_t page_id) {
     };
     clock_hand = (free_slot + 1) % capacity;
   }
+  if (verbose)
+    std::cout << "Pagina cargada en frame " << free_slot << ".\n";
+
+  if (fixed_pin)
+    set_fixed_pin(page_id, true);
 }
 
 void BufferManager::evict_page() {
   if (is_clock) {
     size_t attempts{};
     // TODO: Ver comportamiento
-    while (attempts < capacity * 10) { // max vueltas, caso pincounts altos
+    while (attempts < capacity * 10) { // max vueltas, caso pincounts altos, deberia de fallar
       size_t current_page = frame_slots[clock_hand];
 
       if (current_page == disk_manager->NULL_BLOCK) {
@@ -125,38 +132,63 @@ void BufferManager::evict_page() {
         continue;
       }
 
-      // Caso slots desincronizado con frame_map
-      auto it = frame_map.find(current_page);
-      if (it == frame_map.end()) {
-        frame_slots[clock_hand] = disk_manager->NULL_BLOCK;
-        clock_hand = (clock_hand + 1) % capacity;
-        continue;
-      }
+      // // Caso slots desincronizado con frame_map
+      // if (it == frame_map.end()) {
+      //   frame_slots[clock_hand] = disk_manager->NULL_BLOCK;
+      //   clock_hand = (clock_hand + 1) % capacity;
+      //   continue;
+      // }
 
+      auto it = frame_map.find(current_page);
       auto &entry = it->second;
-      if (entry.pin_count > 0) {
+      if (entry.pin_count > 0 || entry.fixed_pin > 0) {
+        if (verbose)
+          std::cout << "Pagina " << current_page << " con pincout/fixed_pin != 0, ignorada " << ".\n";
         attempts++;
         clock_hand = (clock_hand + 1) % capacity;
         continue;
       }
       if (entry.reference_bit) {
+        if (verbose)
+          std::cout << "Pagina " << current_page << " con reference_bit 1, cambia a 0" << ".\n";
         entry.reference_bit = false;
         attempts++;
         clock_hand = (clock_hand + 1) % capacity;
         continue;
       }
 
-      // Evicción (igual que antes)
+      if (verbose)
+        std::cout << "Pagina " << current_page << " se va a eliminar" << ".\n";
+
       if (entry.frame->dirty) {
-        disk_manager->write_block(entry.frame->page_bytes, current_page);
+        if (verbose) {
+          std::cout << "Se esta por hacer eviction a una pagina SUCIA con page_id: " << current_page << std::endl;
+          std::cout << "?Deseas guardarla?(0:no, 1:si) ";
+
+          int opcion;
+          std::cin >> opcion;
+
+          if (opcion == 1) {
+            disk_manager->write_block(entry.frame->page_bytes, current_page);
+            std::cout << "Pagina SUCIA guardada." << std::endl;
+          } else {
+            std::cout << "Pagina SUCIA descartada." << std::endl;
+          }
+        } else {
+          disk_manager->write_block(entry.frame->page_bytes, current_page);
+        }
+      } else {
+        if (verbose)
+          std::cout << "Descartando pagina limpia " << current_page << ".\n";
       }
+
       frame_map.erase(current_page);
-      frame_slots[clock_hand] = disk_manager->NULL_BLOCK; // Cambio 4: Usa frame_slots
-      clock_hand = (clock_hand + 1) % capacity;           // Cambio 5: Avanza hand después de evicción
+      frame_slots[clock_hand] = disk_manager->NULL_BLOCK;
+      clock_hand = (clock_hand + 1) % capacity;
       return;
     }
   } else {
-    // Busqueda de pagina menos usada que no este pinned
+    // Pagina menos usada que no este pinned
     for (auto it = lru_list.rbegin(); it != lru_list.rend(); ++it) {
       auto &buffer_frame = frame_map[*it];
 
@@ -170,12 +202,33 @@ void BufferManager::evict_page() {
         }
 
         if (buffer_frame.frame->dirty) {
-          disk_manager->write_block(buffer_frame.frame->page_bytes, *it);
+          if (verbose) {
+            std::cout << "Se esta por hacer eviction a una pagina SUCIA con page_id: " << *it << std::endl;
+            std::cout << "?Deseas guardarla?(0:no, 1:si) ";
+
+            int opcion;
+            std::cin >> opcion;
+
+            if (opcion == 1) {
+              disk_manager->write_block(buffer_frame.frame->page_bytes, *it);
+              std::cout << "Pagina SUCIA guardada." << std::endl;
+            } else {
+              std::cout << "Pagina SUCIA descartada." << std::endl;
+            }
+          } else {
+            disk_manager->write_block(buffer_frame.frame->page_bytes, *it);
+          }
+        } else {
+          if (verbose)
+            std::cout << "Descartando pagina limpia " << *it << ".\n";
         }
 
         frame_map.erase(*it);
         lru_list.erase(std::next(it).base()); // Rev_it a forward
         return;
+      } else {
+        if (verbose)
+          std::cout << "Pagina " << *it << " con pincout/fixed_pin != 0, ignorada " << ".\n";
       }
     }
   }

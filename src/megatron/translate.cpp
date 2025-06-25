@@ -110,7 +110,7 @@ void Megatron::translate_table_page(serial::TableMetadata &table_metadata) {
 }
 
 // Es una pagina completa, implica varios sectores, el primero es afectado por el header
-void Megatron::translate_fixed_page(
+std::string Megatron::translate_fixed_page(
     serial::TableMetadata &table_metadata,
     serial::PageHeader &page_header,
     serial::FixedDataHeader &fixed_data_header,

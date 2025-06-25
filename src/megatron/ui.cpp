@@ -393,7 +393,7 @@ void Megatron::ui_interact_buffer_manager() {
     return;
   }
 
-  buffer_manager->flush_all();
+  // buffer_manager->flush_all();
   translate();
 
   // buffer_ui = std::make_unique<BufferUI>(buffer_manager_ptr->pool_.capacity(),
@@ -401,11 +401,20 @@ void Megatron::ui_interact_buffer_manager() {
 
   int opcion;
   while (true) {
-    buffer_manager->flush_all();
+    // buffer_manager->flush_all();
     clearScreen();
-    buffer_ui->printBuffer();
-    buffer_ui->printLRU();
-    buffer_ui->printHitRate();
+    // buffer_ui->printBuffer();
+    // buffer_ui->printLRU();
+    // buffer_ui->printHitRate();
+    if (buffer_manager->is_buffer_clock()) {
+      buffer_manager->print_buffer_clock();
+
+    } else {
+      buffer_manager->print_buffer_LRU();
+      buffer_manager->print_LRU_list();
+    }
+
+    buffer_manager->print_hit_rate();
 
     // cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cout << "\n\033[1m=== MENU ===\033[0m\n";
@@ -419,8 +428,9 @@ void Megatron::ui_interact_buffer_manager() {
     cout << "8. Adicionar 1 registro a pagina\n";
     cout << "9. Modificar el nth registro en pagina\n";
     cout << "10. Eliminar el nth registro en pagina\n";
-    cout << "11. Guardad una pagina\n";
-    cout << "12. Guardad TODAS las pagina\n";
+    cout << "11. Guardar una pagina\n";
+    cout << "12. Guardar TODAS las paginas\n";
+    cout << "13. Mostrar paginas usadas por tabla\n";
     cout << "0. Salir\n";
     cout << "Opcion: ";
     cin >> opcion;
@@ -438,23 +448,22 @@ void Megatron::ui_interact_buffer_manager() {
       cout << "Operacion (0 = lectura, 1 = escritura): ";
       cin >> operacion;
 
-      if (buffer_ui->loadPage(page_id, operacion)) {
-        cout << "?Se fija pagina?(0, 1): ";
-        cin >> pinea;
-        buffer_ui->setPinFijo(page_id, pinea);
-      }
+      buffer_manager->load_pin_page(page_id);
+      cout << "?Se fija pagina?(0, 1): ";
+      cin >> pinea;
+      buffer_manager->set_fixed_pin(page_id, pinea);
 
     } else if (opcion == 2) {
       int page_id;
       cout << "ID de pagina a fijar: ";
       cin >> page_id;
-      buffer_ui->setPinFijo(page_id, true);
+      buffer_manager->set_fixed_pin(page_id, true);
 
     } else if (opcion == 3) {
       int page_id;
       cout << "ID de pagina a desfijar: ";
       cin >> page_id;
-      buffer_ui->setPinFijo(page_id, false);
+      buffer_manager->set_fixed_pin(page_id, false);
 
     } else if (opcion == 4) {
       int page_id;
@@ -550,6 +559,13 @@ void Megatron::ui_interact_buffer_manager() {
 
       // auto block_id = locate_free_page(table_metadata);
       std::cout << "Se guardaron todas las paginas dirty" << std::endl;
+
+    } else if (opcion == 13) {
+      auto page_ids = get_used_pages(table_metadata);
+
+      for (auto e : page_ids)
+        std::cout << e << " ";
+      std::cout << std::endl;
 
     } else {
       cout << "Opcion invalida.\n";
