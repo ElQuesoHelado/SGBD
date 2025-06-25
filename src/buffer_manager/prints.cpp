@@ -3,7 +3,7 @@
 
 void BufferManager::print_buffer_LRU() const {
   std::cout << "\n\033[1;34m== Estado del Buffer ==\033[0m\n";
-  std::cout << "\033[4mFRAME\tPAGE\tDIRTY\tPIN_CNT\tPIN_FIJO\033[0m\tOP\n";
+  std::cout << "\033[4mFRAME\tPAGE\tDIRTY\tPIN_CNT\tPIN_FIJO\tOP\033[0m\n";
 
   for (int i = 0; i < capacity; ++i) {
     if (frame_slots[i] != disk_manager->NULL_BLOCK) {
@@ -14,9 +14,9 @@ void BufferManager::print_buffer_LRU() const {
                 << e.pin_count << "\t";
 
       if (e.fixed_pin) {
-        std::cout << "\033[31mSi\033[0m"; // Rojo
+        std::cout << "\033[31mSi\033[0m\t"; // Rojo
       } else {
-        std::cout << "No";
+        std::cout << "No\t";
       }
 
       // FIXME: Stack de operaciones
@@ -29,25 +29,25 @@ void BufferManager::print_buffer_LRU() const {
 
 void BufferManager::print_buffer_clock() const {
   std::cout << "\n\033[1;34m== Estado del Buffer ==\033[0m\n";
-  std::cout << "\033[4mHAND\tFRAME\tPAGE\tDIRTY\tREF_BIT\tPIN_CNT\tPIN_FIJO\033[0m\tOP\n";
+  std::cout << "\033[4mHAND\tFRAME\tPAGE\tDIRTY\tREF_BIT\tPIN_CNT\tPIN_FIJO\tOP\033[0m\n";
 
   for (int i = 0; i < capacity; ++i) {
     if (frame_slots[i] != disk_manager->NULL_BLOCK) {
       auto it = frame_map.find(frame_slots[i]); // FIXME: .end()?
       const BufferFrame &e = it->second;
-      std::cout << ((clock_hand == i) ? "->" : "") << "\t" << i << "\t" << e.frame->page_id << "\t"
-                << "\t" << e.frame->dirty << "\t" << e.reference_bit << "\t" << e.pin_count << "\t";
+      std::cout << ((clock_hand == i) ? "->\t" : "\t") << i << "\t" << e.frame->page_id << "\t"
+                << e.frame->dirty << "\t" << e.reference_bit << "\t" << e.pin_count << "\t";
 
       if (e.fixed_pin) {
-        std::cout << "\033[31mSi\033[0m"; // Rojo
+        std::cout << "\033[31mSi\033[0m\t"; // Rojo
       } else {
-        std::cout << "No";
+        std::cout << "No\t";
       }
 
       // FIXME: Stack de operaciones
       std::cout << "\n";
     } else {
-      std::cout << i << "\t<vacio>\n";
+      std::cout << ((clock_hand == i) ? "->\t" : "\t") << i << "\t<vacio>\n";
     }
   }
 }
@@ -73,4 +73,7 @@ void BufferManager::print_hit_rate() const {
   std::cout << "\n\033[1;34m== Hit Rate ==\033[0m\n";
   std::cout << "Hits: " << hits << " / " << total << " = "
             << (total == 0 ? 0.0 : (double)hits / total) << "\n";
+}
+
+void BufferManager::print_page(size_t page_id) {
 }

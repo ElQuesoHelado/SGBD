@@ -142,12 +142,19 @@ void BufferManager::evict_page() {
       auto it = frame_map.find(current_page);
       auto &entry = it->second;
       if (entry.pin_count > 0 || entry.fixed_pin > 0) {
-        if (verbose)
+        if (verbose) {
           std::cout << "Pagina " << current_page << " con pincout/fixed_pin != 0, ignorada " << ".\n";
+          if (entry.pin_count > 0) {
+            std::cout << "Pincount reducido en 1\n";
+            entry.pin_count--;
+          }
+        }
+
         attempts++;
         clock_hand = (clock_hand + 1) % capacity;
         continue;
       }
+
       if (entry.reference_bit) {
         if (verbose)
           std::cout << "Pagina " << current_page << " con reference_bit 1, cambia a 0" << ".\n";

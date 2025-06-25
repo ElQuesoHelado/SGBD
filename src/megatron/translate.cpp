@@ -13,6 +13,9 @@
 #include <format>
 #include <string>
 
+/*
+ * Se traduce todo dato contenido en disco
+ */
 void Megatron::translate() {
   // Se traduce sector0
   std::vector<unsigned char> buffer;
@@ -46,16 +49,16 @@ void Megatron::translate() {
 
   disk_manager->clear_blocks_folder();
 
-  // Se recorre toda tabla
+  // Todas las tablas
   for (size_t i{}; i < sector1.n_tables; ++i) {
     std::vector<unsigned char> table_block;
     disk_manager->read_block(table_block, sector1.table_block_ids[i]);
     auto table_metadata = serial::deserialize_table_metadata(table_block);
 
     // Translate de metadata de tabla
-    translate_table_page(table_metadata);
+    disk_manager->write_block_txt(translate_table_page(table_metadata), table_metadata.table_block_id);
 
-    // Se itera por toda pagina de tabla
+    // Se itera por toda pagina de tabla, se traduce a bloques y sectores
     uint32_t curr_page_id = table_metadata.first_page_id;
 
     while (curr_page_id != disk_manager->NULL_BLOCK) {
@@ -65,23 +68,10 @@ void Megatron::translate() {
       auto page_bytes_it = page_bytes.begin();
 
       auto page_header = serial::deserialize_page_header(page_bytes_it);
-      // if (page_header.n_regs == 0) // Pagina vacia
-      //   continue;
 
-      if (table_metadata.are_regs_fixed) {
-        serial::FixedDataHeader fixed_data_header;
-        fixed_data_header = serial::deserialize_fixed_data_header(page_bytes_it);
+      auto page_str = translate_data_page(table_metadata, page_bytes, curr_page_id);
 
-        translate_fixed_page(table_metadata, page_header,
-                             fixed_data_header, page_bytes, curr_page_id);
-
-      } else {
-        serial::SlottedDataHeader slotted_data_header;
-        slotted_data_header = serial::deserialize_slotted_data_header(page_bytes_it);
-
-        translate_slotted_page(table_metadata, page_header,
-                               slotted_data_header, page_bytes, curr_page_id);
-      }
+      disk_manager->write_block_txt(page_str, curr_page_id);
 
       curr_page_id = page_header.next_block_id;
       // std::cout << curr_page_id << std::endl;
@@ -89,7 +79,93 @@ void Megatron::translate() {
   }
 }
 
-void Megatron::translate_table_page(serial::TableMetadata &table_metadata) {
+// Escribe sectores al disco
+std::string Megatron::translate_data_page(serial::TableMetadata &table_metadata,
+                                          std::vector<unsigned char> &page_bytes, size_t page_id) {
+  auto page_bytes_it = page_bytes.begin();
+  auto page_header = serial::deserialize_page_header(page_bytes_it);
+
+  std::vector<std::string> sectors;
+  if (table_metadata.are_regs_fixed) {
+    serial::FixedDataHeader fixed_data_header;
+    fixed_data_header = serial::deserialize_fixed_data_header(page_bytes_it);
+
+    sectors = translate_fixed_page(table_metadata, page_header,
+                                   fixed_data_header, page_bytes, page_id);
+
+  } else {
+    serial::SlottedDataHeader slotted_data_header;
+    slotted_data_header = serial::deserialize_slotted_data_header(page_bytes_it);
+
+    sectors = translate_slotted_page(table_metadata, page_header,
+                                     slotted_data_header, page_bytes, page_id);
+  }
+
+  // size_t i{};
+  // std::string page_str{};
+  // for (auto &e : sectors) {
+  //   page_str += e;
+  //   i++;
+  // }
+
+  size_t i{};
+  std::string page_str{};
+  for (auto &e : sectors) {
+    page_str += e;
+    disk_manager->write_sector_txt(
+        e,
+        disk_manager->free_block_map.get_ith_lba(page_id, i));
+    // disk_manager->write_block_txt(e, page_id);
+    i++;
+  }
+
+  return page_str;
+}
+
+std::string Megatron::translate_data_page(serial::TableMetadata &table_metadata, size_t page_id) {
+  std::vector<unsigned char> page_bytes;
+  disk_manager->read_block(page_bytes, page_id);
+
+  auto page_bytes_it = page_bytes.begin();
+
+  auto page_header = serial::deserialize_page_header(page_bytes_it);
+
+  std::vector<std::string> sectors;
+  if (table_metadata.are_regs_fixed) {
+    serial::FixedDataHeader fixed_data_header;
+    fixed_data_header = serial::deserialize_fixed_data_header(page_bytes_it);
+
+    sectors = translate_fixed_page(table_metadata, page_header,
+                                   fixed_data_header, page_bytes, page_id);
+
+  } else {
+    serial::SlottedDataHeader slotted_data_header;
+    slotted_data_header = serial::deserialize_slotted_data_header(page_bytes_it);
+
+    sectors = translate_slotted_page(table_metadata, page_header,
+                                     slotted_data_header, page_bytes, page_id);
+  }
+
+  size_t i{};
+  std::string page_str{};
+  for (auto &e : sectors) {
+    page_str += e;
+    i++;
+  }
+
+  //   size_t i{};
+  // std::string page_str{};
+  // for (auto &e : sectors) {
+  //   disk_manager->write_sector_txt(
+  //       e,
+  //       disk_manager->free_block_map.get_ith_lba(curr_page_id, i));
+  //   disk_manager->write_block_txt(e, curr_page_id);
+  //   i++;
+  // }
+  return page_str;
+}
+
+std::string Megatron::translate_table_page(serial::TableMetadata &table_metadata) {
   std::string out_str{};
   out_str += std::to_string(table_metadata.table_block_id);
   out_str += std::string(array_to_string_view(table_metadata.name)) + '\n';
@@ -106,15 +182,19 @@ void Megatron::translate_table_page(serial::TableMetadata &table_metadata) {
     out_str += "\n";
   }
 
-  disk_manager->write_block_txt(out_str, table_metadata.table_block_id);
+  return out_str;
 }
 
 // Es una pagina completa, implica varios sectores, el primero es afectado por el header
-std::string Megatron::translate_fixed_page(
+std::vector<std::string> Megatron::translate_fixed_page(
     serial::TableMetadata &table_metadata,
     serial::PageHeader &page_header,
     serial::FixedDataHeader &fixed_data_header,
     std::vector<unsigned char> &page_bytes, uint32_t curr_page_id) {
+
+  // Primer sector tiene la metadata de pagina
+  std::vector<std::string> sectors;
+  sectors.emplace_back();
 
   int remm_sector_bytes =
       disk_manager->SECTOR_SIZE -
@@ -134,15 +214,23 @@ std::string Megatron::translate_fixed_page(
   out_str += "Max registers: " + std::to_string(fixed_data_header.max_n_regs) + " ";
   std::string bitmap_str;
   boost::to_string(fixed_data_header.free_register_bitmap, bitmap_str);
-  out_str += "Free_register_bitmap: " + bitmap_str + "\n";
+  out_str += "Free_register_bitmap: " + bitmap_str + "\n" +
+             disk_manager->logic_sector_to_CHS(
+                 disk_manager->free_block_map.get_ith_lba(
+                     curr_page_id, ith_sector_in_block)) +
+             "\n";
 
-  disk_manager->write_block_txt(out_str, curr_page_id);
-  disk_manager->write_block_txt(disk_manager->logic_sector_to_CHS(
-                                    disk_manager->free_block_map.get_ith_lba(curr_page_id, ith_sector_in_block)),
-                                curr_page_id);
+  sectors.back() += out_str;
+
+  // disk_manager->write_block_txt(out_str, curr_page_id);
+  // disk_manager->write_block_txt(
+  //     disk_manager->logic_sector_to_CHS(
+  //         disk_manager->free_block_map.get_ith_lba(
+  //             curr_page_id, ith_sector_in_block)),
+  //     curr_page_id);
 
   for (size_t i{}; i < fixed_data_header.max_n_regs; ++i) {
-    out_str = "";
+    // sectors.back()= "";
     if (fixed_data_header.free_register_bitmap.at(i)) { // Registro existe
       auto register_bytes = get_ith_register_bytes(table_metadata,
                                                    page_header,
@@ -150,34 +238,42 @@ std::string Megatron::translate_fixed_page(
       auto register_values = deserialize_register(table_metadata, register_bytes);
 
       for (auto &v : register_values)
-        // disk.write
-        out_str += SQL_type_to_string(v) + " ";
+        sectors.back() += SQL_type_to_string(v) + " ";
 
-      // out_str+='\n';
+      sectors.back() += '\n';
     } else { // Registro vacio/deleted
-      out_str += '\n';
+      sectors.back() += '\n';
     }
+
     remm_sector_bytes -= fixed_data_header.reg_size;
-    if (remm_sector_bytes < 0) {
+    if (remm_sector_bytes <= 0) {
       remm_sector_bytes = disk_manager->SECTOR_SIZE;
       ith_sector_in_block++;
-      disk_manager->write_block_txt("\n" + disk_manager->logic_sector_to_CHS(
-                                               disk_manager->free_block_map.get_ith_lba(curr_page_id, ith_sector_in_block)),
-                                    curr_page_id);
+      // disk_manager->write_block_txt("\n" + disk_manager->logic_sector_to_CHS(
+      //                                          disk_manager->free_block_map.get_ith_lba(curr_page_id, ith_sector_in_block)),
+      //                               curr_page_id);
+      sectors.emplace_back();
+      sectors.back() += disk_manager->logic_sector_to_CHS(
+                            disk_manager->free_block_map.get_ith_lba(
+                                curr_page_id, ith_sector_in_block)) +
+                        "\n";
     }
 
-    disk_manager->write_sector_txt(
-        out_str,
-        disk_manager->free_block_map.get_ith_lba(curr_page_id, ith_sector_in_block));
-    disk_manager->write_block_txt(out_str, curr_page_id);
+    // disk_manager->write_sector_txt(
+    //     out_str,
+    //     disk_manager->free_block_map.get_ith_lba(curr_page_id, ith_sector_in_block));
+    // disk_manager->write_block_txt(out_str, curr_page_id);
   }
+  return sectors;
 }
 
-void Megatron::translate_slotted_page(
+std::vector<std::string> Megatron::translate_slotted_page(
     serial::TableMetadata &table_metadata,
     serial::PageHeader &page_header,
     serial::SlottedDataHeader &slotted_data_header,
     std::vector<unsigned char> &page_bytes, uint32_t curr_page_id) {
+  std::vector<std::string> sectors;
+  sectors.emplace_back();
 
   int remm_sector_bytes = disk_manager->SECTOR_SIZE;
   size_t ith_sector_in_block{disk_manager->SECTORS_PER_BLOCK - 1};
@@ -200,13 +296,16 @@ void Megatron::translate_slotted_page(
     out_str += std::to_string(S.offset_reg_start) + "|\n|";
   }
 
-  disk_manager->write_block_txt(out_str, curr_page_id);
-  disk_manager->write_block_txt(disk_manager->logic_sector_to_CHS(
-                                    disk_manager->free_block_map.get_ith_lba(curr_page_id, ith_sector_in_block)),
-                                curr_page_id);
+  sectors.back() += out_str + disk_manager->logic_sector_to_CHS(
+                                  disk_manager->free_block_map.get_ith_lba(curr_page_id, ith_sector_in_block));
+
+  // disk_manager->write_block_txt(out_str, curr_page_id);
+  // disk_manager->write_block_txt(disk_manager->logic_sector_to_CHS(
+  //                                   disk_manager->free_block_map.get_ith_lba(curr_page_id, ith_sector_in_block)),
+  //                               curr_page_id);
 
   for (size_t i{}; i < slotted_data_header.n_slots; ++i) {
-    out_str = "";
+    // out_str = "";
     size_t sub{};
     if (slotted_data_header.slots[i].is_used) { // Registro existe
       auto register_bytes = get_ith_register_bytes(table_metadata,
@@ -217,12 +316,12 @@ void Megatron::translate_slotted_page(
       // slotted_data_header.slots[i].
       for (auto &v : register_values)
         // disk.write
-        out_str += SQL_type_to_string(v) + " ";
+        sectors.back() += SQL_type_to_string(v) + " ";
 
       sub = register_bytes.size();
-      // out_str+='\n';
+      sectors.back() += '\n';
     } else { // Registro vacio/deleted
-      out_str += '\n';
+      sectors.back() += '\n';
     }
     // Permite incluir
     remm_sector_bytes -= slotted_data_header.slots[i].reg_size;
@@ -234,15 +333,23 @@ void Megatron::translate_slotted_page(
       else
         remm_sector_bytes = disk_manager->SECTOR_SIZE;
 
+      sectors.emplace_back(); // TODO: ?Front?
+      sectors.back() += "\n" + disk_manager->logic_sector_to_CHS(
+                                   disk_manager->free_block_map.get_ith_lba(
+                                       curr_page_id, ith_sector_in_block));
       ith_sector_in_block--;
-      disk_manager->write_block_txt("\n" + disk_manager->logic_sector_to_CHS(
-                                               disk_manager->free_block_map.get_ith_lba(curr_page_id, ith_sector_in_block)),
-                                    curr_page_id);
+      // disk_manager->write_block_txt(
+      //     "\n" + disk_manager->logic_sector_to_CHS(
+      //                disk_manager->free_block_map.get_ith_lba(
+      //                    curr_page_id, ith_sector_in_block)),
+      //     curr_page_id);
     }
 
-    disk_manager->write_sector_txt(
-        out_str,
-        disk_manager->free_block_map.get_ith_lba(curr_page_id, ith_sector_in_block));
-    disk_manager->write_block_txt(out_str, curr_page_id);
+    // disk_manager->write_sector_txt(
+    //     out_str,
+    //     disk_manager->free_block_map.get_ith_lba(curr_page_id, ith_sector_in_block));
+    // disk_manager->write_block_txt(out_str, curr_page_id);
   }
+
+  return sectors;
 }

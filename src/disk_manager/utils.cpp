@@ -29,9 +29,9 @@ std::string DiskManager::logic_sector_to_CHS(size_t logic_sector) {
          sector = (logic_sector % SECTORS_PER_TRACK);
 
   std::string ret{};
-  return ret + "Superficie: " + std::to_string(head) + " Track: " +
+  return ret + "------ Superficie: " + std::to_string(head) + " Track: " +
          std::to_string(cilinder) + " Sector: " +
-         std::to_string(sector);
+         std::to_string(sector) + " ------";
 }
 
 /*

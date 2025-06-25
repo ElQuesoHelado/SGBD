@@ -210,19 +210,24 @@ public:
   void show_table_metadata(std::string &table_name);
 
   void translate();
-  std::string translate_data_page();
+  std::string translate_data_page(serial::TableMetadata &table_metadata, size_t page_id);
+  std::string translate_data_page(serial::TableMetadata &table_metadata,
+                                  std::vector<unsigned char> &page_bytes, size_t page_id);
 
-  std::string translate_fixed_page(serial::TableMetadata &table_metadata,
-                                   serial::PageHeader &page_header,
-                                   serial::FixedDataHeader &fixed_data_header,
-                                   std::vector<unsigned char> &page_bytes, uint32_t curr_page_id);
+  std::vector<std::string> translate_fixed_page(
+      serial::TableMetadata &table_metadata,
+      serial::PageHeader &page_header,
+      serial::FixedDataHeader &fixed_data_header,
+      std::vector<unsigned char> &page_bytes, uint32_t curr_page_id);
 
-  std::string translate_slotted_page(serial::TableMetadata &table_metadata,
-                                     serial::PageHeader &page_header,
-                                     serial::SlottedDataHeader &slotted_data_header,
-                                     std::vector<unsigned char> &page_bytes, uint32_t curr_page_id);
+  std::vector<std::string> translate_slotted_page(
+      serial::TableMetadata &table_metadata,
+      serial::PageHeader &page_header,
+      serial::SlottedDataHeader &slotted_data_header,
+      std::vector<unsigned char> &page_bytes, uint32_t curr_page_id);
 
-  void translate_table_page(serial::TableMetadata &table_metadata);
+  std::string translate_page_sector();
+  std::string translate_table_page(serial::TableMetadata &table_metadata);
 
   // TRASH
   std::vector<uint32_t> locate_regs_cond(std::string &table_name, std::string &col_name, std::string &condition);

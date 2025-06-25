@@ -470,7 +470,7 @@ void Megatron::ui_interact_buffer_manager() {
       cout << "ID de pagina a mostrar: ";
       cin >> page_id;
       // show_block(table_metadata, page_id);
-      buffer_ui->show_block(table_metadata, page_id);
+      std::cout << translate_data_page(table_metadata, page_id) << std::endl;
       // buffer_ui->setPinFijo(page_id, false);
 
     } else if (opcion == 5) {

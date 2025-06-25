@@ -36,6 +36,8 @@ public:
   void print_LRU_list() const;
   void print_hit_rate() const;
 
+  void print_page(size_t page_id);
+
 private:
   size_t find_free_slot();
 
