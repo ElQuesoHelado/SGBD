@@ -14,6 +14,8 @@ public:
   // Carga de pagina, necesariamente incrementa pin_count
   Frame &load_pin_page(size_t page_id);
 
+  Frame &load_pin_page_push_op(size_t page_id, char op);
+
   // Libera frame
   void free_unpin_page(size_t page_id, bool is_dirty);
 
@@ -21,7 +23,7 @@ public:
   void flush_all();
 
   // Flush + reset de tanto lru_list y clock vector/hand
-  // TODO: Implementar, li
+  // TODO: Implementar
   void flush_all_clean();
 
   void set_fixed_pin(int page_id, bool value);
@@ -38,12 +40,18 @@ public:
 
   void print_page(size_t page_id);
 
+  void set_verbose(bool is_verbose) { verbose = is_verbose; };
+
 private:
   size_t find_free_slot();
 
   // Operaciones directas en disco
   void load_page(size_t page_id, bool fixed_pin = false);
   void evict_page();
+  int evict_page_LRU();
+  int evict_page_LRU_verbose();
+  int evict_page_Clock();
+  int evict_page_Clock_verbose();
 
   DiskManager *disk_manager{};
   size_t capacity{};

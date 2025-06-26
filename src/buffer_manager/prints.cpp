@@ -10,7 +10,7 @@ void BufferManager::print_buffer_LRU() const {
       auto it = frame_map.find(frame_slots[i]); // FIXME: .end()?
       const BufferFrame &e = it->second;
       std::cout << i << "\t" << e.frame->page_id << "\t"
-                << "\t" << e.frame->dirty << "\t"
+                << e.frame->dirty << "\t"
                 << e.pin_count << "\t";
 
       if (e.fixed_pin) {
@@ -19,7 +19,12 @@ void BufferManager::print_buffer_LRU() const {
         std::cout << "No\t";
       }
 
-      // FIXME: Stack de operaciones
+      std::cout << "\t";
+
+      for (auto op : it->second.ops_stack) {
+        std::cout << op;
+      }
+
       std::cout << "\n";
     } else {
       std::cout << i << "\t<vacio>\n";
@@ -35,7 +40,7 @@ void BufferManager::print_buffer_clock() const {
     if (frame_slots[i] != disk_manager->NULL_BLOCK) {
       auto it = frame_map.find(frame_slots[i]); // FIXME: .end()?
       const BufferFrame &e = it->second;
-      std::cout << ((clock_hand == i) ? "->\t" : "\t") << i << "\t" << e.frame->page_id << "\t"
+      std::cout << ((clock_hand == i) ? "👉🏽\t" : "\t") << i << "\t" << e.frame->page_id << "\t"
                 << e.frame->dirty << "\t" << e.reference_bit << "\t" << e.pin_count << "\t";
 
       if (e.fixed_pin) {
@@ -44,10 +49,14 @@ void BufferManager::print_buffer_clock() const {
         std::cout << "No\t";
       }
 
-      // FIXME: Stack de operaciones
+      std::cout << "\t";
+      for (auto op : it->second.ops_stack) {
+        std::cout << op;
+      }
+
       std::cout << "\n";
     } else {
-      std::cout << ((clock_hand == i) ? "->\t" : "\t") << i << "\t<vacio>\n";
+      std::cout << ((clock_hand == i) ? "👉🏽\t" : "\t") << i << "\t<vacio>\n";
     }
   }
 }

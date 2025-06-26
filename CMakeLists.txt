@@ -37,6 +37,8 @@ add_library(disk_manager src/disk_manager/disk_manager.cpp
 add_library(buffer_manager
     src/buffer_manager/buffer_manager.cpp
     src/buffer_manager/prints.cpp
+    src/buffer_manager/loads.cpp
+    src/buffer_manager/evictions.cpp
     src/buffer_manager/trash.cpp
 )
 

@@ -1,9 +1,9 @@
 #pragma once
 
 #include <cstddef>
+#include <deque>
 #include <list>
 #include <memory>
-#include <string>
 #include <vector>
 
 struct Frame {
@@ -21,5 +21,5 @@ struct BufferFrame {
   int pin_count{};
   int fixed_pin{};
   bool reference_bit = false; // TODO: clock
-  std::string ops_stack{};
+  std::deque<char> ops_stack{};
 };

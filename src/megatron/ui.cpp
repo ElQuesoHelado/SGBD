@@ -396,6 +396,8 @@ void Megatron::ui_interact_buffer_manager() {
   // buffer_manager->flush_all();
   translate();
 
+  buffer_manager->set_verbose(true);
+
   // buffer_ui = std::make_unique<BufferUI>(buffer_manager_ptr->pool_.capacity(),
   //                                        disk, table_metadata);
 
@@ -436,6 +438,7 @@ void Megatron::ui_interact_buffer_manager() {
     cin >> opcion;
 
     if (opcion == 0) {
+      buffer_manager->set_verbose(false);
 
       // buffer_ui->forceFlush();
       break;
@@ -445,12 +448,14 @@ void Megatron::ui_interact_buffer_manager() {
       int page_id, operacion, pinea;
       cout << "ID de pagina: ";
       cin >> page_id;
+
       cout << "Operacion (0 = lectura, 1 = escritura): ";
       cin >> operacion;
 
-      buffer_manager->load_pin_page(page_id);
       cout << "?Se fija pagina?(0, 1): ";
       cin >> pinea;
+
+      buffer_manager->load_pin_page_push_op(page_id, (operacion == 0) ? 'R' : 'W');
       buffer_manager->set_fixed_pin(page_id, pinea);
 
     } else if (opcion == 2) {
@@ -572,6 +577,7 @@ void Megatron::ui_interact_buffer_manager() {
     }
     pauseAndReturn();
   }
+  buffer_manager->set_verbose(false);
 }
 
 void mostrarMenu() {
