@@ -16,14 +16,6 @@ void Megatron::insert(std::string table_name, std::vector<std::string> &values) 
     return;
   }
 
-  if (table_metadata.are_regs_fixed)
-    insert_fixed(table_metadata, values);
-  else
-    insert_slotted(table_metadata, values);
-}
-
-// Inserta un solo registro en tabla
-void Megatron::insert_fixed(serial::TableMetadata &table_metadata, std::vector<std::string> &values) {
   if (table_metadata.columns.size() != values.size()) {
     std::cerr << "Numero de valores diferente a columnas" << std::endl;
     return;
@@ -39,13 +31,32 @@ void Megatron::insert_fixed(serial::TableMetadata &table_metadata, std::vector<s
   // Se busca pagina a insertar
   uint32_t insert_page_id;
 
-  insert_page_id = get_insertable_page(table_metadata.first_page_id,
-                                       table_metadata.max_reg_size);
+  if (table_metadata.are_regs_fixed) {
+    insert_page_id = get_insertable_page_id(table_metadata.first_page_id,
+                                            table_metadata.max_reg_size);
+
+  } else {
+    // Peor caso, siempre se crea nuevo Slot
+    insert_page_id = get_insertable_page_id(table_metadata.first_page_id,
+                                            register_bytes.size() + sizeof(serial::Slot));
+  }
 
   // Paginas sin espacio suficiente
   if (insert_page_id == disk_manager->NULL_BLOCK)
     insert_page_id = add_new_page_to_table(table_metadata);
 
+  insert_into_page(table_metadata, insert_page_id, register_bytes);
+}
+
+void Megatron::insert_into_page(serial::TableMetadata &table_metadata,
+                                size_t insert_page_id, std::vector<unsigned char> &register_bytes) {
+  if (table_metadata.are_regs_fixed)
+    insert_into_fixed_page(insert_page_id, register_bytes);
+  else
+    insert_into_slotted_page(insert_page_id, register_bytes);
+}
+
+void Megatron::insert_into_fixed_page(size_t insert_page_id, std::vector<unsigned char> &register_bytes) {
   // Se lee pagina y saca metadata relevante
   serial::PageHeader page_header;
   serial::FixedDataHeader fixed_data_header;
@@ -95,29 +106,7 @@ void Megatron::insert_fixed(serial::TableMetadata &table_metadata, std::vector<s
   // disk.write_block(insert_page_bytes, insert_page_id);
 }
 
-void Megatron::insert_slotted(serial::TableMetadata &table_metadata, std::vector<std::string> &values) {
-  if (table_metadata.columns.size() != values.size()) {
-    std::cerr << "Numero de valores diferente a columnas" << std::endl;
-    return;
-  }
-
-  // Serializamos todo el registro
-  auto register_bytes = serialize_register(table_metadata, values);
-
-  if (register_bytes.size() > table_metadata.max_reg_size)
-    throw std::runtime_error("Registro serializado mas grande que size maximo de registro");
-
-  // Se busca pagina a insertar
-  uint32_t insert_page_id;
-
-  // Peor caso, siempre se crea nuevo Slot
-  insert_page_id = get_insertable_page(table_metadata.first_page_id,
-                                       register_bytes.size() + sizeof(serial::Slot));
-
-  // Paginas sin espacio suficiente
-  if (insert_page_id == disk_manager->NULL_BLOCK)
-    insert_page_id = add_new_page_to_table(table_metadata);
-
+void Megatron::insert_into_slotted_page(size_t insert_page_id, std::vector<unsigned char> &register_bytes) {
   // Se lee pagina y saca metadata relevante
   auto &frame = buffer_manager->load_pin_page(insert_page_id);
   std::vector<unsigned char> &insert_page_bytes = frame.page_bytes;

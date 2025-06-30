@@ -136,8 +136,8 @@ std::pair<uint32_t, uint32_t> Megatron::locate_nth_reg(std::string &table_name, 
 
 // Inserta un solo registro en tabla
 uint32_t Megatron::locate_free_page(serial::TableMetadata &table_metadata) {
-  return get_insertable_page(table_metadata.first_page_id,
-                             table_metadata.max_reg_size);
+  return get_insertable_page_id(table_metadata.first_page_id,
+                                table_metadata.max_reg_size);
 }
 
 // SOLO carga y modifica, no guarda
@@ -170,8 +170,8 @@ std::pair<uint32_t, std::vector<unsigned char>> Megatron::insert_reg_in_page(ser
   // Se busca pagina a insertar
   uint32_t insert_page_id;
 
-  insert_page_id = get_insertable_page(table_metadata.first_page_id,
-                                       table_metadata.max_reg_size);
+  insert_page_id = get_insertable_page_id(table_metadata.first_page_id,
+                                          table_metadata.max_reg_size);
 
   // Paginas sin espacio suficiente
   // if (insert_page_id == disk.NULL_BLOCK)

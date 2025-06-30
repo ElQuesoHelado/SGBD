@@ -5,8 +5,8 @@
 #include "serial/table.hpp"
 #include <cstdint>
 
-uint32_t Megatron::get_insertable_page(uint32_t first_block_id, uint32_t reg_size) {
-  uint32_t curr_block_id = first_block_id;
+uint32_t Megatron::get_insertable_page_id(uint32_t first_page_id, uint32_t reg_size) {
+  uint32_t curr_block_id = first_page_id;
 
   while (curr_block_id != disk_manager->NULL_BLOCK) {
     // disk.read_block(block, curr_block_id);

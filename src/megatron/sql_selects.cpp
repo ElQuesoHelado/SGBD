@@ -6,15 +6,14 @@
 #include "serial/table.hpp"
 #include "types.hpp"
 #include <cstddef>
-#include <cstdint>
 #include <iostream>
 
 /*
  * Realiza el cargado de datos del disco
  * Considera campos solo para output y condiciones
  * ex: se quiere dos campos pero la condicion depende de otro no visualizado
+ * @note caso no coincida col_name, se realiza un select sin condicion
  */
-// void Megatron::select(Relation &relation, std::vector<std::string> &fields, std::vector<std::string> &conditions) {
 void Megatron::select(std::string &table_name, std::string &col_name, std::string &condition) {
   serial::TableMetadata table_metadata;
 
@@ -35,46 +34,54 @@ void Megatron::select(std::string &table_name, std::string &col_name, std::strin
     }
   }
 
-  if (table_metadata.are_regs_fixed)
-    select_fixed(table_metadata, col_index, cond_val);
-  else
-    select_slotted(table_metadata, col_index, cond_val);
+  size_t curr_page_id = table_metadata.first_page_id, n_regs{};
+  while (curr_page_id != disk_manager->NULL_BLOCK) {
+  }
+
+  // if (table_metadata.are_regs_fixed)
+  //   select_fixed(table_metadata, col_index, cond_val);
+  // else
+  //   select_slotted(table_metadata, col_index, cond_val);
 }
+
+void Megatron::select_from_fixed_page(size_t insert_page_id, size_t col_index, SQL_type &cond_val) {
+  auto frame = buffer_manager->load_pin_page(curr_page_id);
+  std::vector<unsigned char> &page_bytes = frame.page_bytes;
+
+  auto page_bytes_it = page_bytes.begin();
+
+  // Se saca metadata relevante
+  auto page_header = serial::deserialize_page_header(page_bytes_it);
+  auto fixed_data_header = serial::deserialize_fixed_data_header(page_bytes_it);
+
+  for (size_t i{}; i < fixed_data_header.max_n_regs; ++i) {
+
+    if (fixed_data_header.free_register_bitmap.at(i)) { // Registro existe
+      auto register_bytes = get_ith_register_bytes(table_metadata, page_header, fixed_data_header, page_bytes, i);
+      auto register_values = deserialize_register(table_metadata, register_bytes);
+
+      // Si hay condicion
+      if (col_index < table_metadata.n_cols && register_values[col_index] != cond_val)
+        continue;
+
+      n_regs++;
+      for (auto &v : register_values)
+        std::cout << SQL_type_to_string(v) << " | ";
+
+      std::cout << std::endl;
+    }
+  }
+
+  buffer_manager->free_unpin_page(curr_page_id, 0);
+  curr_page_id = page_header.next_block_id;
+}
+void Megatron::select_from_slotted_page(size_t insert_page_id, size_t col_index, SQL_type &cond_val);
 
 void Megatron::select_fixed(serial::TableMetadata &table_metadata,
                             size_t col_index, SQL_type &cond_val) {
   // Se iteran por todas las paginas
   size_t curr_page_id = table_metadata.first_page_id, n_regs{};
   while (curr_page_id != disk_manager->NULL_BLOCK) {
-    auto frame = buffer_manager->load_pin_page(curr_page_id);
-    std::vector<unsigned char> &page_bytes = frame.page_bytes;
-
-    auto page_bytes_it = page_bytes.begin();
-
-    // Se saca metadata relevante
-    auto page_header = serial::deserialize_page_header(page_bytes_it);
-    auto fixed_data_header = serial::deserialize_fixed_data_header(page_bytes_it);
-
-    for (size_t i{}; i < fixed_data_header.max_n_regs; ++i) {
-
-      if (fixed_data_header.free_register_bitmap.at(i)) { // Registro existe
-        auto register_bytes = get_ith_register_bytes(table_metadata, page_header, fixed_data_header, page_bytes, i);
-        auto register_values = deserialize_register(table_metadata, register_bytes);
-
-        // Si hay condicion
-        if (col_index < table_metadata.n_cols && register_values[col_index] != cond_val)
-          continue;
-
-        n_regs++;
-        for (auto &v : register_values)
-          std::cout << SQL_type_to_string(v) << " | ";
-
-        std::cout << std::endl;
-      }
-    }
-
-    buffer_manager->free_unpin_page(curr_page_id, 0);
-    curr_page_id = page_header.next_block_id;
   }
   std::cout << "Numero de registros: " << n_regs << std::endl;
 }

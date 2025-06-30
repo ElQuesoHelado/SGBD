@@ -65,7 +65,8 @@ inline size_t prepare_slotted_insert(SlottedDataHeader &header, size_t n_slot, s
 /*
  * Se busca un slot libre
  * @return numero del slot libre, este se limpia
- * caso no haya ninguno, retorna n_slots
+ *
+ * Caso no haya ninguno, retorna n_slots
  */
 inline size_t get_free_slot(SlottedDataHeader &slotted_data_header) {
   size_t slot_pos{};

@@ -13,7 +13,9 @@ void BufferManager::free_unpin_page(size_t page_id, bool is_dirty = false) {
     throw std::runtime_error("Free de pagina no en buffer");
   }
 
-  it->second.pin_count--;
+  if (it->second.pin_count > 0)
+    it->second.pin_count--;
+
   if (is_dirty) {
     it->second.frame->dirty = true;
   }

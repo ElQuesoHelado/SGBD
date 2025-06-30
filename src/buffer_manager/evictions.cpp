@@ -180,7 +180,7 @@ int BufferManager::evict_page_Clock_verbose() {
 
       if (opcion == 1) {
         auto curr_op = entry.ops_stack.back();
-        // std::cout << "Pincount reducido en 1\n";
+
         if (curr_op == 'W') {
           std::cout << "\t\tDicho proceso es de escritura" << std::endl;
           std::cout << "\t\t?Deseas guardar la pagina?(0:no, 1:si) ";

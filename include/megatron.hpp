@@ -68,8 +68,11 @@ public:
 
   // void select(Relation &relation, std::vector<std::string> &fields, std::vector<std::string> &conditions);
   void select(std::string &table_name, std::string &col_name, std::string &condition);
-  void select_fixed(serial::TableMetadata &table_metadata, size_t col_index, SQL_type &cond_val);
-  void select_slotted(serial::TableMetadata &table_metadata, size_t col_index, SQL_type &cond_val);
+  // void select_fixed(serial::TableMetadata &table_metadata, size_t col_index, SQL_type &cond_val);
+  // void select_slotted(serial::TableMetadata &table_metadata, size_t col_index, SQL_type &cond_val);
+  void select_from_fixed_page(size_t select_page_id, size_t col_index, SQL_type &cond_val);
+  void select_from_slotted_page(size_t select_page_id, size_t col_index, SQL_type &cond_val);
+
   // void update(std::string cond_col_name, std::string condition, std::string col_name, std::string new_value);
 
   void delete_reg(std::string &table_name, std::string &col_name, std::string &condition);
@@ -81,8 +84,11 @@ public:
   void delete_nth_slotted(std::vector<unsigned char> &page_bytes, size_t nth);
 
   void insert(std::string table_name, std::vector<std::string> &values);
-  void insert_fixed(serial::TableMetadata &table_metadata, std::vector<std::string> &values);
-  void insert_slotted(serial::TableMetadata &table_metadata, std::vector<std::string> &values);
+
+  // Se entiende que pagina tiene capacidad suficiente para registro/+slot
+  void insert_into_page(serial::TableMetadata &table_metadata, size_t insert_page_id, std::vector<unsigned char> &register_bytes);
+  void insert_into_fixed_page(size_t insert_page_id, std::vector<unsigned char> &register_bytes);
+  void insert_into_slotted_page(size_t insert_page_id, std::vector<unsigned char> &register_bytes);
 
   void select_save(std::string table_name, std::string col_name, std::string condition, std::string new_table_name);
 
@@ -172,7 +178,8 @@ public:
   bool is_fixed_block_insertable(std::vector<unsigned char> &block_bytes);
   bool is_slotted_block_insertable(std::vector<unsigned char> &block_bytes);
 
-  uint32_t get_insertable_page(uint32_t block_id, uint32_t reg_size);
+  // Itera a travez de heapfile hasta encontrar pagina libre
+  uint32_t get_insertable_page_id(uint32_t first_page_id, uint32_t reg_size);
 
   uint32_t create_page(serial::TableMetadata &table_metadata);
 
