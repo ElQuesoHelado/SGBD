@@ -16,6 +16,10 @@ void Megatron::insert(std::string table_name, std::vector<std::string> &values) 
     return;
   }
 
+  insert(table_metadata, values);
+}
+
+void Megatron::insert(serial::TableMetadata &table_metadata, std::vector<std::string> &values) {
   if (table_metadata.columns.size() != values.size()) {
     std::cerr << "Numero de valores diferente a columnas" << std::endl;
     return;
@@ -34,7 +38,6 @@ void Megatron::insert(std::string table_name, std::vector<std::string> &values) 
   if (table_metadata.are_regs_fixed) {
     insert_page_id = get_insertable_page_id(table_metadata.first_page_id,
                                             table_metadata.max_reg_size);
-
   } else {
     // Peor caso, siempre se crea nuevo Slot
     insert_page_id = get_insertable_page_id(table_metadata.first_page_id,

@@ -1,8 +1,7 @@
 #include "megatron.hpp"
-#include "serial/generic.hpp"
 #include "serial/table.hpp"
 #include <iostream>
-#include <string_view>
+#include <print>
 
 void Megatron::load_CSV(std::string path, std::string table_name, size_t n_regs) {
   std::ifstream file(path);
@@ -23,16 +22,7 @@ void Megatron::load_CSV(std::string path, std::string table_name, size_t n_regs)
      */
     size_t records_inserted = 0;
     while (std::getline(file, line)) {
-      // std::cout << line << std::endl;
-
-      // if (line.empty() || !file.good()) {
-      //   break; // Salir si hay error o EOF real
-      // }
-
-      // std::cout << "aea" << std::endl;
-
-      // if (records_inserted == 330)
-      //   std::cout << "hola" << std::endl;
+      // std::println("{}", records_inserted);
 
       if (n_regs > 0 && records_inserted >= n_regs) {
         break;
@@ -40,8 +30,6 @@ void Megatron::load_CSV(std::string path, std::string table_name, size_t n_regs)
 
       line_ss.clear();
       line_ss.str(line);
-
-      // TODO: mas eficiente
 
       // Columnas
       std::vector<std::string> reg_values;
@@ -51,10 +39,7 @@ void Megatron::load_CSV(std::string path, std::string table_name, size_t n_regs)
       if (reg_values.size() != table_metadata.columns.size())
         reg_values.resize(table_metadata.columns.size());
 
-      if (table_metadata.are_regs_fixed)
-        insert_fixed(table_metadata, reg_values);
-      else
-        insert_slotted(table_metadata, reg_values);
+      insert(table_metadata, reg_values);
 
       records_inserted++;
     }

@@ -194,7 +194,7 @@ void Megatron::ui_select_table() {
   std::string cond = "", val = "";
 
   std::cout << std::dec << std::resetiosflags(std::ios_base::floatfield);
-  select(table_name, cond, val);
+  select_print(table_name, cond, val);
 
   pauseAndReturn();
 }

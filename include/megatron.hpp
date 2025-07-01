@@ -3,6 +3,7 @@
 #include "buffer/buffer_manager.hpp"
 #include "buffer/buffer_ui.hpp"
 #include "disk_manager.hpp"
+#include "result_set.hpp"
 #include "serial/fixed_data.hpp"
 #include "serial/slotted_data.hpp"
 #include "serial/table.hpp"
@@ -67,11 +68,10 @@ public:
   bool create_table(std::string name, serial::TableMetadata &copied_table_metadata);
 
   // void select(Relation &relation, std::vector<std::string> &fields, std::vector<std::string> &conditions);
-  void select(std::string &table_name, std::string &col_name, std::string &condition);
-  // void select_fixed(serial::TableMetadata &table_metadata, size_t col_index, SQL_type &cond_val);
-  // void select_slotted(serial::TableMetadata &table_metadata, size_t col_index, SQL_type &cond_val);
-  void select_from_fixed_page(size_t select_page_id, size_t col_index, SQL_type &cond_val);
-  void select_from_slotted_page(size_t select_page_id, size_t col_index, SQL_type &cond_val);
+  void select_print(std::string &table_name, std::string &col_name, std::string &condition);
+  ResultSet select(std::string &table_name, std::string &col_name, std::string &condition);
+  ResultSet select_from_fixed_page(serial::TableMetadata &table_metadata, size_t select_page_id, size_t col_index, SQL_type &cond_val);
+  ResultSet select_from_slotted_page(serial::TableMetadata &table_metadata, size_t select_page_id, size_t col_index, SQL_type &cond_val);
 
   // void update(std::string cond_col_name, std::string condition, std::string col_name, std::string new_value);
 
@@ -84,6 +84,7 @@ public:
   void delete_nth_slotted(std::vector<unsigned char> &page_bytes, size_t nth);
 
   void insert(std::string table_name, std::vector<std::string> &values);
+  void insert(serial::TableMetadata &table_metadata, std::vector<std::string> &values);
 
   // Se entiende que pagina tiene capacidad suficiente para registro/+slot
   void insert_into_page(serial::TableMetadata &table_metadata, size_t insert_page_id, std::vector<unsigned char> &register_bytes);
