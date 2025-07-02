@@ -9,16 +9,15 @@ set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 find_package(Boost REQUIRED)
 
 add_library(megatron src/megatron/megatron.cpp
-    src/megatron/disk_related.cpp
-    src/megatron/sql_ops.cpp
-    src/megatron/bulk_ops.cpp
     src/megatron/fill_meta.cpp
-    src/megatron/sql_inserts.cpp
-    src/megatron/sql_selects.cpp
-    src/megatron/sql_deletes.cpp
+    src/megatron/sql_ops/sql_ops.cpp
+    src/megatron/sql_ops/bulk_ops.cpp
+    src/megatron/sql_ops/sql_inserts.cpp
+    src/megatron/sql_ops/sql_selects.cpp
+    src/megatron/sql_ops/sql_deletes.cpp
     src/megatron/ui.cpp
-    src/megatron/traverse_pages.cpp
-    src/megatron/pages.cpp
+    src/megatron/pages/traverse_pages.cpp
+    src/megatron/pages/pages.cpp
     src/megatron/registers.cpp
     src/megatron/translate.cpp
     src/megatron/misc.cpp

@@ -285,7 +285,7 @@ void Megatron::ui_delete_data() {
   cout << "Valor a evaluar: ";
   getline(cin, value);
 
-  delete_reg(table_name, col_name, value);
+  delete_condition(table_name, col_name, value);
 
   cout << "\"Registros eliminados (si existían)\"\n";
   pauseAndReturn();

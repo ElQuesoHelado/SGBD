@@ -21,12 +21,16 @@ void Megatron::select_print(std::string &table_name, std::string &col_name, std:
   }
 }
 
-/*
- * Realiza el cargado de datos del disco
- * Considera campos solo para output y condiciones
- * ex: se quiere dos campos pero la condicion depende de otro no visualizado
- * @note caso no coincida col_name, se realiza un select sin condicion
- */
+void Megatron::select_print(serial::TableMetadata &table_metadata, std::string &col_name, std::string &condition) {
+  auto result_set = select(table_metadata, col_name, condition);
+
+  size_t i{1};
+  for (auto &reg : result_set) {
+    std::println("{} {}", i, reg);
+    i++;
+  }
+}
+
 ResultSet Megatron::select(std::string &table_name, std::string &col_name, std::string &condition) {
   serial::TableMetadata table_metadata;
 
@@ -36,6 +40,16 @@ ResultSet Megatron::select(std::string &table_name, std::string &col_name, std::
     return {};
   }
 
+  return select(table_metadata, col_name, condition);
+}
+
+/*
+ * Realiza el cargado de datos del disco
+ * Considera campos solo para output y condiciones
+ * ex: se quiere dos campos pero la condicion depende de otro no visualizado
+ * @note caso no coincida col_name, se realiza un select sin condicion
+ */
+ResultSet Megatron::select(serial::TableMetadata &table_metadata, std::string &col_name, std::string &condition) {
   // Se parsea column index y condicion a SQL_type
   size_t col_index{table_metadata.n_cols};
   SQL_type cond_val;
@@ -57,18 +71,23 @@ ResultSet Megatron::select(std::string &table_name, std::string &col_name, std::
     std::vector<unsigned char> &page_bytes = frame.page_bytes;
     auto page_header = serial::deserialize_page_header(page_bytes);
 
-    buffer_manager->free_unpin_page(curr_page_id, 0);
+    buffer_manager->free_unpin_page(curr_page_id, false);
 
-    ResultSet partial_result_set{};
-    if (table_metadata.are_regs_fixed)
-      partial_result_set = select_from_fixed_page(table_metadata, curr_page_id, col_index, cond_val);
-    else
-      partial_result_set = select_from_slotted_page(table_metadata, curr_page_id, col_index, cond_val);
+    auto partial_result_set = select_from_page(table_metadata, curr_page_id, col_index, cond_val);
 
     result_set.merge(std::move(partial_result_set));
 
     curr_page_id = page_header.next_block_id;
   }
+
+  return result_set;
+}
+
+ResultSet Megatron::select_from_page(serial::TableMetadata &table_metadata, size_t select_page_id, size_t col_index, SQL_type &cond_val) {
+  auto result_set =
+      (table_metadata.are_regs_fixed)
+          ? select_from_fixed_page(table_metadata, select_page_id, col_index, cond_val)
+          : select_from_slotted_page(table_metadata, select_page_id, col_index, cond_val);
 
   return result_set;
 }
