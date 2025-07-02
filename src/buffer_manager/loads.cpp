@@ -38,25 +38,25 @@ Frame &BufferManager::load_pin_page_push_op(size_t page_id, char op) {
   auto &frame = load_pin_page(page_id);
   auto &buffer_frame = frame_map.find(page_id)->second;
 
-  // Caso se tenga un write en top stack, se tiene que escribir/descartar
-  if (!buffer_frame.ops_stack.empty() && buffer_frame.ops_stack.back() == 'W') {
-    int opcion;
-    std::cout << "㊗️‼️ Pagina con page_id: " << page_id << " tiene como ultima operacion un write ‼️㊗️" << std::endl;
-    std::cout << "?Deseas escribir dicho proceso?(0:no, 1:si) ";
-    std::cin >> opcion;
-
-    if (opcion == 1) {
-      disk_manager->write_block(frame.page_bytes, page_id);
-      std::cout << "Proceso guardado." << std::endl;
-    } else {
-      std::cout << "Proceso descartado." << std::endl;
-    }
-
-    buffer_frame.ops_stack.pop_back();
-    if (!buffer_frame.ops_stack.empty())
-      buffer_frame.frame->dirty = buffer_frame.ops_stack.back() == 'W';
-    buffer_frame.pin_count--;
-  }
+  // // Caso se tenga un write en top stack, se tiene que escribir/descartar
+  // if (!buffer_frame.ops_stack.empty() && buffer_frame.ops_stack.back() == 'W') {
+  //   int opcion;
+  //   std::cout << "㊗️‼️ Pagina con page_id: " << page_id << " tiene como ultima operacion un write ‼️㊗️" << std::endl;
+  //   std::cout << "?Deseas escribir dicho proceso?(0:no, 1:si) ";
+  //   std::cin >> opcion;
+  //
+  //   if (opcion == 1) {
+  //     disk_manager->write_block(frame.page_bytes, page_id);
+  //     std::cout << "Proceso guardado." << std::endl;
+  //   } else {
+  //     std::cout << "Proceso descartado." << std::endl;
+  //   }
+  //
+  //   buffer_frame.ops_stack.pop_back();
+  //   if (!buffer_frame.ops_stack.empty())
+  //     buffer_frame.frame->dirty = buffer_frame.ops_stack.back() == 'W';
+  //   buffer_frame.pin_count--;
+  // }
 
   buffer_frame.ops_stack.push_back(op);
 

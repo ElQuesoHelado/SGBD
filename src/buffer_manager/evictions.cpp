@@ -1,4 +1,5 @@
 #include "buffer/buffer_manager.hpp"
+#include <print>
 
 void BufferManager::evict_page() {
   int success{-1};
@@ -153,10 +154,10 @@ int BufferManager::evict_page_Clock_verbose() {
   while (true) { // Saboteamos loop de clock para reducir pincounts a la par
 
     size_t current_page = frame_slots[clock_hand];
-    std::cout << "Mano en frame 👉🏾:  " << clock_hand << " con id: " << current_page << "\n";
+    std::println("Mano en frame 👉🏾:  {} con id: {}", clock_hand, current_page);
 
     if (current_page == disk_manager->NULL_BLOCK) {
-      std::cout << "\tFrame vacio, se ignora" << std::endl;
+      std::println("\tFrame vacio, se ignora");
       clock_hand = (clock_hand + 1) % capacity;
       continue;
     }
@@ -165,25 +166,24 @@ int BufferManager::evict_page_Clock_verbose() {
     auto &entry = it->second;
 
     if (entry.fixed_pin != 0) {
-      std::cout << "\tFrame fijado, se ignora" << std::endl;
+      std::println("\tFrame fijado, se ignora");
       clock_hand = (clock_hand + 1) % capacity;
       continue;
     }
 
     if (entry.pin_count > 0) { // Se puede reducir pincount
-      std::cout << "\tPincount: " << entry.pin_count << ".\n";
-
+      std::println("\tPincount: {}\n\tTiene {} procesos activos",
+                   entry.pin_count, entry.ops_stack.size());
+      std::print("\t?Deseas terminar el proceso mas reciente?(0:no, 1:si) ");
       int opcion;
-      std::cout << "\tTiene " << entry.ops_stack.size() << " procesos activos" << std::endl;
-      std::cout << "\t?Deseas terminar el proceso mas reciente?(0:no, 1:si) ";
       std::cin >> opcion;
 
       if (opcion == 1) {
         auto curr_op = entry.ops_stack.back();
 
         if (curr_op == 'W') {
-          std::cout << "\t\tDicho proceso es de escritura" << std::endl;
-          std::cout << "\t\t?Deseas guardar la pagina?(0:no, 1:si) ";
+          std::println("\t\tDicho proceso es de escritura");
+          std::print("\t\t?Deseas guardar la pagina?(0:no, 1:si) ");
 
           int opcion;
           std::cin >> opcion;
@@ -191,13 +191,13 @@ int BufferManager::evict_page_Clock_verbose() {
           if (opcion == 1) {
             disk_manager->write_block(entry.frame->page_bytes, current_page);
             entry.frame->dirty = false;
-            std::cout << "\t\tPagina SUCIA guardada." << std::endl;
+            std::println("\t\tPagina SUCIA guardada.");
           } else {
-            std::cout << "\t\tPagina SUCIA descartada." << std::endl;
+            std::println("\t\tPagina SUCIA descartada.");
           }
 
         } else {
-          std::cout << "\t\tProceso de lectura terminado en " << current_page << ".\n";
+          std::println("\t\tProceso de lectura terminado en {}", current_page);
         }
 
         entry.ops_stack.pop_back();
@@ -210,31 +210,31 @@ int BufferManager::evict_page_Clock_verbose() {
       clock_hand = (clock_hand + 1) % capacity;
       continue;
     } else if (entry.reference_bit) {
-      std::cout << "\tPagina " << current_page << " con reference_bit 1, cambia a 0" << ".\n";
+      std::print("\tPagina {} con reference_bit 1, cambia a 0", current_page);
       entry.reference_bit = false;
       attempts++;
       clock_hand = (clock_hand + 1) % capacity;
       continue;
     }
 
-    std::cout << "Pagina " << current_page << " se va a eliminar" << ".\n";
+    std::println("Pagina {} se va a eliminar", current_page);
 
     if (entry.frame->dirty) {
-      std::cout << "\tSe esta por hacer eviction a una pagina SUCIA con page_id: " << current_page << std::endl;
-      std::cout << "\t?Deseas guardarla?(0:no, 1:si) ";
+      std::println("\tSe esta por hacer eviction a una pagina SUCIA con page_id: {}", current_page);
+      std::print("\t?Deseas guardarla?(0:no, 1:si) ");
 
       int opcion;
       std::cin >> opcion;
 
       if (opcion == 1) {
         disk_manager->write_block(entry.frame->page_bytes, current_page);
-        std::cout << "\t\tPagina SUCIA guardada." << std::endl;
+        std::println("\t\tPagina SUCIA guardada.");
       } else {
-        std::cout << "\t\tPagina SUCIA descartada." << std::endl;
+        std::println("\t\tPagina SUCIA descartada.");
       }
 
     } else {
-      std::cout << "\tDescartando pagina limpia " << current_page << ".\n";
+      std::println("\tDescartando pagina limpia {}", current_page);
     }
 
     frame_map.erase(current_page);
