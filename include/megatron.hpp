@@ -76,6 +76,14 @@ public:
   ResultSet select_from_fixed_page(serial::TableMetadata &table_metadata, size_t select_page_id, size_t col_index, SQL_type &cond_val);
   ResultSet select_from_slotted_page(serial::TableMetadata &table_metadata, size_t select_page_id, size_t col_index, SQL_type &cond_val);
 
+  void select_print_range(std::string &table_name, std::string &col_name, std::string &low, std::string &high, int max_pages_loaded = -1);
+  void select_print_range(serial::TableMetadata &table_metadata, std::string &col_name, std::string &low, std::string &high, int max_pages_loaded = -1);
+  ResultSet select_range(std::string &table_name, std::string &col_name, std::string &low, std::string &high, int max_pages_loaded = -1);
+  ResultSet select_range(serial::TableMetadata &table_metadata, std::string &col_name, std::string &low, std::string &high, int max_pages_loaded = -1);
+  ResultSet select_from_page_range(serial::TableMetadata &table_metadata, size_t select_page_id, size_t col_index, SQL_type &low_val, SQL_type &high_val);
+  ResultSet select_from_fixed_page_range(serial::TableMetadata &table_metadata, size_t select_page_id, size_t col_index, SQL_type &low_val, SQL_type &high_val);
+  ResultSet select_from_slotted_page_range(serial::TableMetadata &table_metadata, size_t select_page_id, size_t col_index, SQL_type &low_val, SQL_type &high_val);
+
   ResultSet delete_condition(std::string &table_name, std::string &col_name,
                              std::string &condition);
   ResultSet delete_condition(serial::TableMetadata &table_metadata,

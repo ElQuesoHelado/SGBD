@@ -9,6 +9,7 @@
 #include <iostream>
 #include <iterator>
 #include <limits>
+#include <print>
 #include <sstream>
 #include <string>
 
@@ -193,6 +194,10 @@ void load_CSV_with_schema_inference(std::string path, std::string table_name, bo
   // Determinar tipos de columna
   auto columns = determine_column_types(headers, rows, prefer_varchar);
 
+  for (auto &e : columns) {
+    std::println("{}", e);
+  }
+
   // // Verificar si la tabla ya existe
   serial::TableMetadata existing_metadata;
   // if (search_table(table_name, existing_metadata)) {
@@ -229,5 +234,5 @@ void load_CSV_with_schema_inference(std::string path, std::string table_name, bo
 }
 
 int main(int argc, char *argv[]) {
-  load_CSV_with_schema_inference("csv/housing.csv", "ejemplo", 0);
+  load_CSV_with_schema_inference("csv/titanic.csv", "ejemplo", 0);
 }

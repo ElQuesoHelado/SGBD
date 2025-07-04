@@ -14,6 +14,7 @@ add_library(megatron src/megatron/megatron.cpp
     src/megatron/sql_ops/bulk_ops.cpp
     src/megatron/sql_ops/sql_inserts.cpp
     src/megatron/sql_ops/sql_selects.cpp
+    src/megatron/sql_ops/sql_selects_range.cpp
     src/megatron/sql_ops/sql_deletes.cpp
     src/megatron/sql_ops/sql_updates.cpp
     src/megatron/sql_ops/sql_update_nth.cpp

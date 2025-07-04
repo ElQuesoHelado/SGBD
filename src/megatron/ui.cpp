@@ -473,18 +473,19 @@ void Megatron::ui_interact_buffer_manager() {
     cout << "3. Quitar pin fijo\n";
     cout << "4. Mostrar contenido pagina\n";
     cout << "5. Select *\n";
-    cout << "6. Select from\n";
-    cout << "7. Select nth registro(empieza en 0)\n"; // FIXME: Tal vez irrelevante
-    cout << "8. Update de pagina(condicion)\n";
-    cout << "9. Update de pagina(nth, empieza en 0)\n";
-    cout << "10. Delete de pagina(condicion)\n";
-    cout << "11. Delete de pagina(nth, empieza en 0)\n";
-    cout << "12. Insert 1 registro a pagina(manual)\n";
-    cout << "13. Insert n registros a pagina(de csv)\n";
-    cout << "14. Guardar una pagina\n";
-    cout << "15. Guardar TODAS las paginas\n";
-    cout << "16. Clear buffer(NO GUARDA)\n";
-    cout << "17. Mostrar paginas usadas por tabla\n";
+    cout << "6. Select from(igualdad)\n";
+    cout << "7. Select from(rango)\n";
+    cout << "8. Select nth registro(empieza en 0)\n"; // FIXME: Tal vez irrelevante
+    cout << "9. Update de pagina(condicion)\n";
+    cout << "10. Update de pagina(nth, empieza en 0)\n";
+    cout << "11. Delete de pagina(condicion)\n";
+    cout << "12. Delete de pagina(nth, empieza en 0)\n";
+    cout << "13. Insert 1 registro a pagina(manual)\n";
+    cout << "14. Insert n registros a pagina(de csv)\n";
+    cout << "15. Guardar una pagina\n";
+    cout << "16. Guardar TODAS las paginas\n";
+    cout << "17. Clear buffer(NO GUARDA)\n";
+    cout << "18. Mostrar paginas usadas por tabla\n";
     cout << "0. Salir\n";
     cout << "Opcion: ";
     cin >> opcion;
@@ -556,37 +557,35 @@ void Megatron::ui_interact_buffer_manager() {
 
     } else if (opcion == 6) {
       cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-      string col_name, value;
+      string col_name, val;
       cout << "Columna a evaluar: ";
       getline(cin, col_name);
       cout << "Valor a evaluar: ";
-      getline(cin, value);
+      getline(cin, val);
+
       size_t page_limit{}, nth{};
       cout << "# de paginas maximas a cargar: ";
       cin >> page_limit;
 
       select_print(table_metadata, col_name,
-                   value, page_limit);
+                   val, page_limit);
 
     } else if (opcion == 7) {
       cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-      string col_name, value;
+      string col_name, low, high;
       cout << "Columna a evaluar: ";
       getline(cin, col_name);
-      cout << "Valor a evaluar: ";
-      getline(cin, value);
-
+      cout << "Valor inferior(no inclusivo): ";
+      getline(cin, low);
+      cout << "Valor superior(no inclusivo): ";
+      getline(cin, high);
       size_t page_limit{}, nth{};
-      cout << "N-esimo registro(EXISTENTE) a seleccionar(empieza 0): ";
-      cin >> nth;
       cout << "# de paginas maximas a cargar: ";
       cin >> page_limit;
 
-      // TODO: Implementar
-
-      // select(table_metadata, col_name,
-      // value, page_limit);
-    } else if (opcion == 8) { // Update condicion
+      select_print_range(table_metadata, col_name,
+                         low, high, page_limit);
+    } else if (opcion == 9) { // Update condicion
       int page_id;
       cout << "ID de pagina a modificar: ";
       cin >> page_id;
@@ -613,7 +612,7 @@ void Megatron::ui_interact_buffer_manager() {
         std::println("{}", r);
       }
 
-    } else if (opcion == 9) { // Update nth
+    } else if (opcion == 10) { // Update nth
       int page_id;
       cout << "ID de pagina a modificar: ";
       cin >> page_id;
@@ -640,7 +639,7 @@ void Megatron::ui_interact_buffer_manager() {
       for (auto &r : result_set) {
         std::println("{}", r);
       }
-    } else if (opcion == 10) { // Eliminar condicion
+    } else if (opcion == 11) { // Eliminar condicion
       int page_id;
       cout << "ID de pagina a eliminar: ";
       cin >> page_id;
@@ -661,7 +660,7 @@ void Megatron::ui_interact_buffer_manager() {
         std::println("{}", r);
       }
 
-    } else if (opcion == 11) { // Eliminar nth
+    } else if (opcion == 12) { // Eliminar nth
       int page_id;
       cout << "ID de pagina a modificar: ";
       cin >> page_id;
@@ -678,7 +677,7 @@ void Megatron::ui_interact_buffer_manager() {
       for (auto &r : result_set) {
         std::println("{}", r);
       }
-    } else if (opcion == 12) { // Insert 1 reg
+    } else if (opcion == 13) { // Insert 1 reg
       try {
         int page_id;
         cout << "ID de pagina a insertar: ";
@@ -708,7 +707,7 @@ void Megatron::ui_interact_buffer_manager() {
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
       }
 
-    } else if (opcion == 13) { // Load n de csv
+    } else if (opcion == 14) { // Load n de csv
       try {
         int page_id;
         cout << "ID de pagina a insertar: ";
@@ -766,12 +765,12 @@ void Megatron::ui_interact_buffer_manager() {
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
       }
-    } else if (opcion == 14) { // FIXME:
-    } else if (opcion == 15) {
-      buffer_manager->flush_all();
+    } else if (opcion == 15) { // FIXME:
     } else if (opcion == 16) {
-      buffer_manager->clear();
+      buffer_manager->flush_all();
     } else if (opcion == 17) {
+      buffer_manager->clear();
+    } else if (opcion == 18) {
       for (auto e : page_ids)
         std::cout << e.first << " " << e.second << '\n';
       std::cout << std::endl;
