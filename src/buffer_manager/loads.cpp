@@ -1,5 +1,6 @@
 #include "buffer/buffer_manager.hpp"
 #include <iostream>
+#include <print>
 
 // Carga de pagina, necesariamente incrementa pin_count
 Frame &BufferManager::load_pin_page(size_t page_id) {
@@ -40,7 +41,14 @@ Frame &BufferManager::load_pin_page_push_op(size_t page_id, char op) {
   auto &buffer_frame = frame_map.find(page_id)->second;
 
   // FIXME: ?preguntar por despineo caso sea fija?
-
+  // if (buffer_frame.fixed_pin) {
+  //   std::print("La pagina {} tiene pin fijo, deseas desfijarla?(0:no, 1:si) ", page_id);
+  //   int opcion;
+  //   std::cin >> opcion;
+  //
+  //   if(opcion)
+  //
+  // }
   // // Caso se tenga un write en top stack, se tiene que escribir/descartar
   // if (!buffer_frame.ops_stack.empty() && buffer_frame.ops_stack.back() == 'W') {
   //   int opcion;
@@ -63,8 +71,9 @@ Frame &BufferManager::load_pin_page_push_op(size_t page_id, char op) {
 
   buffer_frame.ops_queue.push_back(op);
 
-  // FIXME: Caso cola, ?no se deberia actualizar?, ?Siempre se respeta front?
-  frame.dirty = (op == 'W');
+  // FIXME: Posible diferencia
+  // frame.dirty = (op == 'W');
+  frame.dirty = (buffer_frame.ops_queue.front() == 'W');
 
   return frame;
 }

@@ -108,8 +108,7 @@ int BufferManager::evict_page_LRU_verbose() {
         std::cout << "Pagina " << *it << " pineada" << ".\n";
       }
     }
-    // No se logro liberar una pagina, fuerza alguna pineada
-    //  TODO: Forzar despineado de fijas
+    std::println("No se logro liberar una pagina, se realiza otra ronda de terminar procesos");
   }
 
   return -1;
@@ -206,7 +205,6 @@ int BufferManager::evict_page_Clock_verbose() {
           std::println("\t\tProceso de lectura terminado en {}", current_page);
         }
 
-        // FIXME:Caso se hace pop a una ultima op Write, deberia marcar como clean
         entry.ops_queue.pop_front();
         if (!entry.ops_queue.empty())
           entry.frame->dirty = entry.ops_queue.front() == 'W';
@@ -226,7 +224,9 @@ int BufferManager::evict_page_Clock_verbose() {
 
     std::println("Pagina {} se va a eliminar", current_page);
 
-    // FIXME: Tal vez se vuelva un tanto irrelevante
+    // TODO: Tal vez se vuelva un tanto irrelevante,
+    // siempre se escribe en termino de procesos
+    // Sirve como metodo defensivo
     if (entry.frame->dirty) {
       std::println("\tSe esta por hacer eviction a una pagina SUCIA"
                    "con page_id: {}",

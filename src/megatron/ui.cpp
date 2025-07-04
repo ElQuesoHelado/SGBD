@@ -437,12 +437,12 @@ void Megatron::ui_interact_buffer_manager() {
   }
 
   buffer_manager->flush_all();
-  buffer_manager->clear();
 
   translate();
 
   auto page_ids = get_used_pages(table_metadata);
 
+  buffer_manager->clear();
   buffer_manager->set_verbose(true);
 
   // Info de paginas correspondientes a tabla
@@ -512,7 +512,7 @@ void Megatron::ui_interact_buffer_manager() {
       cout << "Operacion (0 = lectura, 1 = escritura): ";
       cin >> operacion;
 
-      cout << "?Se fija pagina?(0, 1): ";
+      cout << "?Se fija pagina(ESTO CAMBIA PIN ACTUAL)?(0, 1): ";
       cin >> pinea;
 
       buffer_manager->load_pin_page_push_op(page_id, (operacion == 0) ? 'R' : 'W');
