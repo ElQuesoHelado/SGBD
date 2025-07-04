@@ -1,4 +1,5 @@
 #include "buffer/buffer_manager.hpp"
+#include <iostream>
 
 // Carga de pagina, necesariamente incrementa pin_count
 Frame &BufferManager::load_pin_page(size_t page_id) {
@@ -38,6 +39,8 @@ Frame &BufferManager::load_pin_page_push_op(size_t page_id, char op) {
   auto &frame = load_pin_page(page_id);
   auto &buffer_frame = frame_map.find(page_id)->second;
 
+  // FIXME: ?preguntar por despineo caso sea fija?
+
   // // Caso se tenga un write en top stack, se tiene que escribir/descartar
   // if (!buffer_frame.ops_stack.empty() && buffer_frame.ops_stack.back() == 'W') {
   //   int opcion;
@@ -58,8 +61,9 @@ Frame &BufferManager::load_pin_page_push_op(size_t page_id, char op) {
   //   buffer_frame.pin_count--;
   // }
 
-  buffer_frame.ops_stack.push_back(op);
+  buffer_frame.ops_queue.push_back(op);
 
+  // FIXME: Caso cola, ?no se deberia actualizar?, ?Siempre se respeta front?
   frame.dirty = (op == 'W');
 
   return frame;
@@ -71,7 +75,8 @@ void BufferManager::load_page(size_t page_id, bool fixed_pin) {
   // TODO: algun check de bloque_id valido?
   disk_manager->read_block(data, page_id);
 
-  auto frame = std::make_unique<Frame>(page_id, std::move(data));
+  auto frame =
+      std::make_unique<Frame>(page_id, std::move(data));
 
   size_t free_slot = find_free_slot();
   if (free_slot == disk_manager->NULL_BLOCK) {

@@ -68,33 +68,52 @@ public:
   bool create_table(std::string name, serial::TableMetadata &copied_table_metadata);
 
   // void select(Relation &relation, std::vector<std::string> &fields, std::vector<std::string> &conditions);
-  void select_print(std::string &table_name, std::string &col_name, std::string &condition);
-  void select_print(serial::TableMetadata &table_metadata, std::string &col_name, std::string &condition);
-  ResultSet select(std::string &table_name, std::string &col_name, std::string &condition);
-  ResultSet select(serial::TableMetadata &table_metadata, std::string &col_name, std::string &condition);
+  void select_print(std::string &table_name, std::string &col_name, std::string &condition, int max_pages_loaded = -1);
+  void select_print(serial::TableMetadata &table_metadata, std::string &col_name, std::string &condition, int max_pages_loaded = -1);
+  ResultSet select(std::string &table_name, std::string &col_name, std::string &condition, int max_pages_loaded = -1);
+  ResultSet select(serial::TableMetadata &table_metadata, std::string &col_name, std::string &condition, int max_pages_loaded = -1);
   ResultSet select_from_page(serial::TableMetadata &table_metadata, size_t select_page_id, size_t col_index, SQL_type &cond_val);
   ResultSet select_from_fixed_page(serial::TableMetadata &table_metadata, size_t select_page_id, size_t col_index, SQL_type &cond_val);
   ResultSet select_from_slotted_page(serial::TableMetadata &table_metadata, size_t select_page_id, size_t col_index, SQL_type &cond_val);
 
-  // void update(std::string cond_col_name, std::string condition, std::string col_name, std::string new_value);
-
-  ResultSet delete_condition(std::string &table_name, std::string &col_name, std::string &condition);
-  ResultSet delete_condition(serial::TableMetadata &table_metadata, std::string &col_name, std::string &condition);
-  ResultSet delete_from_page(serial::TableMetadata &table_metadata, size_t delete_page_id, size_t col_index, SQL_type &cond_val);
-  ResultSet delete_from_fixed_page(serial::TableMetadata &table_metadata, size_t delete_page_id, size_t col_index, SQL_type &cond_val);
-  ResultSet delete_from_slotted_page(serial::TableMetadata &table_metadata, size_t delete_page_id, size_t col_index, SQL_type &cond_val);
-
+  ResultSet delete_condition(std::string &table_name, std::string &col_name,
+                             std::string &condition);
+  ResultSet delete_condition(serial::TableMetadata &table_metadata,
+                             std::string &col_name, std::string &condition);
+  ResultSet delete_from_page(serial::TableMetadata &table_metadata,
+                             size_t delete_page_id, std::string &col_name,
+                             std::string &condition);
+  ResultSet delete_from_page(serial::TableMetadata &table_metadata,
+                             size_t delete_page_id, size_t col_index,
+                             SQL_type &cond_val);
+  ResultSet delete_from_fixed_page(serial::TableMetadata &table_metadata,
+                                   size_t delete_page_id, size_t col_index,
+                                   SQL_type &cond_val);
+  ResultSet delete_from_slotted_page(serial::TableMetadata &table_metadata,
+                                     size_t delete_page_id, size_t col_index,
+                                     SQL_type &cond_val);
   ResultSet delete_nth_reg(std::string &table_name, size_t nth);
   ResultSet delete_nth_reg(serial::TableMetadata &table_metadata, size_t nth);
-  ResultSet delete_nth_from_page(serial::TableMetadata &table_metadata, size_t delete_page_id, size_t nth);
-  ResultSet delete_nth_from_fixed_page(serial::TableMetadata &table_metadata, size_t delete_page_id, size_t nth);
-  ResultSet delete_nth_from_slotted_page(serial::TableMetadata &table_metadata, size_t delete_page_id, size_t nth);
+  ResultSet delete_nth_from_page(serial::TableMetadata &table_metadata,
+                                 size_t delete_page_id, size_t nth);
+  ResultSet delete_nth_from_fixed_page(serial::TableMetadata &table_metadata,
+                                       size_t delete_page_id, size_t nth);
+  ResultSet delete_nth_from_slotted_page(
+      serial::TableMetadata &table_metadata,
+      size_t delete_page_id, size_t nth);
 
   void insert(std::string table_name, std::vector<std::string> &values);
   void insert(serial::TableMetadata &table_metadata, std::vector<std::string> &values);
 
+  void insert_into_page(serial::TableMetadata &table_metadata,
+                        size_t insert_page_id,
+                        std::vector<unsigned char> &register_bytes);
+  // Preprocesa registro
+  void insert_into_page(serial::TableMetadata &table_metadata,
+                        size_t insert_page_id,
+                        std::vector<std::string> &reg_values);
+
   // Se entiende que pagina tiene capacidad suficiente para registro/+slot
-  void insert_into_page(serial::TableMetadata &table_metadata, size_t insert_page_id, std::vector<unsigned char> &register_bytes);
   void insert_into_fixed_page(size_t insert_page_id, std::vector<unsigned char> &register_bytes);
   void insert_into_slotted_page(size_t insert_page_id, std::vector<unsigned char> &register_bytes);
 
@@ -253,7 +272,7 @@ public:
 
   uint32_t add_new_page_to_table(serial::TableMetadata &table_metadata);
 
-  std::vector<size_t> get_used_pages(serial::TableMetadata &table_metadata);
+  std::vector<std::pair<size_t, size_t>> get_used_pages(serial::TableMetadata &table_metadata);
 
   // =====
   // Operaciones de registros
@@ -290,6 +309,8 @@ public:
   std::string translate_data_page(serial::TableMetadata &table_metadata, size_t page_id);
   std::string translate_data_page(serial::TableMetadata &table_metadata,
                                   std::vector<unsigned char> &page_bytes, size_t page_id);
+  std::string translate_data_page_no_write(serial::TableMetadata &table_metadata,
+                                           std::vector<unsigned char> &page_bytes, size_t page_id);
 
   std::vector<std::string> translate_fixed_page(
       serial::TableMetadata &table_metadata,

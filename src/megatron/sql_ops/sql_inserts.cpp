@@ -51,20 +51,44 @@ void Megatron::insert(serial::TableMetadata &table_metadata, std::vector<std::st
 }
 
 void Megatron::insert_into_page(serial::TableMetadata &table_metadata,
-                                size_t insert_page_id, std::vector<unsigned char> &register_bytes) {
-  (table_metadata.are_regs_fixed) ? insert_into_fixed_page(insert_page_id, register_bytes)
-                                  : insert_into_slotted_page(insert_page_id, register_bytes);
+                                size_t insert_page_id,
+                                std::vector<std::string> &reg_values) {
+  if (table_metadata.columns.size() != reg_values.size()) {
+    std::cerr << "Numero de valores diferente a columnas" << std::endl;
+    return;
+  }
+
+  // Serializamos todo el registro
+  auto register_bytes =
+      serialize_register(table_metadata, reg_values);
+
+  if (register_bytes.size() > table_metadata.max_reg_size)
+    throw std::runtime_error(
+        "Registro serializado mas grande que size maximo de registro");
+
+  insert_into_page(table_metadata, insert_page_id, register_bytes);
 }
 
-void Megatron::insert_into_fixed_page(size_t insert_page_id, std::vector<unsigned char> &register_bytes) {
+void Megatron::insert_into_page(serial::TableMetadata &table_metadata,
+                                size_t insert_page_id,
+                                std::vector<unsigned char> &register_bytes) {
+  (table_metadata.are_regs_fixed)
+      ? insert_into_fixed_page(insert_page_id, register_bytes)
+      : insert_into_slotted_page(insert_page_id, register_bytes);
+}
+
+void Megatron::insert_into_fixed_page(size_t insert_page_id,
+                                      std::vector<unsigned char> &register_bytes) {
   auto &frame = buffer_manager->load_pin_page(insert_page_id);
   std::vector<unsigned char> &insert_page_bytes = frame.page_bytes;
 
   size_t byte_offset_free_reg;
 
-  auto page_header = serial::deserialize_page_header(insert_page_bytes);
+  auto page_header =
+      serial::deserialize_page_header(insert_page_bytes);
 
-  auto fixed_data_header = serial::deserialize_fixed_data_header(insert_page_bytes);
+  auto fixed_data_header =
+      serial::deserialize_fixed_data_header(insert_page_bytes);
 
   // Calculamos posicion donde insertar
   size_t free_reg_pos = serial::find_free_reg_pos(fixed_data_header);
@@ -72,7 +96,8 @@ void Megatron::insert_into_fixed_page(size_t insert_page_id, std::vector<unsigne
                                                       free_reg_pos);
 
   if (free_reg_pos >= fixed_data_header.max_n_regs) {
-    throw std::runtime_error("No hay registros libres en bitmap pero se intentó insertar");
+    throw std::runtime_error(
+        "No hay registros libres en bitmap pero se intentó insertar");
   }
 
   // El write si procede
@@ -92,12 +117,15 @@ void Megatron::insert_into_fixed_page(size_t insert_page_id, std::vector<unsigne
   page_it = insert_page_bytes.begin() + byte_offset_free_reg;
 
   // Copia registro como tal
-  std::copy(register_bytes.begin(), register_bytes.end(), page_it);
+  std::copy(register_bytes.begin(),
+            register_bytes.end(), page_it);
 
   buffer_manager->free_unpin_page(insert_page_id, true);
 }
 
-void Megatron::insert_into_slotted_page(size_t insert_page_id, std::vector<unsigned char> &register_bytes) {
+void Megatron::insert_into_slotted_page(
+    size_t insert_page_id,
+    std::vector<unsigned char> &register_bytes) {
   // Se lee pagina y saca metadata relevante
   auto &frame = buffer_manager->load_pin_page(insert_page_id);
   std::vector<unsigned char> &insert_page_bytes = frame.page_bytes;

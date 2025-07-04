@@ -11,8 +11,8 @@
 #include <print>
 
 // TODO: Nombre columnas
-void Megatron::select_print(std::string &table_name, std::string &col_name, std::string &condition) {
-  auto result_set = select(table_name, col_name, condition);
+void Megatron::select_print(std::string &table_name, std::string &col_name, std::string &condition, int max_pages_loaded) {
+  auto result_set = select(table_name, col_name, condition, max_pages_loaded);
 
   size_t i{1};
   for (auto &reg : result_set) {
@@ -21,8 +21,8 @@ void Megatron::select_print(std::string &table_name, std::string &col_name, std:
   }
 }
 
-void Megatron::select_print(serial::TableMetadata &table_metadata, std::string &col_name, std::string &condition) {
-  auto result_set = select(table_metadata, col_name, condition);
+void Megatron::select_print(serial::TableMetadata &table_metadata, std::string &col_name, std::string &condition, int max_pages_loaded) {
+  auto result_set = select(table_metadata, col_name, condition, max_pages_loaded);
 
   size_t i{1};
   for (auto &reg : result_set) {
@@ -31,7 +31,7 @@ void Megatron::select_print(serial::TableMetadata &table_metadata, std::string &
   }
 }
 
-ResultSet Megatron::select(std::string &table_name, std::string &col_name, std::string &condition) {
+ResultSet Megatron::select(std::string &table_name, std::string &col_name, std::string &condition, int max_pages_loaded) {
   serial::TableMetadata table_metadata;
 
   // No existe
@@ -40,7 +40,7 @@ ResultSet Megatron::select(std::string &table_name, std::string &col_name, std::
     return {};
   }
 
-  return select(table_metadata, col_name, condition);
+  return select(table_metadata, col_name, condition, max_pages_loaded);
 }
 
 /*
@@ -49,7 +49,7 @@ ResultSet Megatron::select(std::string &table_name, std::string &col_name, std::
  * ex: se quiere dos campos pero la condicion depende de otro no visualizado
  * @note caso no coincida col_name, se realiza un select sin condicion
  */
-ResultSet Megatron::select(serial::TableMetadata &table_metadata, std::string &col_name, std::string &condition) {
+ResultSet Megatron::select(serial::TableMetadata &table_metadata, std::string &col_name, std::string &condition, int max_pages_loaded) {
   // Se parsea column index y condicion a SQL_type
   size_t col_index{table_metadata.n_cols};
   SQL_type cond_val;
@@ -65,8 +65,9 @@ ResultSet Megatron::select(serial::TableMetadata &table_metadata, std::string &c
   result_set.add_columns(table_metadata.columns);
 
   size_t curr_page_id = table_metadata.first_page_id;
-  while (curr_page_id != disk_manager->NULL_BLOCK) {
+  while (curr_page_id != disk_manager->NULL_BLOCK && max_pages_loaded != 0) {
     auto frame = buffer_manager->load_pin_page(curr_page_id);
+    max_pages_loaded--;
 
     std::vector<unsigned char> &page_bytes = frame.page_bytes;
     auto page_header = serial::deserialize_page_header(page_bytes);

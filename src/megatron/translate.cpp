@@ -122,6 +122,37 @@ std::string Megatron::translate_data_page(serial::TableMetadata &table_metadata,
   return page_str;
 }
 
+std::string Megatron::translate_data_page_no_write(serial::TableMetadata &table_metadata,
+                                                   std::vector<unsigned char> &page_bytes, size_t page_id) {
+  auto page_bytes_it = page_bytes.begin();
+  auto page_header = serial::deserialize_page_header(page_bytes_it);
+
+  std::vector<std::string> sectors;
+  if (table_metadata.are_regs_fixed) {
+    serial::FixedDataHeader fixed_data_header;
+    fixed_data_header = serial::deserialize_fixed_data_header(page_bytes_it);
+
+    sectors = translate_fixed_page(table_metadata, page_header,
+                                   fixed_data_header, page_bytes, page_id);
+
+  } else {
+    serial::SlottedDataHeader slotted_data_header;
+    slotted_data_header = serial::deserialize_slotted_data_header(page_bytes_it);
+
+    sectors = translate_slotted_page(table_metadata, page_header,
+                                     slotted_data_header, page_bytes, page_id);
+  }
+  size_t i{};
+  std::string page_str{};
+  for (auto &e : sectors) {
+    page_str += e;
+    // disk_manager->write_block_txt(e, page_id);
+    i++;
+  }
+
+  return page_str;
+}
+
 std::string Megatron::translate_data_page(serial::TableMetadata &table_metadata, size_t page_id) {
   std::vector<unsigned char> page_bytes;
   disk_manager->read_block(page_bytes, page_id);

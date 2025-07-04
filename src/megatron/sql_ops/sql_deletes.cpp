@@ -56,7 +56,33 @@ ResultSet Megatron::delete_condition(serial::TableMetadata &table_metadata, std:
   return result_set;
 }
 
-ResultSet Megatron::delete_from_page(serial::TableMetadata &table_metadata, size_t delete_page_id, size_t col_index, SQL_type &cond_val) {
+ResultSet Megatron::delete_from_page(serial::TableMetadata &table_metadata,
+                                     size_t delete_page_id, std::string &col_name,
+                                     std::string &condition) {
+  // Se parsea column index y condicion a SQL_type
+  size_t col_index{table_metadata.n_cols};
+  SQL_type cond_val;
+
+  for (size_t i{}; i < table_metadata.columns.size(); ++i) {
+    if (col_name == array_to_string_view(table_metadata.columns[i].name)) {
+      col_index = i;
+      cond_val = string_to_sql_type(condition, table_metadata.columns[i].type, table_metadata.columns[i].max_size);
+    }
+  }
+
+  // Sin condicion no hay delete
+  if (col_index >= table_metadata.n_cols) {
+    std::cerr << "No se encontro columna para realizar un delete" << std::endl;
+    return {};
+  }
+
+  return delete_from_page(table_metadata, delete_page_id,
+                          col_index, cond_val);
+}
+
+ResultSet Megatron::delete_from_page(serial::TableMetadata &table_metadata,
+                                     size_t delete_page_id, size_t col_index,
+                                     SQL_type &cond_val) {
   auto result_set =
       (table_metadata.are_regs_fixed)
           ? delete_from_fixed_page(table_metadata, delete_page_id, col_index, cond_val)

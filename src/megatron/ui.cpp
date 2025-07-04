@@ -6,6 +6,7 @@
 #include <ios>
 #include <iostream>
 #include <memory>
+#include <print>
 #include <sstream>
 #include <string>
 #include <sys/types.h>
@@ -435,21 +436,26 @@ void Megatron::ui_interact_buffer_manager() {
     return;
   }
 
-  // buffer_manager->flush_all();
+  buffer_manager->flush_all();
+  buffer_manager->clear();
+
   translate();
 
+  auto page_ids = get_used_pages(table_metadata);
+
   buffer_manager->set_verbose(true);
+
+  // Info de paginas correspondientes a tabla
 
   // buffer_ui = std::make_unique<BufferUI>(buffer_manager_ptr->pool_.capacity(),
   //                                        disk, table_metadata);
 
   int opcion;
   while (true) {
-    // buffer_manager->flush_all();
+    translate();
+
     clearScreen();
-    // buffer_ui->printBuffer();
-    // buffer_ui->printLRU();
-    // buffer_ui->printHitRate();
+
     if (buffer_manager->is_buffer_clock()) {
       buffer_manager->print_buffer_clock();
 
@@ -466,23 +472,35 @@ void Megatron::ui_interact_buffer_manager() {
     cout << "2. Establecer pin fijo\n";
     cout << "3. Quitar pin fijo\n";
     cout << "4. Mostrar contenido pagina\n";
-    cout << "5. Ubicar Registros Condicion\n";
-    cout << "6. Ubicar nth registro\n";
-    cout << "7. Ubicar free page\n";
-    cout << "8. Adicionar 1 registro a pagina\n";
-    cout << "9. Modificar el nth registro en pagina\n";
-    cout << "10. Eliminar el nth registro en pagina\n";
-    cout << "11. Guardar una pagina\n";
-    cout << "12. Guardar TODAS las paginas\n";
-    cout << "13. Mostrar paginas usadas por tabla\n";
+    cout << "5. Select *\n";
+    cout << "6. Select from\n";
+    cout << "7. Select nth registro(empieza en 0)\n"; // FIXME: Tal vez irrelevante
+    cout << "8. Update de pagina(condicion)\n";
+    cout << "9. Update de pagina(nth, empieza en 0)\n";
+    cout << "10. Delete de pagina(condicion)\n";
+    cout << "11. Delete de pagina(nth, empieza en 0)\n";
+    cout << "12. Insert 1 registro a pagina(manual)\n";
+    cout << "13. Insert n registros a pagina(de csv)\n";
+    cout << "14. Guardar una pagina\n";
+    cout << "15. Guardar TODAS las paginas\n";
+    cout << "16. Clear buffer(NO GUARDA)\n";
+    cout << "17. Mostrar paginas usadas por tabla\n";
     cout << "0. Salir\n";
     cout << "Opcion: ";
     cin >> opcion;
 
     if (opcion == 0) {
+      cout << "Deseas guardar las paginas existentes en buffer(dirty) antes de salir?(0:no, 1:si) ";
+      int guardar;
+      cin >> guardar;
+
+      if (!guardar)
+        buffer_manager->clear();
+
+      buffer_manager->flush_all();
+
       buffer_manager->set_verbose(false);
 
-      // buffer_ui->forceFlush();
       break;
     }
 
@@ -516,104 +534,247 @@ void Megatron::ui_interact_buffer_manager() {
       int page_id;
       cout << "ID de pagina a mostrar: ";
       cin >> page_id;
-      // show_block(table_metadata, page_id);
-      std::cout << translate_data_page(table_metadata, page_id) << std::endl;
-      // buffer_ui->setPinFijo(page_id, false);
+
+      auto page_bytes = buffer_manager->get_page_bytes(page_id);
+
+      if (page_bytes.empty())
+        cout << "Pagina no cargada\n";
+      else {
+        std::cout << "\n"
+                  << translate_data_page_no_write(table_metadata, page_bytes, page_id) << std::endl;
+      }
 
     } else if (opcion == 5) {
       std::string cond = "", val = "";
-      cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-      cout << "Columna a evaluar:\n";
-      getline(cin, cond);
+      size_t page_limit{};
+      // cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      cout << "# de paginas maximas a cargar: ";
+      cin >> page_limit;
 
-      cout << "Valor a evaluar\n";
-      getline(cin, val);
-
-      auto res = locate_regs_cond(table_name, cond, val);
-      for (auto e : res) {
-        std::cout << e << " ";
-        buffer_ui->loadPage(e, 0);
-      }
-      std::cout << std::endl;
+      select_print(table_metadata, cond, val,
+                   page_limit);
 
     } else if (opcion == 6) {
-      size_t nth{};
-      cout << "Numero de registro a encontrar:\n";
-      cin >> nth;
+      cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      string col_name, value;
+      cout << "Columna a evaluar: ";
+      getline(cin, col_name);
+      cout << "Valor a evaluar: ";
+      getline(cin, value);
+      size_t page_limit{}, nth{};
+      cout << "# de paginas maximas a cargar: ";
+      cin >> page_limit;
 
-      auto res = locate_nth_reg(table_name, nth);
-
-      std::cout << "Bloque: " << res.first << " Posicion: " << res.second << std::endl;
-      buffer_ui->loadPage(res.first, 0);
+      select_print(table_metadata, col_name,
+                   value, page_limit);
 
     } else if (opcion == 7) {
-
-      auto block_id = locate_free_page(table_metadata);
-      buffer_ui->loadPage(block_id, 0);
-      std::cout << "Bloque con espacio para insertar: " << block_id << std::endl;
-
-    } else if (opcion == 8) {
-      std::string reg = "";
       cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-      cout << "Ingresa registro en formato csv:\n";
-      getline(cin, reg);
+      string col_name, value;
+      cout << "Columna a evaluar: ";
+      getline(cin, col_name);
+      cout << "Valor a evaluar: ";
+      getline(cin, value);
 
-      auto block_data_pair = insert_reg_in_page(table_metadata, reg);
-      std::cout << "Insertando en bloque: " << block_data_pair.first
-                << std::endl;
-      buffer_ui->loadPage(block_data_pair.first, 1);
-      auto entry_ptr = buffer_ui->get_Entry(block_data_pair.first);
-      entry_ptr->data = std::move(block_data_pair.second);
-
-    } else if (opcion == 9) { // Modificar
-
-      // auto block_id = locate_free_page(table_metadata);
-      // std::cout << "Bloque con espacio para insertar: " << block_id << std::endl;
-
-    } else if (opcion == 10) { // Eliminar nth de toda tabla
-      int nth;
-      cout << "Nth registro a eliminar: ";
+      size_t page_limit{}, nth{};
+      cout << "N-esimo registro(EXISTENTE) a seleccionar(empieza 0): ";
       cin >> nth;
+      cout << "# de paginas maximas a cargar: ";
+      cin >> page_limit;
 
-      auto block_id = locate_free_page(table_metadata);
-      std::cout << "Bloque con espacio para insertar: " << block_id << std::endl;
+      // TODO: Implementar
 
-      auto blockid_pages = locate_nth_reg(table_name, nth);
-      buffer_ui->loadPage(blockid_pages.first, 0);
-
-      auto pos = delete_nth_reg_in_page(buffer_ui->get_Entry(blockid_pages.first)->data, blockid_pages.second);
-
-      std::cout << "Registro eliminado en bloque: " << blockid_pages.first << " en posicion: " << pos << std::endl;
-
-      auto entry = buffer_ui->get_Entry(blockid_pages.first);
-      entry->dirty = true;
-
-      // auto block_id = locate_free_page(table_metadata);
-
-    } else if (opcion == 11) { // Guardar
+      // select(table_metadata, col_name,
+      // value, page_limit);
+    } else if (opcion == 8) { // Update condicion
       int page_id;
-      cout << "ID de pagina a guardar: ";
+      cout << "ID de pagina a modificar: ";
       cin >> page_id;
 
-      buffer_ui->savePage(page_id);
+      cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-      // auto block_id = locate_free_page(table_metadata);
-      // std::cout << "Bloque con espacio para insertar: " << block_id << std::endl;
+      string cmp_col_name, cmp_col_value, upd_col_name, upd_col_value;
+      cout << "Nombre de la columna condicion: ";
+      getline(cin, cmp_col_name);
+      cout << "Valor de condicion: ";
+      getline(cin, cmp_col_value);
+      cout << "Nombre de la columna a modificar: ";
+      getline(cin, upd_col_name);
+      cout << "Nuevo valor: ";
+      getline(cin, upd_col_value);
 
-    } else if (opcion == 12) { // Guardar todas
+      auto result_set =
+          update_from_page(table_metadata, page_id,
+                           cmp_col_name, cmp_col_value,
+                           upd_col_name, upd_col_value);
 
-      buffer_ui->forceFlush();
+      std::println("Se modifico los registros: ");
+      for (auto &r : result_set) {
+        std::println("{}", r);
+      }
 
-      // auto block_id = locate_free_page(table_metadata);
-      std::cout << "Se guardaron todas las paginas dirty" << std::endl;
+    } else if (opcion == 9) { // Update nth
+      int page_id;
+      cout << "ID de pagina a modificar: ";
+      cin >> page_id;
 
-    } else if (opcion == 13) {
-      auto page_ids = get_used_pages(table_metadata);
+      cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
+      string cmp_col_name, cmp_col_value, upd_col_name, upd_col_value;
+
+      cout << "Nombre de la columna a modificar: ";
+      getline(cin, upd_col_name);
+
+      cout << "Nuevo valor: ";
+      getline(cin, upd_col_value);
+
+      cout << "N-esimo registro(EXISTENTE) a modificar(empieza en 0): ";
+      size_t nth_reg;
+      std::cin >> nth_reg;
+
+      auto result_set =
+          update_nth_from_page(table_metadata, page_id, nth_reg,
+                               upd_col_name, upd_col_value);
+
+      std::println("Se modifico el registro: ");
+      for (auto &r : result_set) {
+        std::println("{}", r);
+      }
+    } else if (opcion == 10) { // Eliminar condicion
+      int page_id;
+      cout << "ID de pagina a eliminar: ";
+      cin >> page_id;
+
+      cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+      string cmp_col_name, cmp_col_value;
+      cout << "Nombre de la columna condicion: ";
+      getline(cin, cmp_col_name);
+      cout << "Valor de condicion: ";
+      getline(cin, cmp_col_value);
+
+      auto result_set =
+          delete_from_page(table_metadata, page_id, cmp_col_name, cmp_col_value);
+
+      std::println("Se modifico los registros: ");
+      for (auto &r : result_set) {
+        std::println("{}", r);
+      }
+
+    } else if (opcion == 11) { // Eliminar nth
+      int page_id;
+      cout << "ID de pagina a modificar: ";
+      cin >> page_id;
+
+      cout << "N-esimo registro(EXISTENTE) a eliminar(empieza en 0): ";
+      size_t nth_reg;
+      std::cin >> nth_reg;
+
+      auto result_set =
+          delete_nth_from_page(table_metadata, page_id,
+                               nth_reg);
+
+      std::println("Se modifico el registro: ");
+      for (auto &r : result_set) {
+        std::println("{}", r);
+      }
+    } else if (opcion == 12) { // Insert 1 reg
+      try {
+        int page_id;
+        cout << "ID de pagina a insertar: ";
+        cin >> page_id;
+
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+        string reg_line, token;
+        cout << "Ingrese registro en formato csv: \n";
+        getline(cin, reg_line);
+
+        std::istringstream line_ss(reg_line);
+
+        // Columnas
+        std::vector<std::string> reg_values;
+        while (std::getline(line_ss, token, ','))
+          reg_values.push_back(token);
+
+        if (reg_values.size() != table_metadata.columns.size())
+          reg_values.resize(table_metadata.columns.size());
+
+        insert_into_page(table_metadata, page_id, reg_values);
+
+      } catch (const std::exception &e) {
+        std::cerr << "\nError: " << e.what() << "\n";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      }
+
+    } else if (opcion == 13) { // Load n de csv
+      try {
+        int page_id;
+        cout << "ID de pagina a insertar: ";
+        cin >> page_id;
+
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+        string path;
+        cout << "Path de csv: \n";
+        getline(cin, path);
+
+        int n_regs;
+        cout << "Nregs a insertar: ";
+        cin >> n_regs;
+
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+        std::ifstream file(path);
+        if (file.is_open()) {
+          std::string line, token;
+          std::istringstream line_ss;
+
+          /*
+           * Insercion de tuplas(csv) a files
+           */
+          size_t records_inserted = 0;
+          while (std::getline(file, line)) {
+
+            if (n_regs > 0 && records_inserted >= n_regs) {
+              break;
+            }
+
+            line_ss.clear();
+            line_ss.str(line);
+
+            // Columnas
+            std::vector<std::string> reg_values;
+            while (std::getline(line_ss, token, ','))
+              reg_values.push_back(token);
+
+            if (reg_values.size() != table_metadata.columns.size())
+              reg_values.resize(table_metadata.columns.size());
+
+            insert_into_page(table_metadata,
+                             page_id, reg_values);
+
+            records_inserted++;
+          }
+
+        } else {
+          std::cerr << "Archivo no existente" << std::endl;
+        }
+      } catch (const std::exception &e) {
+        std::cerr << "\nError: " << e.what() << "\n";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      }
+    } else if (opcion == 14) { // FIXME:
+    } else if (opcion == 15) {
+      buffer_manager->flush_all();
+    } else if (opcion == 16) {
+      buffer_manager->clear();
+    } else if (opcion == 17) {
       for (auto e : page_ids)
-        std::cout << e << " ";
+        std::cout << e.first << " " << e.second << '\n';
       std::cout << std::endl;
-
     } else {
       cout << "Opcion invalida.\n";
     }

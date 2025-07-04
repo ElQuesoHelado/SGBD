@@ -1,5 +1,6 @@
 #include "buffer/buffer_manager.hpp"
 #include "buffer/frame.hpp"
+#include <iostream>
 
 void BufferManager::print_buffer_LRU() const {
   std::cout << "\n\033[1;34m== Estado del Buffer ==\033[0m\n";
@@ -21,7 +22,7 @@ void BufferManager::print_buffer_LRU() const {
 
       std::cout << "\t";
 
-      for (auto op : it->second.ops_stack) {
+      for (auto op : it->second.ops_queue) {
         std::cout << op;
       }
 
@@ -50,7 +51,7 @@ void BufferManager::print_buffer_clock() const {
       }
 
       std::cout << "\t";
-      for (auto op : it->second.ops_stack) {
+      for (auto op : it->second.ops_queue) {
         std::cout << op;
       }
 

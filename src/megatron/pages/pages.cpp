@@ -3,7 +3,9 @@
 #include "serial/page_header.hpp"
 #include "serial/slotted_data.hpp"
 #include "serial/table.hpp"
+#include <cstddef>
 #include <cstdint>
+#include <utility>
 
 // Implica modificar page y metadata de tabla
 // Se inserta al final
@@ -96,8 +98,8 @@ uint32_t Megatron::create_page(serial::TableMetadata &table_metadata) {
   return free_block_id;
 }
 
-std::vector<size_t> Megatron::get_used_pages(serial::TableMetadata &table_metadata) {
-  std::vector<size_t> pages;
+std::vector<std::pair<size_t, size_t>> Megatron::get_used_pages(serial::TableMetadata &table_metadata) {
+  std::vector<std::pair<size_t, size_t>> res;
 
   uint32_t curr_block_id = table_metadata.first_page_id;
 
@@ -107,12 +109,12 @@ std::vector<size_t> Megatron::get_used_pages(serial::TableMetadata &table_metada
 
     auto page_header = serial::deserialize_page_header(block);
 
-    pages.push_back(curr_block_id);
+    res.emplace_back(curr_block_id, page_header.free_space);
 
     buffer_manager->free_unpin_page(curr_block_id, 0);
 
     curr_block_id = page_header.next_block_id;
   }
 
-  return pages;
+  return res;
 }

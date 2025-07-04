@@ -3,7 +3,6 @@
 #include "disk_manager.hpp"
 #include "frame.hpp"
 #include <cstddef>
-#include <iostream>
 #include <memory>
 #include <vector>
 
@@ -22,9 +21,8 @@ public:
   // Escribe todas las páginas sucias a disco, no limpia buffer
   void flush_all();
 
-  // Flush + reset de tanto lru_list y clock vector/hand
-  // TODO: Implementar
-  void flush_all_clean();
+  // Limpia paginas internas, no parametros
+  void clear();
 
   void set_fixed_pin(int page_id, bool value);
 
@@ -41,6 +39,17 @@ public:
   void print_page(size_t page_id);
 
   void set_verbose(bool is_verbose) { verbose = is_verbose; };
+
+  std::vector<unsigned char> get_page_bytes(size_t page_id) {
+    std::vector<unsigned char> res{};
+    auto it = frame_map.find(page_id);
+
+    if (it != frame_map.end()) {
+      res = it->second.frame->page_bytes;
+    }
+
+    return res;
+  }
 
 private:
   size_t find_free_slot();

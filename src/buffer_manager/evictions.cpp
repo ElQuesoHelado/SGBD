@@ -1,4 +1,5 @@
 #include "buffer/buffer_manager.hpp"
+#include <iostream>
 #include <print>
 
 void BufferManager::evict_page() {
@@ -47,7 +48,8 @@ int BufferManager::evict_page_LRU() {
 int BufferManager::evict_page_LRU_verbose() {
   // Pagina menos usada que no este pinned
   while (true) {
-    for (auto it = lru_list.rbegin(); it != lru_list.rend(); ++it) {
+    for (auto it = lru_list.rbegin();
+         it != lru_list.rend(); ++it) {
       auto &buffer_frame = frame_map[*it];
 
       // Stack de frame vacio, no hay reads ni writes pendientes
@@ -65,17 +67,18 @@ int BufferManager::evict_page_LRU_verbose() {
         lru_list.erase(std::next(it).base()); // Rev_it a forward
         return 0;
 
-      } else if (buffer_frame.fixed_pin == 0 && buffer_frame.pin_count > 0) { // Caso fixed pin, se deja intacto
+      } else if (buffer_frame.fixed_pin == 0 &&
+                 buffer_frame.pin_count > 0) { // Caso fixed pin, se deja intacto
         int opcion;
-
-        std::cout << "Pagina con page_id: " << *it << " tiene " << buffer_frame.ops_stack.size() << " procesos activos" << std::endl;
-        std::cout << "?Deseas terminar el proceso mas reciente?(0:no, 1:si) ";
+        std::println("Pagina con page_id: {} tiene {}  procesos activos",
+                     *it, buffer_frame.ops_queue.size());
+        std::print("?Deseas terminar el proceso mas reciente?(0:no, 1:si) ");
         std::cin >> opcion;
 
         if (opcion != 1)
           continue;
 
-        auto curr_op = buffer_frame.ops_stack.back();
+        auto curr_op = buffer_frame.ops_queue.front();
 
         if (curr_op == 'W') {
           std::cout << "Dicho proceso es de escritura" << std::endl;
@@ -96,15 +99,17 @@ int BufferManager::evict_page_LRU_verbose() {
           std::cout << "Proceso de lectura terminado en " << *it << ".\n";
         }
 
-        buffer_frame.ops_stack.pop_back();
-        if (!buffer_frame.ops_stack.empty())
-          buffer_frame.frame->dirty = buffer_frame.ops_stack.back() == 'W';
+        buffer_frame.ops_queue.pop_front();
+        if (!buffer_frame.ops_queue.empty())
+          buffer_frame.frame->dirty = buffer_frame.ops_queue.front() == 'W';
         buffer_frame.pin_count--;
 
       } else {
         std::cout << "Pagina " << *it << " pineada" << ".\n";
       }
     }
+    // No se logro liberar una pagina, fuerza alguna pineada
+    //  TODO: Forzar despineado de fijas
   }
 
   return -1;
@@ -148,7 +153,8 @@ int BufferManager::evict_page_Clock() {
   return -1;
 }
 
-// Realiza EVICTION, siempre mata a alguien(caso haya espacio disponible igual se dispara)
+// Realiza EVICTION, siempre mata a alguien
+// (caso haya espacio disponible igual se dispara)
 int BufferManager::evict_page_Clock_verbose() {
   size_t attempts{};
   while (true) { // Saboteamos loop de clock para reducir pincounts a la par
@@ -173,13 +179,13 @@ int BufferManager::evict_page_Clock_verbose() {
 
     if (entry.pin_count > 0) { // Se puede reducir pincount
       std::println("\tPincount: {}\n\tTiene {} procesos activos",
-                   entry.pin_count, entry.ops_stack.size());
+                   entry.pin_count, entry.ops_queue.size());
       std::print("\t?Deseas terminar el proceso mas reciente?(0:no, 1:si) ");
       int opcion;
       std::cin >> opcion;
 
       if (opcion == 1) {
-        auto curr_op = entry.ops_stack.back();
+        auto curr_op = entry.ops_queue.back();
 
         if (curr_op == 'W') {
           std::println("\t\tDicho proceso es de escritura");
@@ -200,9 +206,10 @@ int BufferManager::evict_page_Clock_verbose() {
           std::println("\t\tProceso de lectura terminado en {}", current_page);
         }
 
-        entry.ops_stack.pop_back();
-        if (!entry.ops_stack.empty())
-          entry.frame->dirty = entry.ops_stack.back() == 'W';
+        // FIXME:Caso se hace pop a una ultima op Write, deberia marcar como clean
+        entry.ops_queue.pop_front();
+        if (!entry.ops_queue.empty())
+          entry.frame->dirty = entry.ops_queue.front() == 'W';
         entry.pin_count--;
       }
 
@@ -219,8 +226,11 @@ int BufferManager::evict_page_Clock_verbose() {
 
     std::println("Pagina {} se va a eliminar", current_page);
 
+    // FIXME: Tal vez se vuelva un tanto irrelevante
     if (entry.frame->dirty) {
-      std::println("\tSe esta por hacer eviction a una pagina SUCIA con page_id: {}", current_page);
+      std::println("\tSe esta por hacer eviction a una pagina SUCIA"
+                   "con page_id: {}",
+                   current_page);
       std::print("\t?Deseas guardarla?(0:no, 1:si) ");
 
       int opcion;

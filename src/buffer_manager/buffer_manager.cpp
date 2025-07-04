@@ -1,4 +1,5 @@
 #include "buffer/buffer_manager.hpp"
+#include <print>
 
 BufferManager::BufferManager(size_t capacity, bool is_clock, std::unique_ptr<DiskManager> &disk_manager)
     : capacity(capacity), disk_manager(disk_manager.get()), is_clock(is_clock), frame_slots(capacity, disk_manager->NULL_BLOCK) {
@@ -31,11 +32,20 @@ void BufferManager::flush_all() {
   }
 }
 
+void BufferManager::clear() {
+  for (auto &e : frame_slots)
+    e = disk_manager->NULL_BLOCK;
+
+  frame_map.clear();
+  lru_list.clear();
+  clock_hand = 0;
+}
+
 void BufferManager::set_fixed_pin(int page_id, bool value) {
   if (frame_map.count(page_id)) {
     frame_map[page_id].fixed_pin = value;
     if (verbose)
-      std::cout << "Pagina " << page_id << " con valor de pin fijo = " << (value ? "Si" : "No") << ".\n";
+      std::println("Pagina {} con valor de pin fijo = {}", page_id, (value ? "Si" : "No"));
   }
 }
 
