@@ -3,7 +3,9 @@
 #include "serial/slotted_data.hpp"
 #include <cstddef>
 
-ResultSet Megatron::delete_condition(std::string &table_name, std::string &col_name, std::string &condition) {
+ResultSet Megatron::delete_condition(std::string &table_name,
+                                     std::string &col_name,
+                                     std::string &condition) {
   serial::TableMetadata table_metadata;
 
   // No existe
@@ -166,7 +168,8 @@ ResultSet Megatron::delete_nth_reg(std::string &table_name, size_t nth) {
   return delete_nth_reg(table_metadata, nth);
 }
 
-ResultSet Megatron::delete_nth_reg(serial::TableMetadata &table_metadata, size_t nth) {
+ResultSet Megatron::delete_nth_reg(
+    serial::TableMetadata &table_metadata, size_t nth) {
   ResultSet result_set{};
   result_set.add_columns(table_metadata.columns);
 
@@ -179,13 +182,15 @@ ResultSet Megatron::delete_nth_reg(serial::TableMetadata &table_metadata, size_t
     std::vector<unsigned char> &page_bytes = frame.page_bytes;
 
     // Se lee PageHeader para contar registros
-    auto page_header = serial::deserialize_page_header(page_bytes);
+    auto page_header =
+        serial::deserialize_page_header(page_bytes);
 
     buffer_manager->free_unpin_page(curr_page_id, false);
 
     // En esta pagina si esta el registro a eliminar
-    if (page_header.n_regs >= nth) {
-      result_set = delete_nth_from_page(table_metadata, curr_page_id, nth);
+    if (page_header.n_regs > nth) {
+      result_set =
+          delete_nth_from_page(table_metadata, curr_page_id, nth);
 
       break;
     }
@@ -207,25 +212,30 @@ ResultSet Megatron::delete_nth_from_page(serial::TableMetadata &table_metadata,
   return result_set;
 }
 
-ResultSet Megatron::delete_nth_from_fixed_page(serial::TableMetadata &table_metadata, size_t delete_page_id, size_t nth) {
+ResultSet Megatron::delete_nth_from_fixed_page(
+    serial::TableMetadata &table_metadata,
+    size_t delete_page_id, size_t nth) {
   auto &frame = buffer_manager->load_pin_page(delete_page_id);
   std::vector<unsigned char> &page_bytes = frame.page_bytes;
   auto page_bytes_it = page_bytes.begin();
 
-  auto page_header = serial::deserialize_page_header(page_bytes_it);
-  auto fixed_data_header = serial::deserialize_fixed_data_header(page_bytes_it);
+  auto page_header =
+      serial::deserialize_page_header(page_bytes_it);
+  auto fixed_data_header =
+      serial::deserialize_fixed_data_header(page_bytes_it);
 
   ResultSet result_set;
   for (size_t i{}; i < fixed_data_header.max_n_regs; ++i) {
     if (fixed_data_header.free_register_bitmap.at(i)) { // Registro existe
-      if (nth > 1) {
+      if (nth > 0) {
         nth--;
         continue;
       }
-      auto register_bytes = get_ith_register_bytes(table_metadata,
-                                                   page_header,
-                                                   fixed_data_header, page_bytes, i);
-      auto register_values = deserialize_register(table_metadata, register_bytes);
+      auto register_bytes =
+          get_ith_register_bytes(table_metadata, page_header,
+                                 fixed_data_header, page_bytes, i);
+      auto register_values =
+          deserialize_register(table_metadata, register_bytes);
 
       RegisterEntry reg{delete_page_id, i};
       for (auto &v : register_values)
@@ -265,7 +275,7 @@ ResultSet Megatron::delete_nth_from_slotted_page(serial::TableMetadata &table_me
   ResultSet result_set;
   for (size_t i{}; i < slotted_data_header.n_slots; ++i) {
     if (slotted_data_header.slots[i].is_used) { // Registro existe
-      if (nth > 1) {
+      if (nth > 0) {
         nth--;
         continue;
       }

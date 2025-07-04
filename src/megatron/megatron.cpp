@@ -53,14 +53,16 @@ void Megatron::run() {
     else if (opcion == "8")
       ui_update_reg();
     else if (opcion == "9")
-      ui_delete_data();
+      ui_update_nth_reg();
     else if (opcion == "10")
-      ui_delete_nth();
+      ui_delete_data();
     else if (opcion == "11")
-      ui_load_csv();
+      ui_delete_nth();
     else if (opcion == "12")
+      ui_load_csv();
+    else if (opcion == "13")
       ui_load_n_regs_csv();
-    else if (opcion == "13") {
+    else if (opcion == "14") {
       clearScreen();
       cout << "Especificaciones de disco" << endl;
       cout << "Superficies: " << disk_manager->SURFACES << endl;
@@ -78,22 +80,22 @@ void Megatron::run() {
       pauseAndReturn();
 
       // ui_load_n_regs_csv();
-    } else if (opcion == "14") {
+    } else if (opcion == "15") {
       ui_show_table_metadata();
 
-    } else if (opcion == "15") {
+    } else if (opcion == "16") {
       translate();
       pauseAndReturn();
 
-    } else if (opcion == "16") {
+    } else if (opcion == "17") {
       set_buffer_manager_frames();
       pauseAndReturn();
 
-    } else if (opcion == "17") {
+    } else if (opcion == "18") {
       ui_interact_buffer_manager();
       pauseAndReturn();
 
-    } else if (opcion == "18") {
+    } else if (opcion == "19") {
       std::cout << "Hits/totales : "
                 << buffer_manager->get_hits() << " / " << buffer_manager->get_total_accesses() << std::endl;
       pauseAndReturn();

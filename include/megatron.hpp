@@ -98,9 +98,16 @@ public:
   void insert_into_fixed_page(size_t insert_page_id, std::vector<unsigned char> &register_bytes);
   void insert_into_slotted_page(size_t insert_page_id, std::vector<unsigned char> &register_bytes);
 
-  ResultSet update_condition(std::string &table_name, std::string &cmp_col_name, std::string &cmp_col_value, std::string &upd_col_name, std::string &upd_col_value);
+  ResultSet update_condition(std::string &table_name,
+                             std::string &cmp_col_name,
+                             std::string &cmp_col_value,
+                             std::string &upd_col_name,
+                             std::string &upd_col_value);
   ResultSet update_condition(serial::TableMetadata &table_metadata,
-                             std::string &cmp_col_name, std::string &cmp_col_value, std::string &upd_col_name, std::string &upd_col_value);
+                             std::string &cmp_col_name,
+                             std::string &cmp_col_value,
+                             std::string &upd_col_name,
+                             std::string &upd_col_value);
 
   // Realiza validaciones de input
   ResultSet update_from_page(serial::TableMetadata &table_metadata,
@@ -124,6 +131,31 @@ public:
                                      size_t update_page_id,
                                      size_t cmp_col_index, SQL_type &cmp_value,
                                      size_t upd_col_index, SQL_type &upd_value);
+
+  ResultSet update_nth_reg(std::string &table_name, size_t nth,
+                           std::string &upd_col_name,
+                           std::string &upd_col_value);
+
+  ResultSet update_nth_reg(serial::TableMetadata &table_metadata, size_t nth,
+                           std::string &upd_col_name,
+                           std::string &upd_col_value);
+
+  ResultSet update_nth_from_page(serial::TableMetadata &table_metadata,
+                                 size_t update_page_id, size_t nth,
+                                 std::string &upd_col_name,
+                                 std::string &upd_col_value);
+
+  ResultSet update_nth_from_page(serial::TableMetadata &table_metadata,
+                                 size_t update_page_id, size_t nth,
+                                 size_t upd_col_index, SQL_type &upd_value);
+
+  ResultSet update_nth_from_fixed_page(serial::TableMetadata &table_metadata,
+                                       size_t update_page_id, size_t nth,
+                                       size_t upd_col_index, SQL_type &upd_value);
+
+  ResultSet update_nth_from_slotted_page(serial::TableMetadata &table_metadata,
+                                         size_t update_page_id, size_t nth,
+                                         size_t upd_col_index, SQL_type &upd_value);
 
   void select_save(std::string table_name, std::string col_name, std::string condition, std::string new_table_name);
 
@@ -189,6 +221,7 @@ public:
   void ui_select_table_condition();
   void ui_insert_data();
   void ui_update_reg();
+  void ui_update_nth_reg();
   void ui_delete_data();
   void ui_delete_nth();
   void ui_load_csv();

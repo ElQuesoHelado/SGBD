@@ -199,7 +199,6 @@ void Megatron::ui_select_table() {
   pauseAndReturn();
 }
 
-// TODO: implementar
 void Megatron::ui_select_table_condition() {
   clearScreen();
   string table_name, col_name, value, save, saved_table_name;
@@ -209,15 +208,15 @@ void Megatron::ui_select_table_condition() {
   getline(cin, col_name);
   cout << "Valor a evaluar: ";
   getline(cin, value);
-  cout << "¿Deseas guardar el resultado? (s/n): ";
-  getline(cin, save);
-  bool save_b = (save == "s" || save == "S");
-  if (save_b) {
-    cout << "Nombre para guardar resultados: ";
-    getline(cin, saved_table_name);
-  }
+  // cout << "¿Deseas guardar el resultado? (s/n): ";
+  // getline(cin, save);
+  // bool save_b = (save == "s" || save == "S");
+  // if (save_b) {
+  //   cout << "Nombre para guardar resultados: ";
+  //   getline(cin, saved_table_name);
+  // }
 
-  // select(table_name, col_name, value);
+  select_print(table_name, col_name, value);
 
   pauseAndReturn();
 }
@@ -260,16 +259,51 @@ void Megatron::ui_insert_data() {
   pauseAndReturn();
 }
 
-// TODO: implementar
 void Megatron::ui_update_reg() {
   clearScreen();
-  string tabla, columna, valor;
+  string table_name, cmp_col_name, cmp_col_value, upd_col_name, upd_col_value;
   cout << "Nombre de la tabla: ";
-  getline(cin, tabla);
+  getline(cin, table_name);
+  cout << "Nombre de la columna condicion: ";
+  getline(cin, cmp_col_name);
+  cout << "Valor de condicion: ";
+  getline(cin, cmp_col_value);
   cout << "Nombre de la columna a modificar: ";
-  getline(cin, columna);
+  getline(cin, upd_col_name);
   cout << "Nuevo valor: ";
-  getline(cin, valor);
+  getline(cin, upd_col_value);
+
+  update_condition(table_name, cmp_col_name, cmp_col_value, upd_col_name, upd_col_value);
+
+  cout << "\"Modificación exitosa o columna no encontrada\"\n";
+  pauseAndReturn();
+}
+
+void Megatron::ui_update_nth_reg() {
+  clearScreen();
+  try {
+    string table_name, cmp_col_name, cmp_col_value, upd_col_name, upd_col_value;
+    cout << "Nombre de la tabla: ";
+    getline(cin, table_name);
+
+    cout << "Nombre de la columna a modificar: ";
+    getline(cin, upd_col_name);
+
+    cout << "Nuevo valor: ";
+    getline(cin, upd_col_value);
+
+    cout << "N-esimo registro a eliminar: ";
+    size_t nth_reg;
+    if (!(std::cin >> nth_reg))
+      throw std::invalid_argument("Posicion invalida");
+
+    update_nth_reg(table_name, nth_reg, upd_col_name, upd_col_value);
+
+  } catch (const std::exception &e) {
+    std::cerr << "\nError: " << e.what() << "\n";
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  }
 
   cout << "\"Modificación exitosa o columna no encontrada\"\n";
   pauseAndReturn();
@@ -277,15 +311,23 @@ void Megatron::ui_update_reg() {
 
 void Megatron::ui_delete_data() {
   clearScreen();
-  string table_name, col_name, value;
-  cout << "Nombre de la tabla: ";
-  getline(cin, table_name);
-  cout << "Columna para condición: ";
-  getline(cin, col_name);
-  cout << "Valor a evaluar: ";
-  getline(cin, value);
 
-  delete_condition(table_name, col_name, value);
+  try {
+    string table_name, col_name, value;
+    cout << "Nombre de la tabla: ";
+    getline(cin, table_name);
+    cout << "Columna para condición: ";
+    getline(cin, col_name);
+    cout << "Valor a evaluar: ";
+    getline(cin, value);
+
+    delete_condition(table_name, col_name, value);
+
+  } catch (const std::exception &e) {
+    std::cerr << "\nError: " << e.what() << "\n";
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  }
 
   cout << "\"Registros eliminados (si existían)\"\n";
   pauseAndReturn();
@@ -301,7 +343,7 @@ void Megatron::ui_delete_nth() {
     cout << "N-esimo registro a eliminar: ";
     size_t nth_reg;
     if (!(std::cin >> nth_reg))
-      throw std::invalid_argument("Número de superficies inválido");
+      throw std::invalid_argument("Posicion invalida");
 
     delete_nth_reg(table_name, nth_reg);
 
@@ -589,17 +631,18 @@ void mostrarMenu() {
   cout << "5. Select con condición\n";
   cout << "6. Ubicar registro\n";
   cout << "7. Insertar registro individual\n";
-  cout << "8. Modificar\n";
-  cout << "9. Eliminar condicion\n";
-  cout << "10. Eliminar n-esimo registro\n";
-  cout << "11. Cargar CSV\n";
-  cout << "12. Cargar n datos desde CSV\n";
-  cout << "13. Mostrar specs de disco\n";
-  cout << "14. Mostrar metadata de tabla\n";
-  cout << "15. Translate disco\n";
-  cout << "16. Set #frames por buffer pool\n";
-  cout << "17. Interactuar Buffer Manager\n";
-  cout << "18. Mostrar hits\n";
+  cout << "8. Modificar por condicion\n";
+  cout << "9. Modificar n-esimo registro\n";
+  cout << "10. Eliminar condicion\n";
+  cout << "11. Eliminar n-esimo registro\n";
+  cout << "12. Cargar CSV\n";
+  cout << "13. Cargar n datos desde CSV\n";
+  cout << "14. Mostrar specs de disco\n";
+  cout << "15. Mostrar metadata de tabla\n";
+  cout << "16. Translate disco\n";
+  cout << "17. Set #frames por buffer pool\n";
+  cout << "18. Interactuar Buffer Manager\n";
+  cout << "19. Mostrar hits\n";
   cout << "20. Salir\n";
   cout << "Seleccione una opción: ";
 }
