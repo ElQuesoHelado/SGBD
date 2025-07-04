@@ -98,11 +98,32 @@ public:
   void insert_into_fixed_page(size_t insert_page_id, std::vector<unsigned char> &register_bytes);
   void insert_into_slotted_page(size_t insert_page_id, std::vector<unsigned char> &register_bytes);
 
-  ResultSet update_condition(std::string &table_name, std::string &col_name, std::string &condition);
-  ResultSet update_condition(serial::TableMetadata &table_metadata, std::string &col_name, std::string &condition);
-  ResultSet update_from_page(serial::TableMetadata &table_metadata, size_t update_page_id, size_t col_index, SQL_type &cond_val);
-  ResultSet update_from_fixed_page(serial::TableMetadata &table_metadata, size_t update_page_id, size_t col_index, SQL_type &cond_val);
-  ResultSet update_from_slotted_page(serial::TableMetadata &table_metadata, size_t update_page_id, size_t col_index, SQL_type &cond_val);
+  ResultSet update_condition(std::string &table_name, std::string &cmp_col_name, std::string &cmp_col_value, std::string &upd_col_name, std::string &upd_col_value);
+  ResultSet update_condition(serial::TableMetadata &table_metadata,
+                             std::string &cmp_col_name, std::string &cmp_col_value, std::string &upd_col_name, std::string &upd_col_value);
+
+  // Realiza validaciones de input
+  ResultSet update_from_page(serial::TableMetadata &table_metadata,
+                             size_t update_page_id,
+                             std::string &cmp_col_name,
+                             std::string &cmp_col_value,
+                             std::string &upd_col_name,
+                             std::string &upd_col_value);
+
+  ResultSet update_from_page(serial::TableMetadata &table_metadata,
+                             size_t update_page_id,
+                             size_t cmp_col_index, SQL_type &cmp_value,
+                             size_t upd_col_index, SQL_type &upd_value);
+
+  ResultSet update_from_fixed_page(serial::TableMetadata &table_metadata,
+                                   size_t update_page_id,
+                                   size_t cmp_col_index, SQL_type &cmp_value,
+                                   size_t upd_col_index, SQL_type &upd_value);
+
+  ResultSet update_from_slotted_page(serial::TableMetadata &table_metadata,
+                                     size_t update_page_id,
+                                     size_t cmp_col_index, SQL_type &cmp_value,
+                                     size_t upd_col_index, SQL_type &upd_value);
 
   void select_save(std::string table_name, std::string col_name, std::string condition, std::string new_table_name);
 
@@ -209,6 +230,8 @@ public:
   // @notes realiza cast interno de string->SQL_Type
   std::vector<unsigned char> serialize_register(const serial::TableMetadata &table_metadata,
                                                 std::vector<std::string> &values);
+  std::vector<unsigned char> serialize_register(const serial::TableMetadata &table_metadata,
+                                                std::vector<SQL_type> &values);
 
   // Retornamos todos los valores de un registro
   std::vector<SQL_type> deserialize_register(const serial::TableMetadata &table_metadata,

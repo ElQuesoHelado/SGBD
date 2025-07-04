@@ -70,6 +70,26 @@ std::vector<unsigned char> Megatron::serialize_register(
   return register_bytes;
 }
 
+std::vector<unsigned char> Megatron::serialize_register(
+    const serial::TableMetadata &table_metadata,
+    std::vector<SQL_type> &values) {
+  if (values.size() != table_metadata.n_cols)
+    throw std::runtime_error("Columnas a insertar diferentes a tabla");
+
+  std::vector<unsigned char> register_bytes;
+  register_bytes.reserve(table_metadata.max_reg_size);
+
+  for (size_t col{}; col < table_metadata.n_cols; ++col) {
+    auto sql_type_bytes = serialize_sql_type(values[col]);
+
+    register_bytes.insert(register_bytes.end(),
+                          sql_type_bytes.begin(),
+                          sql_type_bytes.end());
+  }
+
+  return register_bytes;
+}
+
 std::vector<SQL_type> Megatron::deserialize_register(
     const serial::TableMetadata &table_metadata,
     std::vector<unsigned char> &register_bytes) {

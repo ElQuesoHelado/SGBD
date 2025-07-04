@@ -63,6 +63,25 @@ inline size_t prepare_slotted_insert(SlottedDataHeader &header, size_t n_slot, s
 }
 
 /*
+ * Se actualiza SOLO slot para sobreescribir un registro
+ * (igual tamanio o mas pequenio que contenido actualmente)
+ * El slot debe existir y estar ocupado
+ * @return offset donde empieza nuevo registro
+ */
+inline size_t prepare_slotted_update(SlottedDataHeader &header, size_t n_slot, size_t new_reg_size) {
+  if (n_slot >= header.slots.size())
+    throw std::runtime_error("Slot fuera de rango");
+
+  auto &slot = header.slots[n_slot];
+  if (!slot.is_used || new_reg_size > slot.reg_size)
+    throw std::runtime_error("Slot invalido: sin capacidad suficiente o esta vacio");
+
+  slot.reg_size = new_reg_size;
+
+  return slot.offset_reg_start;
+}
+
+/*
  * Se busca un slot libre
  * @return numero del slot libre, este se limpia
  *
