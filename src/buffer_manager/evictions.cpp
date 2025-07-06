@@ -67,8 +67,7 @@ int BufferManager::evict_page_LRU_verbose() {
         lru_list.erase(std::next(it).base()); // Rev_it a forward
         return 0;
 
-      } else if (buffer_frame.fixed_pin == 0 &&
-                 buffer_frame.pin_count > 0) { // Caso fixed pin, se deja intacto
+      } else if (buffer_frame.pin_count > 0) {
         int opcion;
         std::println("Pagina con page_id: {} tiene {}  procesos activos",
                      *it, buffer_frame.ops_queue.size());
@@ -102,6 +101,8 @@ int BufferManager::evict_page_LRU_verbose() {
         buffer_frame.ops_queue.pop_front();
         if (!buffer_frame.ops_queue.empty())
           buffer_frame.frame->dirty = buffer_frame.ops_queue.front() == 'W';
+        else
+          buffer_frame.frame->dirty = false;
         buffer_frame.pin_count--;
 
       } else {
@@ -170,12 +171,6 @@ int BufferManager::evict_page_Clock_verbose() {
     auto it = frame_map.find(current_page);
     auto &entry = it->second;
 
-    if (entry.fixed_pin != 0) {
-      std::println("\tFrame fijado, se ignora");
-      clock_hand = (clock_hand + 1) % capacity;
-      continue;
-    }
-
     if (entry.pin_count > 0) { // Se puede reducir pincount
       std::println("\tPincount: {}\n\tTiene {} procesos activos",
                    entry.pin_count, entry.ops_queue.size());
@@ -218,6 +213,12 @@ int BufferManager::evict_page_Clock_verbose() {
       std::print("\tPagina {} con reference_bit 1, cambia a 0", current_page);
       entry.reference_bit = false;
       attempts++;
+      clock_hand = (clock_hand + 1) % capacity;
+      continue;
+    }
+
+    if (entry.fixed_pin != 0) {
+      std::println("\tFrame fijado, no puede morir");
       clock_hand = (clock_hand + 1) % capacity;
       continue;
     }

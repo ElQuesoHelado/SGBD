@@ -233,6 +233,42 @@ void load_CSV_with_schema_inference(std::string path, std::string table_name, bo
   // }
 }
 
+bool sql_in_range(const SQL_type &val, const SQL_type &low, const SQL_type &high) {
+  // 1. Verificar que los tres sean del mismo tipo
+  if (val.index() != low.index() || val.index() != high.index()) {
+    return false;
+  }
+
+  // 2. Comparación por índice del variant
+  switch (val.index()) {
+  // Casos numéricos (índices 0-5)
+  case 0:
+    return std::get<0>(val) >= std::get<0>(low) && std::get<0>(val) <= std::get<0>(high); // int8_t
+  case 1:
+    return std::get<1>(val) >= std::get<1>(low) && std::get<1>(val) <= std::get<1>(high); // int16_t
+  case 2:
+    return std::get<2>(val) >= std::get<2>(low) && std::get<2>(val) <= std::get<2>(high); // int32_t
+  case 3:
+    return std::get<3>(val) >= std::get<3>(low) && std::get<3>(val) <= std::get<3>(high); // int64_t
+  case 4:
+    return std::get<4>(val) >= std::get<4>(low) && std::get<4>(val) <= std::get<4>(high); // float
+  case 5:
+    return std::get<5>(val) >= std::get<5>(low) && std::get<5>(val) <= std::get<5>(high); // double
+
+  // Casos no numéricos (índices 6-7)
+  default:
+    return false; // CharType (6) y VarcharType (7)
+  }
+}
+
 int main(int argc, char *argv[]) {
-  load_CSV_with_schema_inference("csv/titanic.csv", "ejemplo", 0);
+  // load_CSV_with_schema_inference("csv/titanic.csv", "ejemplo", 0);
+  SQL_type val, low, high;
+  val = 5;
+  low = 3;
+  high = 15;
+
+  bool range1 = val >= low, range2 = val <= high;
+
+  std::println("{}", sql_in_range(val, low, high));
 }

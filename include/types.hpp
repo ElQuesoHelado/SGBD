@@ -63,6 +63,14 @@ struct CharType {
     return value == other.value;
   }
 
+  bool operator<=(const CharType &other) const {
+    return value == other.value;
+  }
+
+  bool operator>=(const CharType &other) const {
+    return value == other.value;
+  }
+
   CharType(std::string val, size_t len) : length(len) {
     if (val.size() < len)
       val.append(len - val.size(), ' ');
@@ -77,6 +85,14 @@ struct VarcharType {
   uint8_t max_length;
 
   bool operator==(const VarcharType &other) const {
+    return value == other.value;
+  }
+
+  bool operator<=(const VarcharType &other) const {
+    return value == other.value;
+  }
+
+  bool operator>=(const VarcharType &other) const {
     return value == other.value;
   }
 
