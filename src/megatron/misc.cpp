@@ -1,6 +1,18 @@
 #include "megatron.hpp"
 #include "serial/generic.hpp"
+#include <cstddef>
 #include <format>
+
+size_t Megatron::get_column_index(serial::TableMetadata &table_metadata, std::string &col_name) {
+  auto &columns = table_metadata.columns;
+
+  for (size_t i{}; i < columns.size(); ++i) {
+    if (array_to_string_view(columns[i].name) == col_name)
+      return i;
+  }
+
+  return table_metadata.n_cols;
+}
 
 void Megatron::find_nth_reg(std::string &table_name, size_t nth) {
   serial::TableMetadata table_metadata;

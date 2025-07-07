@@ -1,7 +1,7 @@
 #pragma once
 
 #include "buffer/buffer_manager.hpp"
-#include "buffer/buffer_ui.hpp"
+#include "comparison.hpp"
 #include "disk_manager.hpp"
 #include "result_set.hpp"
 #include "serial/fixed_data.hpp"
@@ -20,7 +20,6 @@
 class Megatron {
   std::unique_ptr<DiskManager> disk_manager{};
   std::unique_ptr<BufferManager> buffer_manager{};
-  std::unique_ptr<BufferUI> buffer_ui{};
 
   static inline std::atomic<bool> global_shutdown{false};
 
@@ -67,22 +66,22 @@ public:
   // Copia una tabla
   bool create_table(std::string name, serial::TableMetadata &copied_table_metadata);
 
-  // void select(Relation &relation, std::vector<std::string> &fields, std::vector<std::string> &conditions);
-  void select_print(std::string &table_name, std::string &col_name, std::string &condition, int max_pages_loaded = -1);
-  void select_print(serial::TableMetadata &table_metadata, std::string &col_name, std::string &condition, int max_pages_loaded = -1);
-  ResultSet select(std::string &table_name, std::string &col_name, std::string &condition, int max_pages_loaded = -1);
-  ResultSet select(serial::TableMetadata &table_metadata, std::string &col_name, std::string &condition, int max_pages_loaded = -1);
-  ResultSet select_from_page(serial::TableMetadata &table_metadata, size_t select_page_id, size_t col_index, SQL_type &cond_val);
-  ResultSet select_from_fixed_page(serial::TableMetadata &table_metadata, size_t select_page_id, size_t col_index, SQL_type &cond_val);
-  ResultSet select_from_slotted_page(serial::TableMetadata &table_metadata, size_t select_page_id, size_t col_index, SQL_type &cond_val);
+  void select_print(std::string &table_name,
+                    Comparator &comparator, int max_pages_loaded = -1);
 
-  void select_print_range(std::string &table_name, std::string &col_name, std::string &low, std::string &high, int max_pages_loaded = -1);
-  void select_print_range(serial::TableMetadata &table_metadata, std::string &col_name, std::string &low, std::string &high, int max_pages_loaded = -1);
-  ResultSet select_range(std::string &table_name, std::string &col_name, std::string &low, std::string &high, int max_pages_loaded = -1);
-  ResultSet select_range(serial::TableMetadata &table_metadata, std::string &col_name, std::string &low, std::string &high, int max_pages_loaded = -1);
-  ResultSet select_from_page_range(serial::TableMetadata &table_metadata, size_t select_page_id, size_t col_index, SQL_type &low_val, SQL_type &high_val);
-  ResultSet select_from_fixed_page_range(serial::TableMetadata &table_metadata, size_t select_page_id, size_t col_index, SQL_type &low_val, SQL_type &high_val);
-  ResultSet select_from_slotted_page_range(serial::TableMetadata &table_metadata, size_t select_page_id, size_t col_index, SQL_type &low_val, SQL_type &high_val);
+  void select_print(serial::TableMetadata &table_metadata,
+                    Comparator &comparator, int max_pages_loaded = -1);
+
+  ResultSet select(std::string &table_name,
+                   Comparator &comparator, int max_pages_loaded = -1);
+  ResultSet select(serial::TableMetadata &table_metadata,
+                   Comparator &comparator, int max_pages_loaded = -1);
+  ResultSet select_from_page(serial::TableMetadata &table_metadata,
+                             size_t select_page_id, Comparator &comparator);
+  ResultSet select_from_fixed_page(serial::TableMetadata &table_metadata,
+                                   size_t select_page_id, Comparator &comparator);
+  ResultSet select_from_slotted_page(serial::TableMetadata &table_metadata,
+                                     size_t select_page_id, Comparator &comparator);
 
   ResultSet delete_condition(std::string &table_name, std::string &col_name,
                              std::string &condition);
@@ -202,6 +201,15 @@ public:
   // void print_relation(Relation &relation);
   size_t char_size(std::string type);
 
+  // Concatenacion de operaciones en varias columnas
+  // Se pasa tuplas nombre_columna, operacion, valor
+  // @Notes operacion: <, >, <=, >=, ==
+  Comparator generate_comparator(serial::TableMetadata &table_metadata,
+                                 std::vector<std::tuple<std::string,
+                                                        std::string,
+                                                        std::string>>
+                                     &comparisons);
+
   /*
    * Une buffers de sectores individuales, produce un bloque continuo
    */
@@ -211,6 +219,12 @@ public:
   // =============================
   // Operaciones directas en disco
   // =============================
+
+  void new_disk(std::string disk_name, size_t surfaces, size_t tracks, size_t sectors,
+                size_t bytes, size_t sectors_block, size_t n_frames, bool is_clock);
+  void load_disk(std::string disk_name, size_t n_frames, bool is_clock);
+
+  void set_buffer_manager_frames();
 
   // Determina si un bloque tiene capacidad de insertar al menos un registro
   // el tamanio del registro esta dado internamente en el header de cada sector
@@ -238,6 +252,8 @@ public:
   // Utils
   // =====================
 
+  size_t get_column_index(serial::TableMetadata &table_metadata, std::string &col_name);
+
   // ===
   // Funciones de interfaz
   // ===
@@ -255,13 +271,22 @@ public:
   void ui_load_n_regs_csv();
   void ui_find_reg();
   void ui_show_table_metadata();
+
+  Comparator ui_generate_comparator(serial::TableMetadata &table_metadata);
+  Comparator ui_generate_comparator(std::string &table_name);
+
+  // Buffer UI
   void ui_interact_buffer_manager();
-
-  void new_disk(std::string disk_name, size_t surfaces, size_t tracks, size_t sectors,
-                size_t bytes, size_t sectors_block, size_t n_frames, bool is_clock);
-  void load_disk(std::string disk_name, size_t n_frames, bool is_clock);
-
-  void set_buffer_manager_frames();
+  void buf_load_page();
+  void buf_show_page_content(serial::TableMetadata &table_metadata);
+  void buf_select_all(serial::TableMetadata &table_metadata);
+  void buf_select_condition(serial::TableMetadata &table_metadata);
+  void buf_update_condition(serial::TableMetadata &table_metadata);
+  void buf_update_nth(serial::TableMetadata &table_metadata);
+  void buf_delete_condition(serial::TableMetadata &table_metadata);
+  void buf_delete_nth(serial::TableMetadata &table_metadata);
+  void buf_insert_line(serial::TableMetadata &table_metadata);
+  void buf_insert_n_csv(serial::TableMetadata &table_metadata);
 
   // =====
   // Operaciones de buscar un bloque
@@ -334,20 +359,6 @@ public:
 
   std::string translate_page_sector();
   std::string translate_table_page(serial::TableMetadata &table_metadata);
-
-  // TRASH
-  std::vector<uint32_t> locate_regs_cond(std::string &table_name, std::string &col_name, std::string &condition);
-  std::pair<uint32_t, uint32_t> locate_nth_reg(std::string &table_name, size_t nth);
-  uint32_t locate_free_page(serial::TableMetadata &table_metadata);
-  void show_block(serial::TableMetadata &table_metadata, uint32_t block_id);
-  void show_fixed_page(
-      serial::TableMetadata &table_metadata,
-      serial::PageHeader &page_header,
-      serial::FixedDataHeader &fixed_data_header,
-      std::vector<unsigned char> &page_bytes, uint32_t curr_page_id);
-  std::pair<uint32_t, std::vector<unsigned char>> insert_reg_in_page(serial::TableMetadata &table_metadata, std::string &csv_values);
-  std::pair<uint32_t, std::vector<unsigned char>> delete_nth_reg_in_table(serial::TableMetadata &table_metadata, size_t nth);
-  uint32_t delete_nth_reg_in_page(std::vector<unsigned char> &page_bytes, size_t nth);
 
   void run();
   Megatron();

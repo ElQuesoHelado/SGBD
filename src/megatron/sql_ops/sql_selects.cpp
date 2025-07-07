@@ -1,3 +1,4 @@
+#include "comparison.hpp"
 #include "megatron.hpp"
 #include "result_set.hpp"
 #include "serial/fixed_data.hpp"
@@ -10,9 +11,10 @@
 #include <iostream>
 #include <print>
 
-// TODO: Nombre columnas
-void Megatron::select_print(std::string &table_name, std::string &col_name, std::string &condition, int max_pages_loaded) {
-  auto result_set = select(table_name, col_name, condition, max_pages_loaded);
+void Megatron::select_print(std::string &table_name,
+                            Comparator &comparator,
+                            int max_pages_loaded) {
+  auto result_set = select(table_name, comparator, max_pages_loaded);
 
   size_t i{1};
   for (auto &reg : result_set) {
@@ -21,8 +23,10 @@ void Megatron::select_print(std::string &table_name, std::string &col_name, std:
   }
 }
 
-void Megatron::select_print(serial::TableMetadata &table_metadata, std::string &col_name, std::string &condition, int max_pages_loaded) {
-  auto result_set = select(table_metadata, col_name, condition, max_pages_loaded);
+void Megatron::select_print(serial::TableMetadata &table_metadata,
+                            Comparator &comparator,
+                            int max_pages_loaded) {
+  auto result_set = select(table_metadata, comparator, max_pages_loaded);
 
   size_t i{1};
   for (auto &reg : result_set) {
@@ -31,7 +35,9 @@ void Megatron::select_print(serial::TableMetadata &table_metadata, std::string &
   }
 }
 
-ResultSet Megatron::select(std::string &table_name, std::string &col_name, std::string &condition, int max_pages_loaded) {
+ResultSet Megatron::select(std::string &table_name,
+                           Comparator &comparator,
+                           int max_pages_loaded) {
   serial::TableMetadata table_metadata;
 
   // No existe
@@ -40,26 +46,12 @@ ResultSet Megatron::select(std::string &table_name, std::string &col_name, std::
     return {};
   }
 
-  return select(table_metadata, col_name, condition, max_pages_loaded);
+  return select(table_metadata, comparator, max_pages_loaded);
 }
 
-/*
- * Realiza el cargado de datos del disco
- * Considera campos solo para output y condiciones
- * ex: se quiere dos campos pero la condicion depende de otro no visualizado
- * @note caso no coincida col_name, se realiza un select sin condicion
- */
-ResultSet Megatron::select(serial::TableMetadata &table_metadata, std::string &col_name, std::string &condition, int max_pages_loaded) {
-  // Se parsea column index y condicion a SQL_type
-  size_t col_index{table_metadata.n_cols};
-  SQL_type cond_val;
-
-  for (size_t i{}; i < table_metadata.columns.size(); ++i) {
-    if (col_name == array_to_string_view(table_metadata.columns[i].name)) {
-      col_index = i;
-      cond_val = string_to_sql_type(condition, table_metadata.columns[i].type, table_metadata.columns[i].max_size);
-    }
-  }
+ResultSet Megatron::select(serial::TableMetadata &table_metadata,
+                           Comparator &comparator,
+                           int max_pages_loaded) {
 
   ResultSet result_set{};
   result_set.add_columns(table_metadata.columns);
@@ -74,7 +66,8 @@ ResultSet Megatron::select(serial::TableMetadata &table_metadata, std::string &c
 
     buffer_manager->free_unpin_page(curr_page_id, false);
 
-    auto partial_result_set = select_from_page(table_metadata, curr_page_id, col_index, cond_val);
+    auto partial_result_set =
+        select_from_page(table_metadata, curr_page_id, comparator);
 
     result_set.merge(std::move(partial_result_set));
 
@@ -84,16 +77,19 @@ ResultSet Megatron::select(serial::TableMetadata &table_metadata, std::string &c
   return result_set;
 }
 
-ResultSet Megatron::select_from_page(serial::TableMetadata &table_metadata, size_t select_page_id, size_t col_index, SQL_type &cond_val) {
+ResultSet Megatron::select_from_page(serial::TableMetadata &table_metadata,
+                                     size_t select_page_id, Comparator &comparator) {
   auto result_set =
       (table_metadata.are_regs_fixed)
-          ? select_from_fixed_page(table_metadata, select_page_id, col_index, cond_val)
-          : select_from_slotted_page(table_metadata, select_page_id, col_index, cond_val);
+          ? select_from_fixed_page(table_metadata, select_page_id, comparator)
+          : select_from_slotted_page(table_metadata, select_page_id, comparator);
 
   return result_set;
 }
 
-ResultSet Megatron::select_from_fixed_page(serial::TableMetadata &table_metadata, size_t select_page_id, size_t col_index, SQL_type &cond_val) {
+ResultSet Megatron::select_from_fixed_page(
+    serial::TableMetadata &table_metadata,
+    size_t select_page_id, Comparator &comparator) {
   auto frame = buffer_manager->load_pin_page(select_page_id);
   std::vector<unsigned char> &page_bytes = frame.page_bytes;
 
@@ -110,7 +106,7 @@ ResultSet Megatron::select_from_fixed_page(serial::TableMetadata &table_metadata
       auto register_values = deserialize_register(table_metadata, register_bytes);
 
       // Si es que hay condicion
-      if (col_index < table_metadata.n_cols && register_values[col_index] != cond_val)
+      if (comparator.evaluate(register_values))
         continue;
 
       RegisterEntry reg{select_page_id, i};
@@ -128,7 +124,9 @@ ResultSet Megatron::select_from_fixed_page(serial::TableMetadata &table_metadata
   return result_set;
 }
 
-ResultSet Megatron::select_from_slotted_page(serial::TableMetadata &table_metadata, size_t select_page_id, size_t col_index, SQL_type &cond_val) {
+ResultSet Megatron::select_from_slotted_page(
+    serial::TableMetadata &table_metadata,
+    size_t select_page_id, Comparator &comparator) {
   auto frame = buffer_manager->load_pin_page(select_page_id);
   std::vector<unsigned char> &page_bytes = frame.page_bytes;
 
@@ -146,7 +144,7 @@ ResultSet Megatron::select_from_slotted_page(serial::TableMetadata &table_metada
       auto register_values = deserialize_register(table_metadata, register_bytes);
 
       // Si es que hay condicion
-      if (col_index < table_metadata.n_cols && register_values[col_index] != cond_val)
+      if (comparator.evaluate(register_values))
         continue;
 
       RegisterEntry reg{select_page_id, i};
