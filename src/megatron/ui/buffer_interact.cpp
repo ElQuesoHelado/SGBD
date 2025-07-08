@@ -39,8 +39,9 @@ void Megatron::buf_select_all(serial::TableMetadata &table_metadata) {
   std::cout << "# de paginas maximas a cargar: ";
   std::cin >> page_limit;
 
-  // select_print(table_metadata, cond, val,
-  //              page_limit);
+  Comparator comp;
+
+  select_print(table_metadata, comp, page_limit);
 }
 
 void Megatron::buf_select_condition(serial::TableMetadata &table_metadata) {
@@ -68,18 +69,16 @@ void Megatron::buf_update_condition(serial::TableMetadata &table_metadata) {
   std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
   std::string cmp_col_name, cmp_col_value, upd_col_name, upd_col_value;
-  std::cout << "Nombre de la columna condicion: ";
-  getline(std::cin, cmp_col_name);
-  std::cout << "Valor de condicion: ";
-  getline(std::cin, cmp_col_value);
   std::cout << "Nombre de la columna a modificar: ";
   getline(std::cin, upd_col_name);
   std::cout << "Nuevo valor: ";
   getline(std::cin, upd_col_value);
 
+  auto comparator = ui_generate_comparator(table_metadata);
+
   auto result_set =
       update_from_page(table_metadata, page_id,
-                       cmp_col_name, cmp_col_value,
+                       comparator,
                        upd_col_name, upd_col_value);
 
   std::println("Se modifico los registros: ");
@@ -130,8 +129,10 @@ void Megatron::buf_delete_condition(serial::TableMetadata &table_metadata) {
   std::cout << "Valor de condicion: ";
   getline(std::cin, cmp_col_value);
 
+  auto comparator = ui_generate_comparator(table_metadata);
+
   auto result_set =
-      delete_from_page(table_metadata, page_id, cmp_col_name, cmp_col_value);
+      delete_from_page(table_metadata, page_id, comparator);
 
   std::println("Se modifico los registros: ");
   for (auto &r : result_set) {

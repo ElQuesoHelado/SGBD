@@ -5,8 +5,7 @@
 #include <print>
 
 ResultSet Megatron::update_condition(std::string &table_name,
-                                     std::string &cmp_col_name,
-                                     std::string &cmp_col_value,
+                                     Comparator &comparator,
                                      std::string &upd_col_name,
                                      std::string &upd_col_value) {
   serial::TableMetadata table_metadata;
@@ -16,28 +15,18 @@ ResultSet Megatron::update_condition(std::string &table_name,
     std::cerr << "Tabla: " << table_name << " no existe" << std::endl;
     return {};
   }
-  return update_condition(table_metadata, cmp_col_name, cmp_col_value,
+  return update_condition(table_metadata, comparator,
                           upd_col_name, upd_col_value);
 }
 
 ResultSet Megatron::update_condition(serial::TableMetadata &table_metadata,
-                                     std::string &cmp_col_name,
-                                     std::string &cmp_col_value,
+                                     Comparator &comparator,
                                      std::string &upd_col_name,
                                      std::string &upd_col_value) {
-  size_t cmp_col_index{table_metadata.n_cols},
-      upd_col_index{table_metadata.n_cols};
-  SQL_type cmp_value, upd_value;
+  size_t upd_col_index{table_metadata.n_cols};
+  SQL_type upd_value;
 
   for (size_t i{}; i < table_metadata.columns.size(); ++i) {
-    if (cmp_col_name ==
-        array_to_string_view(table_metadata.columns[i].name)) {
-      cmp_col_index = i;
-      cmp_value = string_to_sql_type(cmp_col_value,
-                                     table_metadata.columns[i].type,
-                                     table_metadata.columns[i].max_size);
-    }
-
     if (upd_col_name ==
         array_to_string_view(table_metadata.columns[i].name)) {
       upd_col_index = i;
@@ -47,7 +36,7 @@ ResultSet Megatron::update_condition(serial::TableMetadata &table_metadata,
     }
   }
 
-  if (cmp_col_index >= table_metadata.n_cols ||
+  if (comparator.empty() ||
       upd_col_index >= table_metadata.n_cols) {
     std::cerr << "No se encontro columna para comparar/modificar" << std::endl;
     return {};
@@ -68,8 +57,7 @@ ResultSet Megatron::update_condition(serial::TableMetadata &table_metadata,
 
     auto partial_result_set =
         update_from_page(table_metadata, curr_page_id,
-                         cmp_col_index, cmp_value,
-                         upd_col_index, upd_value);
+                         comparator, upd_col_index, upd_value);
 
     result_set.merge(std::move(partial_result_set));
 
@@ -81,24 +69,14 @@ ResultSet Megatron::update_condition(serial::TableMetadata &table_metadata,
 
 ResultSet Megatron::update_from_page(serial::TableMetadata &table_metadata,
                                      size_t update_page_id,
-                                     std::string &cmp_col_name,
-                                     std::string &cmp_col_value,
+                                     Comparator &comparator,
                                      std::string &upd_col_name,
                                      std::string &upd_col_value) {
   // Valida input
-  size_t cmp_col_index{table_metadata.n_cols},
-      upd_col_index{table_metadata.n_cols};
-  SQL_type cmp_value, upd_value;
+  size_t upd_col_index{table_metadata.n_cols};
+  SQL_type upd_value;
 
   for (size_t i{}; i < table_metadata.columns.size(); ++i) {
-    if (cmp_col_name ==
-        array_to_string_view(table_metadata.columns[i].name)) {
-      cmp_col_index = i;
-      cmp_value = string_to_sql_type(cmp_col_value,
-                                     table_metadata.columns[i].type,
-                                     table_metadata.columns[i].max_size);
-    }
-
     if (upd_col_name ==
         array_to_string_view(table_metadata.columns[i].name)) {
       upd_col_index = i;
@@ -108,29 +86,28 @@ ResultSet Megatron::update_from_page(serial::TableMetadata &table_metadata,
     }
   }
 
-  if (cmp_col_index >= table_metadata.n_cols ||
+  if (comparator.empty() ||
       upd_col_index >= table_metadata.n_cols) {
     std::cerr << "No se encontro columna para comparar/modificar" << std::endl;
     return {};
   }
 
   return update_from_page(table_metadata, update_page_id,
-                          cmp_col_index, cmp_value,
-                          upd_col_index, upd_value);
+                          comparator, upd_col_index, upd_value);
 }
 
 ResultSet Megatron::update_from_page(
     serial::TableMetadata &table_metadata,
     size_t update_page_id,
-    size_t cmp_col_index, SQL_type &cmp_value,
+    Comparator &comparator,
     size_t upd_col_index, SQL_type &upd_value) {
   auto result_set =
       (table_metadata.are_regs_fixed)
           ? update_from_fixed_page(table_metadata, update_page_id,
-                                   cmp_col_index, cmp_value,
+                                   comparator,
                                    upd_col_index, upd_value)
           : update_from_slotted_page(table_metadata, update_page_id,
-                                     cmp_col_index, cmp_value,
+                                     comparator,
                                      upd_col_index, upd_value);
 
   return result_set;
@@ -139,7 +116,7 @@ ResultSet Megatron::update_from_page(
 ResultSet Megatron::update_from_fixed_page(
     serial::TableMetadata &table_metadata,
     size_t update_page_id,
-    size_t cmp_col_index, SQL_type &cmp_value,
+    Comparator &comparator,
     size_t upd_col_index, SQL_type &upd_value) {
   auto &frame = buffer_manager->load_pin_page(update_page_id);
   std::vector<unsigned char> &page_bytes = frame.page_bytes;
@@ -160,7 +137,7 @@ ResultSet Megatron::update_from_fixed_page(
       auto register_values =
           deserialize_register(table_metadata, register_bytes);
 
-      if (register_values[cmp_col_index] != cmp_value)
+      if (!comparator.evaluate(register_values))
         continue;
 
       // Log de registro sobreescrito
@@ -202,7 +179,7 @@ ResultSet Megatron::update_from_fixed_page(
 ResultSet Megatron::update_from_slotted_page(
     serial::TableMetadata &table_metadata,
     size_t update_page_id,
-    size_t cmp_col_index, SQL_type &cmp_value,
+    Comparator &comparator,
     size_t upd_col_index, SQL_type &upd_value) {
   auto &frame = buffer_manager->load_pin_page(update_page_id);
   std::vector<unsigned char> &page_bytes = frame.page_bytes;
@@ -222,7 +199,7 @@ ResultSet Megatron::update_from_slotted_page(
       auto register_values =
           deserialize_register(table_metadata, register_bytes);
 
-      if (register_values[cmp_col_index] != cmp_value)
+      if (!comparator.evaluate(register_values))
         continue;
 
       RegisterEntry reg{update_page_id, i};

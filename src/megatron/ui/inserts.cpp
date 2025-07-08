@@ -38,3 +38,32 @@ void Megatron::ui_insert_data() {
   std::cout << "\"Datos insertados exitosamente\"\n";
   pauseAndReturn();
 }
+
+void Megatron::ui_load_csv() {
+  clearScreen();
+  std::string csv_path, table_name;
+  std::cout << "Nombre del archivo CSV: ";
+  getline(std::cin, csv_path);
+  std::cout << "Nombre de la tabla destino: ";
+  getline(std::cin, table_name);
+
+  load_CSV(csv_path, table_name);
+
+  pauseAndReturn();
+}
+
+void Megatron::ui_load_n_regs_csv() {
+  clearScreen();
+  std::string csv_path, table_name, n_lines_str;
+  std::cout << "Nombre del archivo CSV: ";
+  getline(std::cin, csv_path);
+  std::cout << "Nombre de la tabla destino: ";
+  getline(std::cin, table_name);
+  std::cout << "n_lineas a cargar: ";
+  getline(std::cin, n_lines_str);
+  size_t n_lines = stoul(n_lines_str);
+
+  load_CSV(csv_path, table_name, n_lines);
+
+  pauseAndReturn();
+}

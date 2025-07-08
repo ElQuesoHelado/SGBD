@@ -18,8 +18,9 @@ set(MEGATRON_SOURCES
     ${SOURCE_DIR}/megatron/sql_ops/sql_inserts.cpp
     ${SOURCE_DIR}/megatron/sql_ops/sql_selects.cpp
     ${SOURCE_DIR}/megatron/sql_ops/sql_deletes.cpp
+    ${SOURCE_DIR}/megatron/sql_ops/sql_deletes_nth.cpp
     ${SOURCE_DIR}/megatron/sql_ops/sql_updates.cpp
-    ${SOURCE_DIR}/megatron/sql_ops/sql_update_nth.cpp
+    ${SOURCE_DIR}/megatron/sql_ops/sql_updates_nth.cpp
     ${SOURCE_DIR}/megatron/pages/traverse_pages.cpp
     ${SOURCE_DIR}/megatron/pages/pages.cpp
     ${SOURCE_DIR}/megatron/ui/buffer_interact.cpp

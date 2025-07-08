@@ -18,7 +18,9 @@ class Comparator {
   std::vector<Comparison> value_comp_ops{};
 
 public:
-  bool empty() { return value_comp_ops.empty(); }
+  bool empty() {
+    return value_comp_ops.empty();
+  }
 
   Comparator &AND() {
     if (!empty())
@@ -70,19 +72,24 @@ public:
     if (value_comp_ops.empty())
       return true;
 
-    // Caso and/or varia valor inicial
-    bool res{};
-    if (value_comp_ops.front().is_next_and)
-      res = true;
+    bool result = value_comp_ops[0].condition(
+             row_values[value_comp_ops[0].col_index],
+             value_comp_ops[0].compared),
+         is_prev_and{value_comp_ops[0].is_next_and};
 
-    for (auto &c : value_comp_ops) {
-      bool partial = c.condition(row_values[c.col_index], c.compared);
-      if (c.is_next_and)
-        res &= partial;
-      else
-        res |= partial;
+    for (size_t i = 1; i < value_comp_ops.size(); ++i) {
+      const auto &op = value_comp_ops[i];
+      bool partial = op.condition(row_values[op.col_index], op.compared);
+
+      if (is_prev_and) {
+        result &= partial;
+      } else {
+        result |= partial;
+      }
+
+      is_prev_and = op.is_next_and;
     }
 
-    return res;
+    return result;
   }
 };

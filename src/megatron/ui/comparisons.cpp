@@ -61,7 +61,7 @@ Comparator Megatron::ui_generate_comparator(std::string &table_name) {
 
 Comparator Megatron::ui_generate_comparator(serial::TableMetadata &table_metadata) {
   std::println("Ingresa operaciones de comparacion a usar(una por linea):");
-  std::println("(nombre_columna, operacion[<, >, <= , == ,...], valor)");
+  std::println("(nombre_columna, operacion[<, >, <= , >=, ==], valor) o [AND, OR]");
   std::println("Escribe 'fin' cuando hayas terminado");
 
   std::vector<std::tuple<std::string, std::string, std::string>> comparisons;
@@ -70,9 +70,22 @@ Comparator Megatron::ui_generate_comparator(serial::TableMetadata &table_metadat
     std::string input;
     std::getline(std::cin, input);
 
-    // Verificar si el usuario quiere terminar
     if (input == "fin") {
       break;
+    }
+
+    input.erase(input.begin(),
+                std::find_if(input.begin(), input.end(),
+                             [](int ch) { return !std::isspace(ch); }));
+    input.erase(std::find_if(input.rbegin(), input.rend(),
+                             [](int ch) { return !std::isspace(ch); })
+                    .base(),
+                input.end());
+
+    if (input == "AND" || input == "OR") {
+      comparisons.emplace_back("", input, "");
+      std::println("Operador booleano agregado. Escribe otra o 'fin' para terminar.");
+      continue;
     }
 
     // Caso parentesis, se borran
@@ -87,23 +100,34 @@ Comparator Megatron::ui_generate_comparator(serial::TableMetadata &table_metadat
     while (end != std::string::npos) {
       std::string part = input.substr(start, end - start);
       // Eliminar espacios en blanco alrededor
-      part.erase(part.begin(), std::find_if(part.begin(), part.end(), [](int ch) { return !std::isspace(ch); }));
-      part.erase(std::find_if(part.rbegin(), part.rend(), [](int ch) { return !std::isspace(ch); }).base(), part.end());
+      part.erase(part.begin(),
+                 std::find_if(part.begin(), part.end(),
+                              [](int ch) { return !std::isspace(ch); }));
+      part.erase(std::find_if(part.rbegin(), part.rend(),
+                              [](int ch) { return !std::isspace(ch); })
+                     .base(),
+                 part.end());
 
       parts.push_back(part);
       start = end + 1;
       end = input.find(',', start);
     }
 
-    // Agregar el último componente
+    // Ultimo componente
     std::string last_part = input.substr(start);
-    last_part.erase(last_part.begin(), std::find_if(last_part.begin(), last_part.end(), [](int ch) { return !std::isspace(ch); }));
-    last_part.erase(std::find_if(last_part.rbegin(), last_part.rend(), [](int ch) { return !std::isspace(ch); }).base(), last_part.end());
+    last_part.erase(last_part.begin(),
+                    std::find_if(last_part.begin(), last_part.end(),
+                                 [](int ch) { return !std::isspace(ch); }));
+    last_part.erase(std::find_if(last_part.rbegin(), last_part.rend(),
+                                 [](int ch) { return !std::isspace(ch); })
+                        .base(),
+                    last_part.end());
     parts.push_back(last_part);
 
     // Verificar que tenemos exactamente 3 componentes
     if (parts.size() != 3) {
-      std::println("Formato incorrecto. Por favor ingresa: nombre_columna, operacion, valor");
+      std::println("Formato incorrecto,"
+                   "ingresa: nombre_columna, operacion, valor");
       continue;
     }
 
@@ -122,17 +146,19 @@ Comparator Megatron::ui_generate_comparator(serial::TableMetadata &table_metadat
     }
 
     // Validar que la operación es válida
-    const std::vector<std::string> valid_ops = {"<", ">", "<=", ">=", "==", "!="};
-    if (std::find(valid_ops.begin(), valid_ops.end(), parts[1]) == valid_ops.end()) {
-      std::println("Error: Operación '{}' no válida. Usa uno de: <, >, <=, >=, ==, !=", parts[1]);
+    const std::vector<std::string> valid_ops =
+        {"<", ">", "<=", ">=", "==", "!="};
+    if (std::find(valid_ops.begin(), valid_ops.end(),
+                  parts[1]) == valid_ops.end()) {
+      std::println("Error: Operacion '{}' no valida."
+                   "Usa uno de: <, >, <=, >=, ==, !=",
+                   parts[1]);
       continue;
     }
 
-    // Agregar la comparación al vector
     comparisons.emplace_back(parts[0], parts[1], parts[2]);
-    std::println("Comparación agregada. Escribe otra o 'fin' para terminar.");
+    std::println("Comparacion agregada. Escribe otra o 'fin' para terminar.");
   }
 
-  // Generar y retornar el comparador
   return generate_comparator(table_metadata, comparisons);
 }

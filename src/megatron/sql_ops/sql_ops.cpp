@@ -45,7 +45,8 @@ bool Megatron::create_table(std::string name, std::vector<std::pair<std::string,
   return 1;
 }
 
-bool Megatron::search_table(std::string table_name, serial::TableMetadata &table_metadata) {
+bool Megatron::search_table(std::string table_name,
+                            serial::TableMetadata &table_metadata) {
   serial::TableMetadata table;
 
   // Se carga todo sector 1

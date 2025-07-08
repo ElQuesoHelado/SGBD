@@ -1,22 +1,15 @@
 #include "comparison.hpp"
-#include "disk_manager.hpp"
 #include "megatron.hpp"
-#include "serial/generic.hpp"
 #include <boost/dynamic_bitset/dynamic_bitset.hpp>
 #include <cstddef>
 #include <cstdint>
-#include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <iterator>
 #include <limits>
 #include <print>
 #include <sstream>
 #include <string>
 
-#include "types.hpp"
-#include <string_view>
-#include <type_traits>
 #include <vector>
 
 std::vector<std::pair<std::string, std::string>> determine_column_types(
@@ -235,9 +228,104 @@ void load_CSV_with_schema_inference(std::string path, std::string table_name, bo
 }
 
 int main(int argc, char *argv[]) {
-
-  // Comparator comp;
-  // comp.greater_equal_than(5).AND().less_equal_than(10);
+  Megatron megatron;
+  // megatron.new_disk("disco2", 10, 10, 10, 500, 3, 5, 1);
+  // //
+  megatron.load_disk("disco", 5, 1);
+  std::vector<std::pair<std::string, std::string>>
+      columns = {
+          {"PassengerId", "INTEGER"},
+          {"Survived", "INTEGER"},
+          {"Pclass", "INTEGER"},
+          {"Name", "CHAR(100)"},
+          {"Sex", "CHAR(20)"},
+          {"Age", "DOUBLE"},
+          {"SibSp", "INTEGER"},
+          {"Parch", "INTEGER"},
+          {"Ticket", "CHAR(20)"},
+          {"Fare", "DOUBLE"},
+          {"Cabin", "CHAR(20)"},
+          {"Embarked", "CHAR(20)"}};
+  // //
+  // // std::vector<std::pair<std::string, std::string>>
+  // //     columns_var = {
+  // //         {"PassengerId", "INTEGER"},
+  // //         {"Survived", "INTEGER"},
+  // //         {"Pclass", "INTEGER"},
+  // //         {"Name", "VARCHAR(100)"},
+  // //         {"Sex", "VARCHAR(20)"},
+  // //         {"Age", "DOUBLE"},
+  // //         {"SibSp", "INTEGER"},
+  // //         {"Parch", "INTEGER"},
+  // //         {"Ticket", "VARCHAR(20)"},
+  // //         {"Fare", "DOUBLE"},
+  // //         {"Cabin", "VARCHAR(20)"},
+  // //         {"Embarked", "VARCHAR(20)"}};
+  // //
+  // megatron.create_table("titanic", columns);
+  // // megatron.create_table("titanic_var", columns_var);
+  // // //
+  // // //
+  // std::vector<std::pair<std::string, std::string>> columns = {{"col1", "INTEGER"},
+  //                                                             {"col2", "INTEGER"},
+  //                                                             {"col3", "INTEGER"},
+  //                                                             {"col4", "CHAR(100)"},
+  //                                                             {"col5", "CHAR(20)"}};
+  // std::vector<std::pair<std::string, std::string>> columns_var = {{"col1", "INTEGER"},
+  //                                                                 {"col2", "INTEGER"},
+  //                                                                 {"col3", "INTEGER"},
+  //                                                                 {"col4", "VARCHAR(100)"},
+  //                                                                 {"col5", "VARCHAR(20)"}};
+  // megatron.create_table("chica", columns);
+  // // //
+  // // megatron.create_table("chica_var", columns_var);
+  // // //
+  // // // // serial::TableMetadata table_metadata;
+  // // // // std::cout << megatron.search_table("tabla2", table_metadata) << std::endl;
+  // // // // megatron.load_disk("disco_ejemplo");
+  // // // megatron.load_CSV("csv/chica.csv", "chica_var");
+  // // // megatron.load_CSV("csv/titanic_chica.csv", "titanic");
+  // megatron.load_CSV("csv/titanic.csv", "titanic");
+  // // megatron.load_CSV("csv/titanic.csv", "titanic_var");
+  // //
+  // // // // megatron.load_CSV("csv/mas_chica.csv", "chica_var");
+  // // //
+  // // // // megatron.run();
+  // // //
+  std::string name1 = "titanic", name2 = "titanic_var", name3 = "housing",
+              name4 = "pasajero_var", empty = "", name5 = " titanic", col3 = "col3", cond = "100";
   //
-  // std::println("{}", comp.evaluate(7));
+  // megatron.load_CSV("csv/chica.csv", chica);
+  //
+  // megatron.delete_reg(chica, col3, cond);
+  //
+  // megatron.load_CSV("csv/chica.csv", chica);
+
+  // std::string col = "Pclass", value = "3";
+  //
+  // megatron.delete_reg(name1, col, value);
+  //
+  // megatron.load_CSV("csv/titanic.csv", "titanic");
+  // megatron.translate();
+  // // megatron.delete_reg(name2, col, value);
+  //
+  serial::TableMetadata table_metadata;
+  std::vector<std::tuple<std::string,
+                         std::string,
+                         std::string>>
+      comparisons = {
+          {"PassengerId", ">", "300"},
+          {"", "AND", ""},
+          {"PassengerId", "<", "500"},
+          {"", "OR", ""},
+          {"Embarked", "==", "S"}};
+  //
+  // megatron.search_table(name5, table_metadata);
+  Comparator comp = megatron.generate_comparator(table_metadata, comparisons);
+  megatron.select_print(name5, comp);
+
+  //  megatron.select(name3, empty, empty);
+  //  megatron.select(name2, empty, empty);
+  //  megatron.select(name3, col, value);
+  //  megatron.select(chica, empty, empty);
 }

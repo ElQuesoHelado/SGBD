@@ -4,17 +4,17 @@
 
 void Megatron::ui_delete_data() {
   clearScreen();
-
   try {
     std::string table_name, col_name, value;
     std::cout << "Nombre de la tabla: ";
     getline(std::cin, table_name);
-    std::cout << "Columna para condición: ";
-    getline(std::cin, col_name);
-    std::cout << "Valor a evaluar: ";
-    getline(std::cin, value);
 
-    delete_condition(table_name, col_name, value);
+    serial::TableMetadata table_metadata;
+    if (!search_table(table_name, table_metadata))
+      throw std::invalid_argument("Tabla no existente");
+
+    auto comparator = ui_generate_comparator(table_metadata);
+    delete_condition(table_metadata, comparator);
 
   } catch (const std::exception &e) {
     std::cerr << "\nError: " << e.what() << "\n";

@@ -5,39 +5,47 @@
 
 void Megatron::ui_select_table() {
   clearScreen();
-  std::string table_name;
-  std::cout << "Nombre de la tabla a consultar: ";
-  getline(std::cin, table_name);
+  try {
+    std::string table_name;
+    std::cout << "Nombre de la tabla a consultar: ";
+    getline(std::cin, table_name);
 
-  Comparator comp;
+    serial::TableMetadata table_metadata;
+    if (!search_table(table_name, table_metadata))
+      throw std::invalid_argument("Tabla no existente");
 
-  std::cout << std::dec << std::resetiosflags(std::ios_base::floatfield);
-  select_print(table_name, comp);
+    Comparator comp;
+
+    // std::cout << std::dec << std::resetiosflags(std::ios_base::floatfield);
+    select_print(table_name, comp);
+  } catch (const std::exception &e) {
+    std::cerr << "\nError: " << e.what() << "\n";
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  }
 
   pauseAndReturn();
 }
 
 void Megatron::ui_select_table_condition() {
   clearScreen();
-  std::string table_name, col_name, value, save, saved_table_name;
-  std::cout << "Nombre de la tabla: ";
-  getline(std::cin, table_name);
-  // std::cout << "Columna a evaluar: ";
-  // getline(std::cin, col_name);
-  // std::cout << "Valor a evaluar: ";
-  // getline(std::cin, value);
-  // std::cout << "¿Deseas guardar el resultado? (s/n): ";
-  // getline(cin, save);
-  // bool save_b = (save == "s" || save == "S");
-  // if (save_b) {
-  //   std::cout << "Nombre para guardar resultados: ";
-  //   getline(cin, saved_table_name);
-  // }
+  try {
+    std::string table_name, col_name, value, save, saved_table_name;
+    std::cout << "Nombre de la tabla: ";
+    getline(std::cin, table_name);
 
-  // TODO: guardar table_metadata
-  auto comparator = ui_generate_comparator(table_name);
+    serial::TableMetadata table_metadata;
+    if (!search_table(table_name, table_metadata))
+      throw std::invalid_argument("Tabla no existente");
 
-  select_print(table_name, comparator);
+    auto comparator = ui_generate_comparator(table_metadata);
+    select_print(table_metadata, comparator);
+
+  } catch (const std::exception &e) {
+    std::cerr << "\nError: " << e.what() << "\n";
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  }
 
   pauseAndReturn();
 }

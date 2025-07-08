@@ -15,35 +15,6 @@
 
 using namespace std;
 
-void Megatron::ui_load_csv() {
-  clearScreen();
-  string csv_path, table_name;
-  cout << "Nombre del archivo CSV: ";
-  getline(cin, csv_path);
-  cout << "Nombre de la tabla destino: ";
-  getline(cin, table_name);
-
-  load_CSV(csv_path, table_name);
-
-  pauseAndReturn();
-}
-
-void Megatron::ui_load_n_regs_csv() {
-  clearScreen();
-  string csv_path, table_name, n_lines_str;
-  cout << "Nombre del archivo CSV: ";
-  getline(cin, csv_path);
-  cout << "Nombre de la tabla destino: ";
-  getline(cin, table_name);
-  cout << "n_lineas a cargar: ";
-  getline(cin, n_lines_str);
-  size_t n_lines = stoul(n_lines_str);
-
-  load_CSV(csv_path, table_name, n_lines);
-
-  pauseAndReturn();
-}
-
 void Megatron::ui_find_reg() {
   clearScreen();
 

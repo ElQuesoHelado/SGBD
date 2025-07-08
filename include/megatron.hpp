@@ -83,22 +83,18 @@ public:
   ResultSet select_from_slotted_page(serial::TableMetadata &table_metadata,
                                      size_t select_page_id, Comparator &comparator);
 
-  ResultSet delete_condition(std::string &table_name, std::string &col_name,
-                             std::string &condition);
+  ResultSet delete_condition(std::string &table_name, Comparator &comparator);
   ResultSet delete_condition(serial::TableMetadata &table_metadata,
-                             std::string &col_name, std::string &condition);
+                             Comparator &comparator);
   ResultSet delete_from_page(serial::TableMetadata &table_metadata,
-                             size_t delete_page_id, std::string &col_name,
-                             std::string &condition);
-  ResultSet delete_from_page(serial::TableMetadata &table_metadata,
-                             size_t delete_page_id, size_t col_index,
-                             SQL_type &cond_val);
+                             size_t delete_page_id, Comparator &comparator);
+  // ResultSet delete_from_page(serial::TableMetadata &table_metadata,
+  //                            size_t delete_page_id, size_t col_index,
+  //                            SQL_type &cond_val);
   ResultSet delete_from_fixed_page(serial::TableMetadata &table_metadata,
-                                   size_t delete_page_id, size_t col_index,
-                                   SQL_type &cond_val);
+                                   size_t delete_page_id, Comparator &comparator);
   ResultSet delete_from_slotted_page(serial::TableMetadata &table_metadata,
-                                     size_t delete_page_id, size_t col_index,
-                                     SQL_type &cond_val);
+                                     size_t delete_page_id, Comparator &comparator);
   ResultSet delete_nth_reg(std::string &table_name, size_t nth);
   ResultSet delete_nth_reg(serial::TableMetadata &table_metadata, size_t nth);
   ResultSet delete_nth_from_page(serial::TableMetadata &table_metadata,
@@ -125,37 +121,34 @@ public:
   void insert_into_slotted_page(size_t insert_page_id, std::vector<unsigned char> &register_bytes);
 
   ResultSet update_condition(std::string &table_name,
-                             std::string &cmp_col_name,
-                             std::string &cmp_col_value,
+                             Comparator &comparator,
                              std::string &upd_col_name,
                              std::string &upd_col_value);
   ResultSet update_condition(serial::TableMetadata &table_metadata,
-                             std::string &cmp_col_name,
-                             std::string &cmp_col_value,
+                             Comparator &comparator,
                              std::string &upd_col_name,
                              std::string &upd_col_value);
 
   // Realiza validaciones de input
   ResultSet update_from_page(serial::TableMetadata &table_metadata,
                              size_t update_page_id,
-                             std::string &cmp_col_name,
-                             std::string &cmp_col_value,
+                             Comparator &comparator,
                              std::string &upd_col_name,
                              std::string &upd_col_value);
 
   ResultSet update_from_page(serial::TableMetadata &table_metadata,
                              size_t update_page_id,
-                             size_t cmp_col_index, SQL_type &cmp_value,
+                             Comparator &comparator,
                              size_t upd_col_index, SQL_type &upd_value);
 
   ResultSet update_from_fixed_page(serial::TableMetadata &table_metadata,
                                    size_t update_page_id,
-                                   size_t cmp_col_index, SQL_type &cmp_value,
+                                   Comparator &comparator,
                                    size_t upd_col_index, SQL_type &upd_value);
 
   ResultSet update_from_slotted_page(serial::TableMetadata &table_metadata,
                                      size_t update_page_id,
-                                     size_t cmp_col_index, SQL_type &cmp_value,
+                                     Comparator &comparator,
                                      size_t upd_col_index, SQL_type &upd_value);
 
   ResultSet update_nth_reg(std::string &table_name, size_t nth,
@@ -177,13 +170,16 @@ public:
 
   ResultSet update_nth_from_fixed_page(serial::TableMetadata &table_metadata,
                                        size_t update_page_id, size_t nth,
-                                       size_t upd_col_index, SQL_type &upd_value);
+                                       size_t upd_col_index,
+                                       SQL_type &upd_value);
 
   ResultSet update_nth_from_slotted_page(serial::TableMetadata &table_metadata,
                                          size_t update_page_id, size_t nth,
-                                         size_t upd_col_index, SQL_type &upd_value);
+                                         size_t upd_col_index,
+                                         SQL_type &upd_value);
 
-  void select_save(std::string table_name, std::string col_name, std::string condition, std::string new_table_name);
+  void select_save(std::string table_name, std::string col_name,
+                   std::string condition, std::string new_table_name);
 
   void find_nth_reg(std::string &table_name, size_t nth);
 

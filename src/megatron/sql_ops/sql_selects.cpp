@@ -106,7 +106,7 @@ ResultSet Megatron::select_from_fixed_page(
       auto register_values = deserialize_register(table_metadata, register_bytes);
 
       // Si es que hay condicion
-      if (comparator.evaluate(register_values))
+      if (!comparator.evaluate(register_values))
         continue;
 
       RegisterEntry reg{select_page_id, i};
@@ -144,7 +144,7 @@ ResultSet Megatron::select_from_slotted_page(
       auto register_values = deserialize_register(table_metadata, register_bytes);
 
       // Si es que hay condicion
-      if (comparator.evaluate(register_values))
+      if (!comparator.evaluate(register_values))
         continue;
 
       RegisterEntry reg{select_page_id, i};
