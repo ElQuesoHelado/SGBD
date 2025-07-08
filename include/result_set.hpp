@@ -67,4 +67,8 @@ public:
   size_t size() {
     return registers.size();
   }
+
+  bool empty() {
+    return registers.empty();
+  }
 };

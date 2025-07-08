@@ -1,8 +1,11 @@
 #include "megatron.hpp"
 #include "serial/generic.hpp"
 #include "types.hpp"
+#include <cstddef>
 #include <print>
 
+//(nombre columna, operacion de comparacion, valor)
+//("", AND/OR, "")
 // TODO: throws para conversion de tipos
 Comparator Megatron::generate_comparator(serial::TableMetadata &table_metadata,
                                          std::vector<std::tuple<std::string,
@@ -30,6 +33,48 @@ Comparator Megatron::generate_comparator(serial::TableMetadata &table_metadata,
         string_to_sql_type(value,
                            table_metadata.columns[col_index].type,
                            table_metadata.columns[col_index].max_size);
+
+    if (op == "<") {
+      comparator.less_than(sql_value, col_index);
+    } else if (op == "<=") {
+      comparator.less_equal_than(sql_value, col_index);
+    } else if (op == ">") {
+      comparator.greater_than(sql_value, col_index);
+    } else if (op == ">=") {
+      comparator.greater_equal_than(sql_value, col_index);
+    } else {
+      comparator.equals(sql_value, col_index);
+    }
+  }
+
+  return comparator;
+}
+
+//(nombre columna, operacion de comparacion, valor)
+//("", AND/OR, "")
+// TODO: throws para conversion de tipos
+Comparator Megatron::generate_comparator(
+    serial::TableMetadata &table_metadata,
+    std::vector<std::tuple<size_t,
+                           std::string,
+                           SQL_type>>
+        &comparisons) {
+  Comparator comparator;
+
+  for (auto &[col_index,
+              op,
+              sql_value] : comparisons) {
+    if (op == "AND") {
+      comparator.AND();
+      continue;
+
+    } else if (op == "OR") {
+      comparator.OR();
+      continue;
+    }
+
+    if (col_index == table_metadata.n_cols)
+      return {};
 
     if (op == "<") {
       comparator.less_than(sql_value, col_index);

@@ -57,10 +57,14 @@ bool Megatron::search_table(std::string table_name,
 
   // Se lee todos los bloques con tablas
   for (size_t i{}; i < sector1_meta.n_tables; ++i) {
-    std::vector<unsigned char> block_bytes;
 
     // TODO: Cambio logica a buffer manager
-    disk_manager->read_block(block_bytes, sector1_meta.table_block_ids[i]);
+    // disk_manager->read_block(block_bytes, sector1_meta.table_block_ids[i]);
+
+    auto table_id = sector1_meta.table_block_ids[i];
+
+    auto frame = buffer_manager->load_pin_page(table_id);
+    std::vector<unsigned char> &block_bytes = frame.page_bytes;
 
     serial::TableMetadata curr_table_metadata =
         serial::deserialize_table_metadata(block_bytes);
@@ -69,6 +73,8 @@ bool Megatron::search_table(std::string table_name,
       table_metadata = curr_table_metadata;
       return true;
     }
+
+    buffer_manager->free_unpin_page(table_id, 0);
   }
 
   return false;
@@ -76,7 +82,6 @@ bool Megatron::search_table(std::string table_name,
 
 float Megatron::table_size(std::string table_name) {
   serial::TableMetadata table_metadata;
-  ;
 
   // No existe
   if (!search_table(table_name, table_metadata)) {
@@ -114,98 +119,3 @@ float Megatron::table_size(std::string table_name) {
   // return 1.f * metadata.tuple_size * metadata.n_rows / 1024;
   return total_size / 1024.;
 }
-
-// void Megatron::update(std::string cond_col_name, std::string condition, std::string repl_col_name, std::string new_value) {
-// TableMetadata metadata = read_table(disk.FIRST_DBMS_LBA);
-// size_t idx_condition_col{}, idx_replaced_col{};
-// size_t offset_cond{}, offset_replaced{};
-//
-// // Revisar si condicion existe y offset para esta
-// if (!cond_col_name.empty()) {
-//   bool found{false};
-//   for (auto &p : metadata.col_type_pairs) {
-//     if (p.first == cond_col_name) {
-//       found = true;
-//       break;
-//     }
-//
-//     if (p.second == "STR") {
-//       offset_cond += 128;
-//     } else {
-//       offset_cond += 4;
-//     }
-//
-//     ++idx_condition_col;
-//   }
-//   if (!found || condition.empty()) {
-//     std::cout << "Condicional invalida" << std::endl;
-//     return;
-//   }
-// }
-// // std::cout << "Columna condicion encontrada: " << metadata.col_type_pairs[idx_condition_col].first << std::endl;
-//
-// // Revisar si condicion existe y offset para esta
-// if (!repl_col_name.empty()) {
-//   bool found{false};
-//   for (auto &p : metadata.col_type_pairs) {
-//     if (p.first == repl_col_name) {
-//       found = true;
-//       break;
-//     }
-//
-//     if (p.second == "STR") {
-//       offset_replaced += 128;
-//     } else {
-//       offset_replaced += 4;
-//     }
-//
-//     ++idx_replaced_col;
-//   }
-//   if (!found || new_value.empty()) {
-//     std::cout << "Condicional invalida" << std::endl;
-//     return;
-//   }
-// }
-// // std::cout << "Columna replace encontrada: " << metadata.col_type_pairs[idx_replaced_col].first << std::endl;
-//
-// for (size_t idx_row{}; idx_row < metadata.n_rows; ++idx_row) {
-//   // if (idx_row == 27)
-//   //   std::cout << std::endl;
-//   std::vector<unsigned char> bytes;
-//   disk.read_block(bytes, 1024, metadata.lbas[idx_row]);
-//   auto ptr = bytes.data();
-//
-//   // Check de condicion
-//   if (!condition.empty()) {
-//     std::string cond_string;
-//     if (metadata.col_type_pairs[idx_condition_col].second == "STR") {
-//       cond_string.resize(20);
-//       condition.resize(20);
-//
-//       std::memcpy(cond_string.data(), ptr + offset_cond, 20);
-//     } else {
-//       cond_string.resize(4);
-//       condition.resize(4);
-//
-//       std::memcpy(cond_string.data(), ptr + offset_cond, 4);
-//     }
-//
-//     if (cond_string != condition)
-//       continue;
-//
-//     if (metadata.col_type_pairs[idx_replaced_col].second == "STR") {
-//       new_value.resize(128);
-//
-//       std::memcpy(ptr + offset_replaced, new_value.data(), 128);
-//
-//     } else {
-//       new_value.resize(4);
-//
-//       std::memcpy(ptr + offset_replaced, new_value.data(), 4);
-//     }
-//
-//     // Se escribe con offset
-//     disk.write_block(bytes, metadata.lbas[idx_row]);
-//   }
-// }
-// }

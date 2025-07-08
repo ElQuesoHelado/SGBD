@@ -24,6 +24,7 @@ class Megatron {
   static inline std::atomic<bool> global_shutdown{false};
 
   size_t n_sectors_in_block;
+  std::string catalog_name = "catalog";
 
   //====
   // Funciones para llenado de todo campo de headers/metadata,
@@ -191,19 +192,38 @@ public:
    * dato1,dato2,...
    */
   void load_CSV(std::string csv_path, std::string table_name, size_t n_regs = 0);
-  float table_size(std::string name);
+
+  // =============================
+  // Hashes/Indices
+  // =============================
+  bool is_column_hashed(std::string &table_name, std::string &col_name);
+  bool is_column_hashed(serial::TableMetadata &table_metadata, std::string &col_name);
+  bool is_column_hashed(serial::TableMetadata &table_metadata, size_t col_index);
+
+  void add_hash_to_table(std::string &table_name, std::string &col_name);
+  void add_hash_to_table(serial::TableMetadata &table_metadata, std::string &col_name);
+  void add_hash_to_table(serial::TableMetadata &table_metadata, size_t col_index);
 
   // Helprs
   // void print_relation(Relation &relation);
   size_t char_size(std::string type);
 
+  float table_size(std::string name);
+
   // Concatenacion de operaciones en varias columnas
-  // Se pasa tuplas nombre_columna, operacion, valor
+  // Se pasa tuplas nombre_columna, operacion, valor | AND/OR
   // @Notes operacion: <, >, <=, >=, ==
   Comparator generate_comparator(serial::TableMetadata &table_metadata,
                                  std::vector<std::tuple<std::string,
                                                         std::string,
                                                         std::string>>
+                                     &comparisons);
+
+  //(index columna, operador, SQL_type con valor a comparar)
+  Comparator generate_comparator(serial::TableMetadata &table_metadata,
+                                 std::vector<std::tuple<size_t,
+                                                        std::string,
+                                                        SQL_type>>
                                      &comparisons);
 
   /*

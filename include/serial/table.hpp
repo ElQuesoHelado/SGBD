@@ -28,7 +28,7 @@ struct Column {
  * @note La busqueda se da linealmente en todos los bloques
  */
 struct TableMetadata {
-  uint32_t table_block_id{};
+  uint32_t table_block_id{};          // Lo usamos como identificador de tabla
   std::array<char, NAME_SIZE> name{}; // 20 bytes
   size_t max_reg_size{};              // max por variante,
   uint8_t are_regs_fixed{1};          // en fijo  es igual que max
