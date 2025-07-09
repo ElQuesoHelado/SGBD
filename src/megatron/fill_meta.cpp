@@ -129,6 +129,11 @@ void Megatron::init_fixed_data_header(serial::TableMetadata &table_metadata, ser
   serial::calculate_max_n_regs(fixed_data_header, disk_manager->BLOCK_SIZE);
 }
 
+void Megatron::init_fixed_data_header(size_t reg_size, serial::FixedDataHeader &fixed_data_header) {
+  fixed_data_header.reg_size = reg_size;
+  serial::calculate_max_n_regs(fixed_data_header, disk_manager->BLOCK_SIZE);
+}
+
 void Megatron::init_slotted_data_header(serial::TableMetadata &table_metadata, serial::SlottedDataHeader &slotted_data_header) {
   slotted_data_header.free_bytes = disk_manager->BLOCK_SIZE - serial::base_slotted_data_header_size(slotted_data_header) - sizeof(serial::PageHeader);
   slotted_data_header.free_space_offset = disk_manager->BLOCK_SIZE;

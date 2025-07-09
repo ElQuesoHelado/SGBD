@@ -149,6 +149,23 @@ void Megatron::load_disk(std::string disk_name, size_t n_frames, bool is_clock) 
     n_sectors_in_block = new_disk_manager->SECTORS_PER_BLOCK;
     disk_manager = std::move(new_disk_manager);
     buffer_manager = std::move(new_buffer_manager);
+
+    // Se necesita tener tabla "por defecto" de catalogs
+    serial::TableMetadata table_metadata;
+
+    if (!search_table(catalog_name, table_metadata)) {
+      std::vector<std::pair<std::string, std::string>>
+          col_name_type = {
+              {"table_id", "INTEGER"},
+              {"col_index", "TINYINT"},
+              {"type", "INTEGER"},
+              {"root_id", "INTEGER"},
+              // {"Table_id", "INTEGER"},
+          };
+
+      create_table(catalog_name, col_name_type);
+    }
+
   } catch (const std::exception &e) {
     n_sectors_in_block = 0;
 
@@ -182,6 +199,23 @@ void Megatron::new_disk(std::string disk_name, size_t surfaces, size_t tracks,
     n_sectors_in_block = new_disk_manager->SECTORS_PER_BLOCK;
     disk_manager = std::move(new_disk_manager);
     buffer_manager = std::move(new_buffer_manager);
+
+    // Se necesita tener tabla "por defecto" de catalogs
+    serial::TableMetadata table_metadata;
+
+    if (!search_table(catalog_name, table_metadata)) {
+      std::vector<std::pair<std::string, std::string>>
+          col_name_type = {
+              {"table_id", "INTEGER"},
+              {"col_index", "TINYINT"},
+              {"type", "INTEGER"},
+              {"root_id", "INTEGER"},
+              // {"Table_id", "INTEGER"},
+          };
+
+      create_table(catalog_name, col_name_type);
+    }
+
   } catch (const std::exception &e) {
     n_sectors_in_block = 0;
     std::cerr << e.what() << std::endl;
@@ -202,26 +236,11 @@ void Megatron::clean_managers() {
 }
 
 Megatron::Megatron() {
-  // Se necesita tener tabla "por defecto" de catalogs
-  serial::TableMetadata table_metadata;
-
-  if (!search_table(catalog_name, table_metadata)) {
-    std::vector<std::pair<std::string, std::string>>
-        col_name_type = {
-            {"table_id", "INTEGER"},
-            {"col_index", "TINYINT"},
-            {"type", "INTEGER"},
-            {"root_id", "INTEGER"},
-            // {"Table_id", "INTEGER"},
-        };
-
-    create_table(catalog_name, col_name_type);
-  }
-
   std::signal(SIGINT, [](int) {
     global_shutdown.store(true);
   });
 }
 
 Megatron::~Megatron() {
+  clean_managers();
 }

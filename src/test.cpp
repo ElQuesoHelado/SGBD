@@ -230,8 +230,9 @@ void load_CSV_with_schema_inference(std::string path, std::string table_name, bo
 int main(int argc, char *argv[]) {
   Megatron megatron;
   // megatron.new_disk("disco2", 10, 10, 10, 500, 3, 5, 1);
-  // //
-  megatron.load_disk("disco", 5, 1);
+  megatron.load_disk("disco2", 5, 1);
+
+  // megatron.load_disk("disco", 5, 1);
   std::vector<std::pair<std::string, std::string>>
       columns = {
           {"PassengerId", "INTEGER"},
@@ -261,54 +262,13 @@ int main(int argc, char *argv[]) {
   // //         {"Fare", "DOUBLE"},
   // //         {"Cabin", "VARCHAR(20)"},
   // //         {"Embarked", "VARCHAR(20)"}};
-  // //
-  // megatron.create_table("titanic", columns);
-  // // megatron.create_table("titanic_var", columns_var);
-  // // //
-  // // //
-  // std::vector<std::pair<std::string, std::string>> columns = {{"col1", "INTEGER"},
-  //                                                             {"col2", "INTEGER"},
-  //                                                             {"col3", "INTEGER"},
-  //                                                             {"col4", "CHAR(100)"},
-  //                                                             {"col5", "CHAR(20)"}};
-  // std::vector<std::pair<std::string, std::string>> columns_var = {{"col1", "INTEGER"},
-  //                                                                 {"col2", "INTEGER"},
-  //                                                                 {"col3", "INTEGER"},
-  //                                                                 {"col4", "VARCHAR(100)"},
-  //                                                                 {"col5", "VARCHAR(20)"}};
-  // megatron.create_table("chica", columns);
-  // // //
-  // // megatron.create_table("chica_var", columns_var);
-  // // //
-  // // // // serial::TableMetadata table_metadata;
-  // // // // std::cout << megatron.search_table("tabla2", table_metadata) << std::endl;
-  // // // // megatron.load_disk("disco_ejemplo");
-  // // // megatron.load_CSV("csv/chica.csv", "chica_var");
-  // // // megatron.load_CSV("csv/titanic_chica.csv", "titanic");
-  // megatron.load_CSV("csv/titanic.csv", "titanic");
-  // // megatron.load_CSV("csv/titanic.csv", "titanic_var");
-  // //
-  // // // // megatron.load_CSV("csv/mas_chica.csv", "chica_var");
-  // // //
-  // // // // megatron.run();
-  // // //
-  std::string name1 = "titanic", name2 = "titanic_var", name3 = "housing",
-              name4 = "pasajero_var", empty = "", name5 = " titanic", col3 = "col3", cond = "100";
-  //
-  // megatron.load_CSV("csv/chica.csv", chica);
-  //
-  // megatron.delete_reg(chica, col3, cond);
-  //
-  // megatron.load_CSV("csv/chica.csv", chica);
 
-  // std::string col = "Pclass", value = "3";
-  //
-  // megatron.delete_reg(name1, col, value);
-  //
+  std::string titanic = "titanic", titanic_var = "titanic_var", housing = "housing",
+              name4 = "pasajero_var", empty = "", name5 = " titanic", col3 = "col3", cond = "100",
+              catalog = "catalog";
+
   // megatron.load_CSV("csv/titanic.csv", "titanic");
-  // megatron.translate();
-  // // megatron.delete_reg(name2, col, value);
-  //
+
   serial::TableMetadata table_metadata;
   std::vector<std::tuple<std::string,
                          std::string,
@@ -319,10 +279,19 @@ int main(int argc, char *argv[]) {
           {"PassengerId", "<", "500"},
           {"", "OR", ""},
           {"Embarked", "==", "S"}};
-  //
+
+  std::string hashed_col = "PassengerId";
+  // megatron.add_hash_to_table(titanic, hashed_col);
+
   // megatron.search_table(name5, table_metadata);
-  Comparator comp = megatron.generate_comparator(table_metadata, comparisons);
-  megatron.select_print(name5, comp);
+  // Comparator comp = megatron.generate_comparator(table_metadata, comparisons);
+
+  Comparator empty_comp{};
+  // megatron.select_print(titanic, empty_comp);
+  megatron.select_print(catalog, empty_comp);
+
+  std::println("{}", megatron.get_root_page_id(table_metadata, 0));
+  // megatron.show_table_metadata(catalog);
 
   //  megatron.select(name3, empty, empty);
   //  megatron.select(name2, empty, empty);

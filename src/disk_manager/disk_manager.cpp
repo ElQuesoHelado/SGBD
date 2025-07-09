@@ -20,10 +20,14 @@ size_t DiskManager::get_free_logic_sectors_storable(size_t n_sectors) {
 
 // Busca un bloque libre
 // @note NO reserva
-uint32_t DiskManager::get_free_block() {
+uint32_t DiskManager::get_free_block(size_t ith) {
   for (size_t i{}; i < TOTAL_BLOCKS; ++i) {
-    if (free_block_map.is_block_free(i))
-      return i;
+    if (free_block_map.is_block_free(i)) {
+      if (ith == 0)
+        return i;
+      else
+        --ith;
+    }
   }
   return TOTAL_BLOCKS;
 }

@@ -79,7 +79,7 @@ public:
 
   size_t get_free_logic_sectors_storable(size_t n_sectors);
 
-  uint32_t get_free_block();
+  uint32_t get_free_block(size_t ith = 0);
 
   void set_block_used(uint32_t block_id);
 

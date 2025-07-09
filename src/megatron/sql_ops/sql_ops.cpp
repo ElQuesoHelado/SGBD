@@ -35,8 +35,11 @@ bool Megatron::create_table(std::string name, std::vector<std::pair<std::string,
 
   init_table_metadata(table_metadata, name, sector1_meta.table_block_ids.back(), columns);
 
-  auto table_block_bytes = serial::serialize_table_metadata(table_metadata, disk_manager->BLOCK_SIZE);
+  auto table_block_bytes =
+      serial::serialize_table_metadata(
+          table_metadata, disk_manager->BLOCK_SIZE);
 
+  // buffer_manager.res
   disk_manager->write_block(table_block_bytes, table_metadata.table_block_id);
 
   sector1_bytes = serial::serialize_sector1(sector1_meta);
@@ -58,7 +61,6 @@ bool Megatron::search_table(std::string table_name,
   // Se lee todos los bloques con tablas
   for (size_t i{}; i < sector1_meta.n_tables; ++i) {
 
-    // TODO: Cambio logica a buffer manager
     // disk_manager->read_block(block_bytes, sector1_meta.table_block_ids[i]);
 
     auto table_id = sector1_meta.table_block_ids[i];
@@ -71,6 +73,7 @@ bool Megatron::search_table(std::string table_name,
 
     if (array_to_string_view(curr_table_metadata.name) == table_name) {
       table_metadata = curr_table_metadata;
+      buffer_manager->free_unpin_page(table_id, 0);
       return true;
     }
 

@@ -1,4 +1,5 @@
 #include "buffer/buffer_manager.hpp"
+#include <cstddef>
 #include <iostream>
 #include <print>
 
@@ -113,4 +114,24 @@ void BufferManager::load_page(size_t page_id, bool fixed_pin) {
 
   if (fixed_pin)
     set_fixed_pin(page_id, true);
+}
+
+// Se busca un bloque libre en disco, lo carga y pinea
+Frame &BufferManager::get_free_frame() {
+  size_t ith = 0;
+  auto free_block_id = disk_manager->get_free_block(ith);
+  auto it = frame_map.find(free_block_id);
+
+  // Dicho bloque libre ya esta en el buffer, separado por alguien mas
+  while (it != frame_map.end() && free_block_id != disk_manager->NULL_BLOCK) {
+    free_block_id = disk_manager->get_free_block(++ith);
+    it = frame_map.find(free_block_id);
+  }
+
+  // No se tiene un bloque libre en disco
+  // Retorna primero de lista frames, ?nunca se deberia de dar este caso?
+  if (free_block_id == disk_manager->NULL_BLOCK)
+    return *frame_map.find(frame_slots.front())->second.frame;
+
+  return load_pin_page(free_block_id);
 }

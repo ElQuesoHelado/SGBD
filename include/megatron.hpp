@@ -24,6 +24,8 @@ class Megatron {
   static inline std::atomic<bool> global_shutdown{false};
 
   size_t n_sectors_in_block;
+
+  // Tabla catalog tiene formato: (table_id, col_index, hash_type:0, root_block_id)
   std::string catalog_name = "catalog";
 
   //====
@@ -42,6 +44,7 @@ class Megatron {
   void init_page_header(serial::PageHeader &page_header, uint32_t initial_free_space);
 
   void init_fixed_data_header(serial::TableMetadata &table_metadata, serial::FixedDataHeader &fixed_data_header);
+  void init_fixed_data_header(size_t reg_size, serial::FixedDataHeader &fixed_data_header);
   void init_slotted_data_header(serial::TableMetadata &table_metadata, serial::SlottedDataHeader &slotted_data_header);
 
   // Guarda toda pagina sucia y free_space_bitmap, setea managers a null
@@ -194,15 +197,34 @@ public:
   void load_CSV(std::string csv_path, std::string table_name, size_t n_regs = 0);
 
   // =============================
-  // Hashes/Indices
+  // Hashes
   // =============================
   bool is_column_hashed(std::string &table_name, std::string &col_name);
   bool is_column_hashed(serial::TableMetadata &table_metadata, std::string &col_name);
   bool is_column_hashed(serial::TableMetadata &table_metadata, size_t col_index);
 
-  void add_hash_to_table(std::string &table_name, std::string &col_name);
-  void add_hash_to_table(serial::TableMetadata &table_metadata, std::string &col_name);
-  void add_hash_to_table(serial::TableMetadata &table_metadata, size_t col_index);
+  std::vector<size_t> get_hashed_columns(std::string &table_name);
+  std::vector<size_t> get_hashed_columns(serial::TableMetadata &table_metadata);
+
+  void add_hash_to_table(std::string &table_name, std::string &col_name, size_t initial_depth = 2);
+  void add_hash_to_table(serial::TableMetadata &table_metadata, std::string &col_name, size_t initial_depth = 2);
+  void add_hash_to_table(serial::TableMetadata &table_metadata, size_t col_index, size_t initial_depth = 2);
+
+  size_t create_dir_page();
+  size_t create_bucket_page();
+
+  void rehash_table(std::string &table_name, std::string &col_name);
+  void rehash_table(serial::TableMetadata &table_metadata, std::string &col_name);
+  void rehash_table(serial::TableMetadata &table_metadata, size_t col_index);
+
+  void insert_hashed(serial::TableMetadata &table_metadata,
+                     size_t col_index, size_t page_id, size_t pos,
+                     std::vector<unsigned char> &register_bytes);
+
+  size_t get_root_page_id(serial::TableMetadata &table_metadata, size_t col_index);
+
+  // Encuentra profundidad, sea directorio o bucket
+  size_t get_depth(serial::TableMetadata &table_metadata, size_t col_index);
 
   // Helprs
   // void print_relation(Relation &relation);
@@ -318,6 +340,7 @@ public:
   uint32_t get_insertable_page_id(uint32_t first_page_id, uint32_t reg_size);
 
   uint32_t create_page(serial::TableMetadata &table_metadata);
+  uint32_t create_fixed_page(size_t reg_size);
 
   uint32_t add_new_page_to_table(serial::TableMetadata &table_metadata);
 

@@ -66,13 +66,10 @@ uint32_t Megatron::create_page(serial::TableMetadata &table_metadata) {
   serial::SlottedDataHeader slotted_data_header;
   serial::PageHeader page_header;
 
-  uint32_t free_block_id = disk_manager->get_free_block();
+  auto &frame = buffer_manager->get_free_frame();
+  uint32_t free_block_id = frame.page_id;
 
-  if (free_block_id == disk_manager->NULL_BLOCK)
-    throw std::runtime_error("Ya no hay bloques libres para agregar pagina a tabla");
-
-  auto &new_frame = buffer_manager->load_pin_page(free_block_id);
-  std::vector<unsigned char> &page_bytes = new_frame.page_bytes;
+  std::vector<unsigned char> &page_bytes = frame.page_bytes;
 
   auto write_it = page_bytes.begin();
 
@@ -93,7 +90,32 @@ uint32_t Megatron::create_page(serial::TableMetadata &table_metadata) {
 
   // new_frame.dirty = true;
   buffer_manager->free_unpin_page(free_block_id, true);
-  disk_manager->set_block_used(free_block_id);
+  // disk_manager->set_block_used(free_block_id);
+
+  return free_block_id;
+}
+
+uint32_t Megatron::create_fixed_page(size_t reg_size) {
+  serial::FixedDataHeader fixed_data_header;
+  serial::PageHeader page_header;
+
+  auto &frame = buffer_manager->get_free_frame();
+  uint32_t free_block_id = frame.page_id;
+
+  std::vector<unsigned char> &page_bytes = frame.page_bytes;
+
+  auto write_it = page_bytes.begin();
+
+  // Se concatena page_header + data_header + fill
+  init_fixed_data_header(reg_size, fixed_data_header);
+  init_page_header(page_header, fixed_data_header.free_bytes);
+
+  serial::serialize_page_header(page_header, write_it);
+  serial::serialize_fixed_block_header(fixed_data_header, write_it);
+
+  // new_frame.dirty = true;
+  buffer_manager->free_unpin_page(free_block_id, true);
+  // disk_manager->set_block_used(free_block_id);
 
   return free_block_id;
 }

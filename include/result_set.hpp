@@ -2,6 +2,7 @@
 
 #include "serial/generic.hpp"
 #include "serial/table.hpp"
+#include "types.hpp"
 #include <cstddef>
 #include <format>
 #include <iostream>
@@ -11,13 +12,13 @@
 struct RegisterEntry {
   size_t page_id{};
   size_t position{};
-  std::vector<std::string> values{};
+  std::vector<SQL_type> values{};
 };
 
 // Solo valores
 inline std::ostream &operator<<(std::ostream &os, const RegisterEntry &entry) {
   for (const auto &value : entry.values)
-    os << value << " ";
+    os << SQL_type_to_string(value) << " ";
 
   return os;
 }
@@ -27,7 +28,7 @@ struct std::formatter<RegisterEntry> : std::formatter<std::string> {
   auto format(const RegisterEntry &entry, std::format_context &ctx) const {
     std::string values_str;
     for (auto &v : entry.values)
-      values_str += v + " ";
+      values_str += SQL_type_to_string(v) + " ";
 
     return std::formatter<std::string>::format(std::format("{}", values_str), ctx);
   }

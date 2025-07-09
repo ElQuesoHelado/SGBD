@@ -23,6 +23,9 @@ set(MEGATRON_SOURCES
     ${SOURCE_DIR}/megatron/sql_ops/sql_updates_nth.cpp
     ${SOURCE_DIR}/megatron/pages/traverse_pages.cpp
     ${SOURCE_DIR}/megatron/pages/pages.cpp
+    ${SOURCE_DIR}/megatron/hashes/add.cpp
+    ${SOURCE_DIR}/megatron/hashes/get.cpp
+    ${SOURCE_DIR}/megatron/hashes/insert.cpp
     ${SOURCE_DIR}/megatron/ui/buffer_interact.cpp
     ${SOURCE_DIR}/megatron/ui/comparisons.cpp
     ${SOURCE_DIR}/megatron/ui/deletes.cpp

@@ -86,7 +86,7 @@ ResultSet Megatron::delete_nth_from_fixed_page(
 
       RegisterEntry reg{delete_page_id, i};
       for (auto &v : register_values)
-        reg.values.push_back(SQL_type_to_string(v));
+        reg.values.push_back(v);
 
       result_set.add_register(std::move(reg));
 
@@ -134,7 +134,7 @@ ResultSet Megatron::delete_nth_from_slotted_page(serial::TableMetadata &table_me
 
       RegisterEntry reg{delete_page_id, i};
       for (auto &v : register_values)
-        reg.values.push_back(SQL_type_to_string(v));
+        reg.values.push_back(v);
 
       result_set.add_register(std::move(reg));
 

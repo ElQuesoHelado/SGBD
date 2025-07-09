@@ -112,7 +112,7 @@ ResultSet Megatron::select_from_fixed_page(
       RegisterEntry reg{select_page_id, i};
 
       for (auto &v : register_values)
-        reg.values.push_back(SQL_type_to_string(v));
+        reg.values.push_back(v);
       // std::cout << SQL_type_to_string(v) << " | ";
 
       // std::cout << std::endl;
@@ -150,7 +150,7 @@ ResultSet Megatron::select_from_slotted_page(
       RegisterEntry reg{select_page_id, i};
 
       for (auto &v : register_values)
-        reg.values.push_back(SQL_type_to_string(v));
+        reg.values.push_back(v);
       // std::cout << SQL_type_to_string(v) << " | ";
 
       // std::cout << std::endl;
