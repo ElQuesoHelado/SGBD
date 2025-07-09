@@ -206,9 +206,9 @@ public:
   std::vector<size_t> get_hashed_columns(std::string &table_name);
   std::vector<size_t> get_hashed_columns(serial::TableMetadata &table_metadata);
 
-  void add_hash_to_table(std::string &table_name, std::string &col_name, size_t initial_depth = 2);
-  void add_hash_to_table(serial::TableMetadata &table_metadata, std::string &col_name, size_t initial_depth = 2);
-  void add_hash_to_table(serial::TableMetadata &table_metadata, size_t col_index, size_t initial_depth = 2);
+  void add_hash_to_table(std::string &table_name, std::string &col_name, size_t initial_depth = 1);
+  void add_hash_to_table(serial::TableMetadata &table_metadata, std::string &col_name, size_t initial_depth = 1);
+  void add_hash_to_table(serial::TableMetadata &table_metadata, size_t col_index, size_t initial_depth = 1);
 
   size_t create_dir_page();
   size_t create_bucket_page();

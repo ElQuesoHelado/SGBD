@@ -57,9 +57,9 @@ void Megatron::add_hash_to_table(serial::TableMetadata &table_metadata, size_t c
   insert(catalog_name, values);
 
   // Tener un depth mayor a 0 es mas eficiente(cc se tiene una busqueda lineal hasta llenarlo)
-  // Se asume depth = 2, por propiedad 2^2 = 4
-  // 4 buckets iniciales
-  for (size_t i{}; i < initial_depth; ++i) {
+  // Se asume depth = 1, por propiedad 2^1 = 2
+  // 2 buckets iniciales
+  for (size_t i{}; i < std::pow(2, initial_depth); ++i) {
     auto new_bucket_id = create_dir_page();
     auto pointer_bytes = serialize_pointer(new_bucket_id);
     insert_into_fixed_page(new_dir_id, pointer_bytes);
