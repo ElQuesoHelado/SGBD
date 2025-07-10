@@ -1,3 +1,5 @@
+#include "hash/bucket.hpp"
+#include "hash/directory.hpp"
 #include "megatron.hpp"
 #include "types.hpp"
 #include <cstddef>

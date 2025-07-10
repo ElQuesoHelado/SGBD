@@ -19,7 +19,8 @@ bool Megatron::is_column_hashed(std::string &table_name, std::string &col_name) 
   return is_column_hashed(table_metadata, col_name);
 }
 
-bool Megatron::is_column_hashed(serial::TableMetadata &table_metadata, std::string &col_name) {
+bool Megatron::is_column_hashed(serial::TableMetadata &table_metadata,
+                                std::string &col_name) {
   auto col_index = get_column_index(table_metadata, col_name);
 
   // No existe columna
@@ -31,7 +32,8 @@ bool Megatron::is_column_hashed(serial::TableMetadata &table_metadata, std::stri
   return is_column_hashed(table_metadata, col_index);
 }
 
-bool Megatron::is_column_hashed(serial::TableMetadata &table_metadata, size_t col_index) {
+bool Megatron::is_column_hashed(serial::TableMetadata &table_metadata,
+                                size_t col_index) {
   // Se busca en catalog entrada: (table_id, col_index, hash_type:0)
   // FIXME: Check de tipos
   std::vector<std::tuple<size_t, std::string, SQL_type>>
@@ -80,7 +82,8 @@ std::vector<size_t> Megatron::get_hashed_columns(serial::TableMetadata &table_me
   return hashed_columns;
 }
 
-size_t Megatron::get_root_page_id(serial::TableMetadata &table_metadata, size_t col_index) {
+size_t Megatron::get_root_page_id(serial::TableMetadata &table_metadata,
+                                  size_t col_index) {
   std::vector<std::tuple<size_t, std::string, SQL_type>>
       comparisons = {
           {0, "==", std::int32_t{(int)table_metadata.table_block_id}},

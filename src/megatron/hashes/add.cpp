@@ -37,7 +37,8 @@ void Megatron::add_hash_to_table(serial::TableMetadata &table_metadata, std::str
   return add_hash_to_table(table_metadata, col_index, initial_depth);
 }
 
-void Megatron::add_hash_to_table(serial::TableMetadata &table_metadata, size_t col_index, size_t initial_depth) {
+void Megatron::add_hash_to_table(serial::TableMetadata &table_metadata,
+                                 size_t col_index, size_t initial_depth) {
   // Busca si hash ya existe
   if (is_column_hashed(table_metadata, col_index)) {
     std::println("Columna ya tiene un hash asignado");

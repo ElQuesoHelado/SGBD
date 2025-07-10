@@ -3,7 +3,8 @@
 #include <cstddef>
 #include <format>
 
-size_t Megatron::get_column_index(serial::TableMetadata &table_metadata, std::string &col_name) {
+size_t Megatron::get_column_index(serial::TableMetadata &table_metadata,
+                                  std::string &col_name) {
   auto &columns = table_metadata.columns;
 
   for (size_t i{}; i < columns.size(); ++i) {

@@ -3,6 +3,8 @@
 #include "buffer/buffer_manager.hpp"
 #include "comparison.hpp"
 #include "disk_manager.hpp"
+#include "hash/bucket.hpp"
+#include "hash/directory.hpp"
 #include "result_set.hpp"
 #include "serial/fixed_data.hpp"
 #include "serial/slotted_data.hpp"
@@ -217,14 +219,32 @@ public:
   void rehash_table(serial::TableMetadata &table_metadata, std::string &col_name);
   void rehash_table(serial::TableMetadata &table_metadata, size_t col_index);
 
-  void insert_hashed(serial::TableMetadata &table_metadata,
-                     size_t col_index, size_t page_id, size_t pos,
-                     std::vector<unsigned char> &register_bytes);
+  // void insert_hashed(serial::TableMetadata &table_metadata,
+  //                    size_t col_index, size_t page_id, size_t pos,
+  //                    std::vector<unsigned char> &register_bytes);
+  bool insert_hashed(serial::TableMetadata table_metadata, size_t hashed_col,
+                     SQL_type &key, size_t inserted_page, size_t inserted_slot);
 
   size_t get_root_page_id(serial::TableMetadata &table_metadata, size_t col_index);
 
+  ResultSet get_register_on_key_match(serial::TableMetadata &table_metadata,
+                                      RegPtr &reg_ptr, size_t hashed_col,
+                                      SQL_type &key);
+
+  ResultSet find(serial::TableMetadata table_metadata,
+                 size_t hashed_col, SQL_type &key);
+
+  ResultSet delete_hashed(serial::TableMetadata table_metadata,
+                          size_t hashed_col, SQL_type &key);
+
+  size_t find_free_reg_ptr_pos(Bucket &bucket);
+
   // Encuentra profundidad, sea directorio o bucket
   size_t get_depth(serial::TableMetadata &table_metadata, size_t col_index);
+
+  DirectoryPage load_directory_page(size_t page_id);
+
+  size_t max_buckets_per_page(MultiBucketPage &mb_page);
 
   // Helprs
   // void print_relation(Relation &relation);
