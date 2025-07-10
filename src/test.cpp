@@ -229,8 +229,8 @@ void load_CSV_with_schema_inference(std::string path, std::string table_name, bo
 
 int main(int argc, char *argv[]) {
   Megatron megatron;
-  // megatron.new_disk("disco2", 10, 10, 10, 500, 3, 5, 1);
-  megatron.load_disk("disco2", 5, 1);
+  megatron.new_disk("disco2", 10, 10, 10, 500, 3, 5, 1);
+  // megatron.load_disk("disco2", 5, 1);
 
   // megatron.load_disk("disco", 5, 1);
   std::vector<std::pair<std::string, std::string>>
@@ -267,28 +267,37 @@ int main(int argc, char *argv[]) {
               name4 = "pasajero_var", empty = "", name5 = " titanic", col3 = "col3", cond = "100",
               catalog = "catalog";
 
-  // megatron.load_CSV("csv/titanic.csv", "titanic");
+  megatron.create_table(titanic, columns);
+
+  megatron.load_CSV("csv/titanic.csv", "titanic");
 
   serial::TableMetadata table_metadata;
   std::vector<std::tuple<std::string,
                          std::string,
                          std::string>>
-      comparisons = {
+      comparisons1 = {
           {"PassengerId", ">", "300"},
           {"", "AND", ""},
           {"PassengerId", "<", "500"},
           {"", "OR", ""},
-          {"Embarked", "==", "S"}};
+          {"Embarked", "==", "S"}},
+      comparisons2 = {{"Sex", "==", "male"}};
 
-  std::string hashed_col = "PassengerId";
-  // megatron.add_hash_to_table(titanic, hashed_col);
+  megatron.search_table(titanic, table_metadata);
 
-  // megatron.search_table(name5, table_metadata);
-  // Comparator comp = megatron.generate_comparator(table_metadata, comparisons);
+  std::string hashed_col1 = "PassengerId", hashed_col2 = "Sex";
+
+  megatron.add_hash_to_table(titanic, hashed_col2);
 
   Comparator empty_comp{};
   // megatron.select_print(titanic, empty_comp);
   megatron.select_print(catalog, empty_comp);
+
+  Comparator sex_comp = megatron.generate_comparator(table_metadata, comparisons2);
+
+  megatron.select_print(titanic, sex_comp);
+
+  // Comparator comp = megatron.generate_comparator(table_metadata, comparisons);
 
   // std::println("{}", megatron.get_root_page_id(table_metadata, 0));
   //  megatron.show_table_metadata(catalog);

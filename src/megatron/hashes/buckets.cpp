@@ -63,7 +63,7 @@ size_t Megatron::max_buckets_per_page(MultiBucketPage &mb_page) {
 //   bm->release_page(new_mb_page);
 // }
 
-size_t Megatron::find_free_reg_ptr_pos(Bucket &bucket) {
+size_t Megatron::find_free_reg_ptr_pos(Bucket_ &bucket) {
   for (size_t i{}; i < bucket.max_reg_ptr_count; ++i) {
     if (bucket.reg_ptrs[i].page_id == disk_manager->NULL_BLOCK)
       return i;

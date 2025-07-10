@@ -32,8 +32,7 @@ class Megatron {
   // Tabla catalog tiene formato: (table_id, col_index, hash_type:0, root_block_id)
   std::string catalog_name = "catalog";
 
-  std::unordered_map<size_t, std::vector<Hasher>> table_id_hash;
-
+  std::unordered_map<size_t, std::vector<std::shared_ptr<Hasher>>> table_id_hash;
   //====
   // Funciones para llenado de todo campo de headers/metadata,
   // internamente se realizan conversiones y algunos calculos
@@ -224,9 +223,9 @@ public:
   std::vector<size_t> get_hashed_columns(std::string &table_name);
   std::vector<size_t> get_hashed_columns(serial::TableMetadata &table_metadata);
 
-  void add_hash_to_table(std::string &table_name, std::string &col_name, size_t initial_depth = 1);
-  void add_hash_to_table(serial::TableMetadata &table_metadata, std::string &col_name, size_t initial_depth = 1);
-  void add_hash_to_table(serial::TableMetadata &table_metadata, size_t col_index, size_t initial_depth = 1);
+  void add_hash_to_table(std::string &table_name, std::string &col_name, size_t bucket_size = 4);
+  void add_hash_to_table(serial::TableMetadata &table_metadata, std::string &col_name, size_t bucket_size = 4);
+  void add_hash_to_table(serial::TableMetadata &table_metadata, size_t col_index, size_t bucket_size = 4);
 
   size_t create_dir_page();
   size_t create_bucket_page();
@@ -244,7 +243,7 @@ public:
   size_t get_root_page_id(serial::TableMetadata &table_metadata, size_t col_index);
 
   ResultSet get_register_on_key_match(serial::TableMetadata &table_metadata,
-                                      RegPtr &reg_ptr, size_t hashed_col,
+                                      RegPtr_ &reg_ptr, size_t hashed_col,
                                       SQL_type &key);
 
   ResultSet find(serial::TableMetadata table_metadata,
@@ -253,7 +252,7 @@ public:
   ResultSet delete_hashed(serial::TableMetadata table_metadata,
                           size_t hashed_col, SQL_type &key);
 
-  size_t find_free_reg_ptr_pos(Bucket &bucket);
+  size_t find_free_reg_ptr_pos(Bucket_ &bucket);
 
   // Encuentra profundidad, sea directorio o bucket
   size_t get_depth(serial::TableMetadata &table_metadata, size_t col_index);

@@ -37,7 +37,7 @@ ResultSet Megatron::find(serial::TableMetadata table_metadata,
     std::vector<unsigned char> &page_bytes = frame.page_bytes;
 
     MultiBucketPage mb_page = deserialize_multi_bucket_page(page_bytes);
-    Bucket &bucket = mb_page.buckets[bucket_ptr.bucket_idx];
+    Bucket_ &bucket = mb_page.buckets[bucket_ptr.bucket_idx];
 
     // Se revisa todo registro en bucket(caso keys duplicadas)
     for (uint8_t i = 0; i < bucket.reg_ptr_count; i++) {
@@ -66,7 +66,7 @@ ResultSet Megatron::find(serial::TableMetadata table_metadata,
 // Caso el registro tenga key en la columna hashed, se retorna
 ResultSet Megatron::get_register_on_key_match(
     serial::TableMetadata &table_metadata,
-    RegPtr &reg_ptr, size_t hashed_col, SQL_type &key) {
+    RegPtr_ &reg_ptr, size_t hashed_col, SQL_type &key) {
   auto frame = buffer_manager->load_pin_page(reg_ptr.page_id);
   std::vector<unsigned char> &page_bytes = frame.page_bytes;
 

@@ -5,7 +5,7 @@
 #include <vector>
 
 #pragma pack(push, 1)
-struct RegPtr {
+struct RegPtr_ {
   uint32_t page_id;
   uint32_t hash; // Valor(numero) de 8 bytes mas significaticos
   uint16_t slot;
@@ -13,12 +13,12 @@ struct RegPtr {
 #pragma pack(pop)
 
 // Un bucket guarda sus propios datos
-struct Bucket {
+struct Bucket_ {
   uint32_t overflow_page;
   uint8_t reg_ptr_count;
   uint8_t local_depth;
   uint16_t max_reg_ptr_count; // Dicta cuando se llena
-  std::vector<RegPtr> reg_ptrs;
+  std::vector<RegPtr_> reg_ptrs;
 };
 
 // Por bucket_size y tamanio fijo de RegPtr,
@@ -27,11 +27,11 @@ struct MultiBucketPage {
   uint32_t next_page;
   uint16_t bucket_count;
   uint16_t bucket_size; // Dicta cuando se llena
-  std::vector<Bucket> buckets;
+  std::vector<Bucket_> buckets;
 };
 
 template <typename Iter>
-inline void serialize_bucket(const Bucket &bucket, Iter &out_it) {
+inline void serialize_bucket(const Bucket_ &bucket, Iter &out_it) {
   write_v(out_it, bucket.overflow_page);
   write_v(out_it, bucket.reg_ptr_count); // Garantiza que nunca sea != de n_slots
   write_v(out_it, bucket.local_depth);
@@ -53,8 +53,8 @@ inline void serialize_multi_bucket_page(
 }
 
 template <typename Iter>
-inline Bucket deserialize_bucket(Iter &in_it) {
-  Bucket bucket;
+inline Bucket_ deserialize_bucket(Iter &in_it) {
+  Bucket_ bucket;
 
   read_v(in_it, bucket.overflow_page);
   read_v(in_it, bucket.reg_ptr_count);

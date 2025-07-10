@@ -59,20 +59,21 @@ ResultSet Megatron::select(serial::TableMetadata &table_metadata,
   if (comparator.is_only_equals() &&
       is_column_hashed(table_metadata, comparator.col_index_at_op(0))) {
     auto hashed_col_index = comparator.col_index_at_op(0);
-    std::println("Se tiene hash en columna #: {} y cumple condicion"
-                 "solo igualdad, se usa hash para busqueda",
+    std::println("Se tiene hash en columna #: {} y solo condicion "
+                 "igualdad, se usa hash para busqueda",
                  hashed_col_index);
 
     // Se busca hasher apropiado
-    Hasher *hasher{};
+    std::shared_ptr<Hasher> hasher;
     for (auto &h : table_id_hash[table_metadata.table_block_id]) {
-      if (h.hashed_col_index == hashed_col_index)
-        hasher = &h;
+      if (h->hashed_col_index == hashed_col_index) {
+        hasher = h; // h ya es un shared_ptr
+        break;
+      }
     }
 
     if (hasher) {
-      auto reg_ptrs =
-          hasher->buscarResultSet(comparator.compared_at_op(hashed_col_index));
+      auto reg_ptrs = hasher->buscarResultSet(comparator.compared_at_op(0));
 
       for (auto &r : reg_ptrs) {
         result_set.merge(std::move(

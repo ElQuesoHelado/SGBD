@@ -29,7 +29,7 @@ ResultSet Megatron::delete_hashed(serial::TableMetadata table_metadata,
     std::vector<unsigned char> &page_bytes = frame.page_bytes;
 
     MultiBucketPage mb_page = deserialize_multi_bucket_page(page_bytes);
-    Bucket &bucket = mb_page.buckets[bucket_ptr.bucket_idx];
+    Bucket_ &bucket = mb_page.buckets[bucket_ptr.bucket_idx];
 
     // Se revisa todo registro en bucket(caso keys duplicadas)
     for (uint8_t i = 0; i < bucket.reg_ptr_count; i++) {

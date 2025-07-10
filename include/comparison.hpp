@@ -34,11 +34,12 @@ public:
     return value_comp_ops[i].col_index;
   }
 
-  std::string compared_at_op(size_t i) {
+  SQL_type compared_at_op(size_t i) {
     if (i >= value_comp_ops.size())
-      return "";
+      return 0;
 
-    return SQL_type_to_string(value_comp_ops[i].compared);
+    // return SQL_type_to_string(value_comp_ops[i].compared);
+    return value_comp_ops[i].compared;
   }
 
   Comparator &AND() {

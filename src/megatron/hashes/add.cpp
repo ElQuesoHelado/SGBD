@@ -14,7 +14,7 @@ size_t Megatron::create_bucket_page() {
   return create_fixed_page(2 * sizeof(uint32_t));
 }
 
-void Megatron::add_hash_to_table(std::string &table_name, std::string &col_name, size_t initial_depth) {
+void Megatron::add_hash_to_table(std::string &table_name, std::string &col_name, size_t bucket_size) {
   serial::TableMetadata table_metadata;
 
   // No existe
@@ -23,9 +23,9 @@ void Megatron::add_hash_to_table(std::string &table_name, std::string &col_name,
     return;
   }
 
-  return add_hash_to_table(table_metadata, col_name, initial_depth);
+  return add_hash_to_table(table_metadata, col_name, bucket_size);
 }
-void Megatron::add_hash_to_table(serial::TableMetadata &table_metadata, std::string &col_name, size_t initial_depth) {
+void Megatron::add_hash_to_table(serial::TableMetadata &table_metadata, std::string &col_name, size_t bucket_size) {
   auto col_index = get_column_index(table_metadata, col_name);
 
   // No existe columna
@@ -34,11 +34,11 @@ void Megatron::add_hash_to_table(serial::TableMetadata &table_metadata, std::str
     return;
   }
 
-  return add_hash_to_table(table_metadata, col_index, initial_depth);
+  return add_hash_to_table(table_metadata, col_index, bucket_size);
 }
 
 void Megatron::add_hash_to_table(serial::TableMetadata &table_metadata,
-                                 size_t col_index, size_t initial_depth) {
+                                 size_t col_index, size_t bucket_size) {
   // Busca si hash ya existe
   if (is_column_hashed(table_metadata, col_index)) {
     std::println("Columna ya tiene un hash asignado");
@@ -46,23 +46,28 @@ void Megatron::add_hash_to_table(serial::TableMetadata &table_metadata,
   }
 
   // Creamos una pagina inicial para directorio
-  auto new_dir_id = create_dir_page();
+  // auto new_dir_id = create_dir_page();
 
   std::vector<std::string> values = {
       std::to_string(table_metadata.table_block_id),
       std::to_string(col_index),
       "0",
-      std::to_string(new_dir_id)};
+      std::to_string(0)};
 
   // Se persiste
   insert(catalog_name, values);
 
+  // auto hasher = std::make_shared<Hasher>(bucket_size, col_index);
+  // table_id_hash[table_metadata.table_block_id].push_back(hasher);
+  //
+  rehash_everything(bucket_size);
+
   // Tener un depth mayor a 0 es mas eficiente(cc se tiene una busqueda lineal hasta llenarlo)
   // Se asume depth = 1, por propiedad 2^1 = 2
   // 2 buckets iniciales
-  for (size_t i{}; i < std::pow(2, initial_depth); ++i) {
-    auto new_bucket_id = create_dir_page();
-    auto pointer_bytes = serialize_pointer(new_bucket_id);
-    insert_into_fixed_page(new_dir_id, pointer_bytes);
-  }
+  // for (size_t i{}; i < std::pow(2, initial_depth); ++i) {
+  //   auto new_bucket_id = create_dir_page();
+  //   auto pointer_bytes = serialize_pointer(new_bucket_id);
+  //   insert_into_fixed_page(new_dir_id, pointer_bytes);
+  // }
 }

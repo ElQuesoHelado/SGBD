@@ -92,11 +92,11 @@ ResultSet Megatron::insert_into_page(serial::TableMetadata &table_metadata,
   // Se tiene hash/es, se actualiza
   if (!get_hashed_columns(table_metadata).empty()) {
     for (auto &h : table_id_hash[table_metadata.table_block_id]) {
-      h.actualizarDesdeInsercion(
+      h->actualizarDesdeInsercion(
           result_set,
           std::string(
               array_to_string_view(
-                  table_metadata.columns[h.hashed_col_index].name)));
+                  table_metadata.columns[h->hashed_col_index].name)));
     }
   }
 
