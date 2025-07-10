@@ -159,6 +159,7 @@ void Megatron::ui_interact_buffer_manager() {
     } else {
       cout << "Opcion invalida.\n";
     }
+
     pauseAndReturn();
   }
   buffer_manager->set_verbose(false);

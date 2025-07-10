@@ -103,6 +103,11 @@ void Megatron::run() {
       pauseAndReturn();
 
     } else if (opcion == "20") {
+      ui_add_hash_to_table();
+
+      pauseAndReturn();
+
+    } else if (opcion == "0") {
       clearScreen();
       cout << "\"Cerrando el programa\"\n";
       break;

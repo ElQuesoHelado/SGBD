@@ -53,6 +53,7 @@ inline void mostrarMenu() {
   std::cout << "17. Set #frames por buffer pool\n";
   std::cout << "18. Interactuar Buffer Manager\n";
   std::cout << "19. Mostrar hits\n";
-  std::cout << "20. Salir\n";
+  std::cout << "20. Agregar columna hash a tabla\n";
+  std::cout << "0. Salir\n";
   std::cout << "Seleccione una opción: ";
 }
