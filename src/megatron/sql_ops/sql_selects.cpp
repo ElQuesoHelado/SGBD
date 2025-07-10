@@ -52,9 +52,36 @@ ResultSet Megatron::select(std::string &table_name,
 ResultSet Megatron::select(serial::TableMetadata &table_metadata,
                            Comparator &comparator,
                            int max_pages_loaded) {
-
   ResultSet result_set{};
   result_set.add_columns(table_metadata.columns);
+
+  // Se puede usar hash para busqueda
+  if (comparator.is_only_equals() &&
+      is_column_hashed(table_metadata, comparator.col_index_at_op(0))) {
+    auto hashed_col_index = comparator.col_index_at_op(0);
+    std::println("Se tiene hash en columna #: {} y cumple condicion"
+                 "solo igualdad, se usa hash para busqueda",
+                 hashed_col_index);
+
+    // Se busca hasher apropiado
+    Hasher *hasher{};
+    for (auto &h : table_id_hash[table_metadata.table_block_id]) {
+      if (h.hashed_col_index == hashed_col_index)
+        hasher = &h;
+    }
+
+    if (hasher) {
+      auto reg_ptrs =
+          hasher->buscarResultSet(comparator.compared_at_op(hashed_col_index));
+
+      for (auto &r : reg_ptrs) {
+        result_set.merge(std::move(
+            select_nth_from_page(table_metadata, r.pagina, r.slot)));
+      }
+    }
+
+    return result_set;
+  }
 
   size_t curr_page_id = table_metadata.first_page_id;
   while (curr_page_id != disk_manager->NULL_BLOCK && max_pages_loaded != 0) {

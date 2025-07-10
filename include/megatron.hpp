@@ -5,6 +5,7 @@
 #include "disk_manager.hpp"
 #include "hash/bucket.hpp"
 #include "hash/directory.hpp"
+#include "hash/inconspicuous.hpp"
 #include "result_set.hpp"
 #include "serial/fixed_data.hpp"
 #include "serial/slotted_data.hpp"
@@ -17,6 +18,7 @@
 #include <memory>
 #include <string>
 #include <tuple>
+#include <unordered_map>
 #include <vector>
 
 class Megatron {
@@ -29,6 +31,8 @@ class Megatron {
 
   // Tabla catalog tiene formato: (table_id, col_index, hash_type:0, root_block_id)
   std::string catalog_name = "catalog";
+
+  std::unordered_map<size_t, std::vector<Hasher>> table_id_hash;
 
   //====
   // Funciones para llenado de todo campo de headers/metadata,
@@ -48,6 +52,8 @@ class Megatron {
   void init_fixed_data_header(serial::TableMetadata &table_metadata, serial::FixedDataHeader &fixed_data_header);
   void init_fixed_data_header(size_t reg_size, serial::FixedDataHeader &fixed_data_header);
   void init_slotted_data_header(serial::TableMetadata &table_metadata, serial::SlottedDataHeader &slotted_data_header);
+
+  void rehash_everything(size_t bucket_size = 4);
 
   // Guarda toda pagina sucia y free_space_bitmap, setea managers a null
   void clean_managers();
@@ -89,6 +95,16 @@ public:
   ResultSet select_from_slotted_page(serial::TableMetadata &table_metadata,
                                      size_t select_page_id, Comparator &comparator);
 
+  ResultSet select_nth_reg(std::string &table_name, size_t nth);
+  ResultSet select_nth_reg(serial::TableMetadata &table_metadata, size_t nth);
+  ResultSet select_nth_from_page(serial::TableMetadata &table_metadata,
+                                 size_t delete_page_id, size_t nth);
+  ResultSet select_nth_from_fixed_page(serial::TableMetadata &table_metadata,
+                                       size_t delete_page_id, size_t nth);
+  ResultSet select_nth_from_slotted_page(
+      serial::TableMetadata &table_metadata,
+      size_t delete_page_id, size_t nth);
+
   ResultSet delete_condition(std::string &table_name, Comparator &comparator);
   ResultSet delete_condition(serial::TableMetadata &table_metadata,
                              Comparator &comparator);
@@ -111,20 +127,20 @@ public:
       serial::TableMetadata &table_metadata,
       size_t delete_page_id, size_t nth);
 
-  void insert(std::string table_name, std::vector<std::string> &values);
-  void insert(serial::TableMetadata &table_metadata, std::vector<std::string> &values);
+  ResultSet insert(std::string table_name, std::vector<std::string> &values);
+  ResultSet insert(serial::TableMetadata &table_metadata, std::vector<std::string> &values);
 
-  void insert_into_page(serial::TableMetadata &table_metadata,
-                        size_t insert_page_id,
-                        std::vector<unsigned char> &register_bytes);
+  ResultSet insert_into_page(serial::TableMetadata &table_metadata,
+                             size_t insert_page_id,
+                             std::vector<unsigned char> &register_bytes);
   // Preprocesa registro
-  void insert_into_page(serial::TableMetadata &table_metadata,
-                        size_t insert_page_id,
-                        std::vector<std::string> &reg_values);
+  ResultSet insert_into_page(serial::TableMetadata &table_metadata,
+                             size_t insert_page_id,
+                             std::vector<std::string> &reg_values);
 
   // Se entiende que pagina tiene capacidad suficiente para registro/+slot
-  void insert_into_fixed_page(size_t insert_page_id, std::vector<unsigned char> &register_bytes);
-  void insert_into_slotted_page(size_t insert_page_id, std::vector<unsigned char> &register_bytes);
+  size_t insert_into_fixed_page(size_t insert_page_id, std::vector<unsigned char> &register_bytes);
+  size_t insert_into_slotted_page(size_t insert_page_id, std::vector<unsigned char> &register_bytes);
 
   ResultSet update_condition(std::string &table_name,
                              Comparator &comparator,
@@ -294,6 +310,7 @@ public:
    * Se busca tabla en sector 1 del disco
    */
   bool search_table(std::string name, serial::TableMetadata &table_metadata);
+  bool search_table(size_t table_id, serial::TableMetadata &table_metadata);
 
   size_t write_table_metadata(serial::TableMetadata &metadata);
 

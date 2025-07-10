@@ -1,5 +1,7 @@
 #include "megatron.hpp"
+#include "comparison.hpp"
 #include "disk_manager.hpp"
+#include "serial/table.hpp"
 #include "ui.cpp"
 #include <csignal>
 #include <cstddef>
@@ -166,6 +168,8 @@ void Megatron::load_disk(std::string disk_name, size_t n_frames, bool is_clock) 
       create_table(catalog_name, col_name_type);
     }
 
+    rehash_everything();
+
   } catch (const std::exception &e) {
     n_sectors_in_block = 0;
 
@@ -216,6 +220,8 @@ void Megatron::new_disk(std::string disk_name, size_t surfaces, size_t tracks,
       create_table(catalog_name, col_name_type);
     }
 
+    rehash_everything();
+
   } catch (const std::exception &e) {
     n_sectors_in_block = 0;
     std::cerr << e.what() << std::endl;
@@ -232,6 +238,32 @@ void Megatron::clean_managers() {
   if (disk_manager) {
     disk_manager->persist();
     disk_manager.reset();
+  }
+}
+
+void Megatron::rehash_everything(size_t bucket_size) {
+  table_id_hash.clear();
+
+  Comparator comp;
+  auto results = select(catalog_name, comp);
+
+  for (auto &e : results) {
+    int32_t table_id = std::get<int32_t>(e.values[0]);
+    int8_t hashed_col_index = std::get<int8_t>(e.values[1]);
+
+    table_id_hash[table_id].emplace_back(bucket_size, hashed_col_index);
+
+    serial::TableMetadata table_metadata;
+    if (!search_table(table_id, table_metadata))
+      continue;
+
+    // Se trabaja registros, todos se insertan
+    Comparator comp;
+
+    auto registers = select(table_metadata, comp);
+
+    std::string col_name = std::string(array_to_string_view(table_metadata.columns[hashed_col_index].name));
+    table_id_hash[table_id].back().indexarResultSet(registers, col_name);
   }
 }
 

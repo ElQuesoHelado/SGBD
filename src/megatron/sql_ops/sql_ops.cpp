@@ -83,6 +83,41 @@ bool Megatron::search_table(std::string table_name,
   return false;
 }
 
+bool Megatron::search_table(size_t table_id,
+                            serial::TableMetadata &table_metadata) {
+  serial::TableMetadata table;
+
+  // Se carga todo sector 1
+  std::vector<unsigned char> sector1_bytes;
+  disk_manager->read_sector(sector1_bytes, 1);
+
+  auto sector1_meta = serial::deserialize_sector1(sector1_bytes);
+
+  // Se lee todos los bloques con tablas
+  for (size_t i{}; i < sector1_meta.n_tables; ++i) {
+
+    // disk_manager->read_block(block_bytes, sector1_meta.table_block_ids[i]);
+
+    auto curr_table_id = sector1_meta.table_block_ids[i];
+
+    auto frame = buffer_manager->load_pin_page(curr_table_id);
+    std::vector<unsigned char> &block_bytes = frame.page_bytes;
+
+    serial::TableMetadata curr_table_metadata =
+        serial::deserialize_table_metadata(block_bytes);
+
+    if (table_id == curr_table_id) {
+      table_metadata = curr_table_metadata;
+      buffer_manager->free_unpin_page(curr_table_id, 0);
+      return true;
+    }
+
+    buffer_manager->free_unpin_page(curr_table_id, 0);
+  }
+
+  return false;
+}
+
 float Megatron::table_size(std::string table_name) {
   serial::TableMetadata table_metadata;
 

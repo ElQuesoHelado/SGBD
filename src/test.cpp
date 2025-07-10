@@ -290,8 +290,8 @@ int main(int argc, char *argv[]) {
   // megatron.select_print(titanic, empty_comp);
   megatron.select_print(catalog, empty_comp);
 
-  std::println("{}", megatron.get_root_page_id(table_metadata, 0));
-  // megatron.show_table_metadata(catalog);
+  // std::println("{}", megatron.get_root_page_id(table_metadata, 0));
+  //  megatron.show_table_metadata(catalog);
 
   //  megatron.select(name3, empty, empty);
   //  megatron.select(name2, empty, empty);
