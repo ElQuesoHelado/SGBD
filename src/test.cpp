@@ -291,11 +291,14 @@ int main(int argc, char *argv[]) {
 
   Comparator empty_comp{};
   // megatron.select_print(titanic, empty_comp);
-  megatron.select_print(catalog, empty_comp);
 
   Comparator sex_comp = megatron.generate_comparator(table_metadata, comparisons2);
 
-  megatron.select_print(titanic, sex_comp);
+  megatron.show_table_metadata(catalog);
+  std::println("Indices/Hashes:");
+  megatron.select_print(catalog, empty_comp);
+
+  // megatron.select_print(titanic, sex_comp);
 
   // Comparator comp = megatron.generate_comparator(table_metadata, comparisons);
 
