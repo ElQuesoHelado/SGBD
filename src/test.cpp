@@ -296,7 +296,6 @@ int main(int argc, char *argv[]) {
 
   Comparator empty_comp{};
   // megatron.select_print(titanic, empty_comp);
-  megatron.select_print(catalog, empty_comp);
 
   Comparator sex_comp = megatron.generate_comparator(table_metadata, comparisons2);
   Comparator ranged_comp = megatron.generate_comparator(table_metadata, ranged);

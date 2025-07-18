@@ -103,6 +103,11 @@ void Megatron::run() {
       pauseAndReturn();
 
     } else if (opcion == "20") {
+      ui_add_hash_to_table();
+
+      pauseAndReturn();
+
+    } else if (opcion == "0") {
       clearScreen();
       cout << "\"Cerrando el programa\"\n";
       break;
@@ -214,7 +219,6 @@ void Megatron::new_disk(std::string disk_name, size_t surfaces, size_t tracks,
               {"col_index", "INTEGER"},
               {"type", "INTEGER"},
               {"root_id", "INTEGER"},
-              // {"Table_id", "INTEGER"},
           };
 
       create_table(catalog_name, col_name_type);
@@ -268,9 +272,9 @@ void Megatron::rehash_everything(size_t bucket_size) {
     // Indexar usando el mismo objeto hasher (no una copia)
     hasher->indexarResultSet(registers, col_name);
 
-    // Verificación
-    std::cout << "Registros indexados para tabla " << table_id
-              << ": " << hasher->search(SQL_type{0}).size() << std::endl;
+    // // Verificación
+    // std::cout << "Registros indexados para tabla " << table_id
+    //           << ": " << hasher->search(SQL_type{0}).size() << std::endl;
   }
 }
 

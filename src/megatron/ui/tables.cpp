@@ -59,3 +59,20 @@ void Megatron::ui_show_table_metadata() {
 
   pauseAndReturn();
 }
+
+void Megatron::ui_add_hash_to_table() {
+  clearScreen();
+
+  std::string table_name, col_name;
+  std::cout << "Nombre de la tabla: ";
+  getline(std::cin, table_name);
+  std::cout << "Nombre columna a hacer hash: ";
+  getline(std::cin, col_name);
+  std::cout << "Size de bucket: ";
+  size_t max_buckets;
+  if (!(std::cin >> max_buckets))
+    throw std::invalid_argument("Posicion invalida");
+
+  add_hash_to_table(table_name, col_name, max_buckets);
+  pauseAndReturn();
+}

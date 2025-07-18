@@ -370,6 +370,7 @@ public:
   void ui_load_n_regs_csv();
   void ui_find_reg();
   void ui_show_table_metadata();
+  void ui_add_hash_to_table();
 
   Comparator ui_generate_comparator(serial::TableMetadata &table_metadata);
   Comparator ui_generate_comparator(std::string &table_name);
