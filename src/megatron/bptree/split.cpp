@@ -8,8 +8,19 @@ void BPTree::split_child(BPNode &x, int i) {
   auto y = load_node(x.ptrs[i]);
   auto z = allocate_node();
 
-  z.is_leaf = y.is_leaf;
+  // Shifts para promovido
+  for (int j = static_cast<int>(x.n_keys); j >= i + 1; --j)
+    x.ptrs[j + 1] = x.ptrs[j];
 
+  x.ptrs[i + 1] = z.node_id;
+
+  for (int j = static_cast<int>(x.n_keys) - 1; j >= i; --j)
+    x.keys[j + 1] = x.keys[j];
+
+  x.n_keys++;
+
+  z.is_leaf = y.is_leaf;
+  // Z contiene el nodo promovido
   if (y.is_leaf) {
     // Esto por equivalencia 1 a 1 entre key y puntero a registro
     for (int j = 0; j < min_degree - 1; ++j) {
@@ -17,11 +28,11 @@ void BPTree::split_child(BPNode &x, int i) {
       z.ptrs[j] = y.ptrs[j + min_degree];
     }
 
+    z.n_keys = min_degree - 1;
     y.n_keys = min_degree;
-    z.n_keys = min_degree;
 
     // Enlazar hojas
-    z.ptrs[z.n_keys] = y.ptrs[y.n_keys];
+    z.ptrs[z.n_keys] = y.ptrs[y.n_keys + 1];
     y.ptrs[y.n_keys] = z.node_id;
 
     // Primera clave de z al padre
@@ -39,17 +50,6 @@ void BPTree::split_child(BPNode &x, int i) {
     y.n_keys = min_degree - 1;
     z.n_keys = min_degree - 1;
   }
-
-  // Shifts para llaves y ptrs
-  for (int j = static_cast<int>(x.n_keys); j >= i + 1; --j)
-    x.ptrs[j + 1] = x.ptrs[j];
-
-  x.ptrs[i + 1] = z.node_id;
-
-  for (int j = static_cast<int>(x.n_keys) - 1; j >= i; --j)
-    x.keys[j + 1] = x.keys[j];
-
-  x.n_keys++;
 
   unload_node(y, true);
   unload_node(z, true);

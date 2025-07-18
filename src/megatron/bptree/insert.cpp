@@ -2,6 +2,9 @@
 #include <print>
 
 void BPTree::insert(const SQL_type &key, RegPtr reg_ptr) {
+  if (std::get<int32_t>(key) == 6)
+    std::print("ITERACION: ");
+
   auto r = load_node(root_id);
 
   if (r.n_keys == (2 * min_degree - 1)) {
@@ -9,6 +12,7 @@ void BPTree::insert(const SQL_type &key, RegPtr reg_ptr) {
     auto s = split_root();
     insert_non_full(s, key, reg_ptr);
   } else {
+    r = load_node(r.node_id);
     insert_non_full(r, key, reg_ptr);
   }
 }
