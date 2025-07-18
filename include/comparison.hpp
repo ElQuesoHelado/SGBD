@@ -27,6 +27,20 @@ public:
     return value_comp_ops.size() == 1 && value_comp_ops.front().is_equals;
   }
 
+  // TODO: == tal vez cause problemas al concatenar con rangos
+  bool is_ranged_on_single_col() {
+    if (value_comp_ops.empty())
+      return false;
+
+    size_t col_index{value_comp_ops.front().col_index};
+    for (auto &c : value_comp_ops) {
+      if (c.col_index != col_index)
+        return false;
+    }
+
+    return true;
+  }
+
   size_t col_index_at_op(size_t i) {
     if (i >= value_comp_ops.size())
       return value_comp_ops.size();
@@ -54,7 +68,7 @@ public:
     return *this;
   }
 
-  Comparator &less_than(const SQL_type &cmp_value, size_t col_index) {
+  Comparator &less_than(const SQL_type &cmp_value, size_t col_index = 0) {
     value_comp_ops
         .emplace_back(
             col_index,
@@ -63,25 +77,25 @@ public:
     return *this;
   }
 
-  Comparator &greater_than(const SQL_type &cmp_value, size_t col_index) {
+  Comparator &greater_than(const SQL_type &cmp_value, size_t col_index = 0) {
     value_comp_ops
         .emplace_back(col_index, cmp_value, [](const SQL_type &x, const SQL_type &y) { return x > y; }, true);
     return *this;
   }
 
-  Comparator &less_equal_than(const SQL_type &cmp_value, size_t col_index) {
+  Comparator &less_equal_than(const SQL_type &cmp_value, size_t col_index = 0) {
     value_comp_ops
         .emplace_back(col_index, cmp_value, [](const SQL_type &x, const SQL_type &y) { return x <= y; }, true);
     return *this;
   }
 
-  Comparator &greater_equal_than(const SQL_type &cmp_value, size_t col_index) {
+  Comparator &greater_equal_than(const SQL_type &cmp_value, size_t col_index = 0) {
     value_comp_ops
         .emplace_back(col_index, cmp_value, [](const SQL_type &x, const SQL_type &y) { return x >= y; }, true);
     return *this;
   }
 
-  Comparator &equals(const SQL_type &cmp_value, size_t col_index) {
+  Comparator &equals(const SQL_type &cmp_value, size_t col_index = 0) {
     value_comp_ops
         .emplace_back(col_index, cmp_value, [](const SQL_type &x, const SQL_type &y) { return x == y; }, true, true);
     return *this;
@@ -100,6 +114,32 @@ public:
     for (size_t i = 1; i < value_comp_ops.size(); ++i) {
       const auto &op = value_comp_ops[i];
       bool partial = op.condition(row_values[op.col_index], op.compared);
+
+      if (is_prev_and) {
+        result &= partial;
+      } else {
+        result |= partial;
+      }
+
+      is_prev_and = op.is_next_and;
+    }
+
+    return result;
+  }
+
+  bool evaluate(const SQL_type &value) {
+    if (value_comp_ops.empty())
+      return true;
+
+    bool result =
+             value_comp_ops[0].condition(
+                 value,
+                 value_comp_ops[0].compared),
+         is_prev_and{value_comp_ops[0].is_next_and};
+
+    for (size_t i = 1; i < value_comp_ops.size(); ++i) {
+      const auto &op = value_comp_ops[i];
+      bool partial = op.condition(value, op.compared);
 
       if (is_prev_and) {
         result &= partial;

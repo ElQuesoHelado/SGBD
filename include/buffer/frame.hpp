@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
 #include <deque>
 #include <list>
 #include <memory>
@@ -8,7 +9,7 @@
 
 struct Frame {
   std::vector<unsigned char> page_bytes;
-  size_t page_id;
+  uint32_t page_id;
   bool dirty = false;
 
   Frame(size_t id, std::vector<unsigned char> data)

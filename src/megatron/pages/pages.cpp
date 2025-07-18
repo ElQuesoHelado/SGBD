@@ -66,7 +66,7 @@ uint32_t Megatron::create_page(serial::TableMetadata &table_metadata) {
   serial::SlottedDataHeader slotted_data_header;
   serial::PageHeader page_header;
 
-  auto &frame = buffer_manager->get_free_frame();
+  auto &frame = buffer_manager->get_load_free_frame();
   uint32_t free_block_id = frame.page_id;
 
   std::vector<unsigned char> &page_bytes = frame.page_bytes;
@@ -99,7 +99,7 @@ uint32_t Megatron::create_fixed_page(size_t reg_size) {
   serial::FixedDataHeader fixed_data_header;
   serial::PageHeader page_header;
 
-  auto &frame = buffer_manager->get_free_frame();
+  auto &frame = buffer_manager->get_load_free_frame();
   uint32_t free_block_id = frame.page_id;
 
   std::vector<unsigned char> &page_bytes = frame.page_bytes;

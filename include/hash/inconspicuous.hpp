@@ -1,3 +1,4 @@
+#include "reg_ptr.hpp"
 #include "result_set.hpp"
 #include "types.hpp"
 #include <bitset>
@@ -10,17 +11,6 @@
 #include <stdexcept>
 #include <unordered_map>
 #include <vector>
-
-struct RegPtr {
-  size_t pagina;
-  size_t slot;
-
-  RegPtr(size_t p, size_t s) : pagina(p), slot(s) {}
-
-  bool operator==(const RegPtr &other) const {
-    return pagina == other.pagina && slot == other.slot;
-  }
-};
 
 class Bucket {
 public:

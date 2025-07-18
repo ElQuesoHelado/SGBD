@@ -32,6 +32,14 @@ set(MEGATRON_SOURCES
     # ${SOURCE_DIR}/megatron/hashes/hlpr.hpp
     # ${SOURCE_DIR}/megatron/hashes/insert.cpp
     # ${SOURCE_DIR}/megatron/hashes/loads.cpp
+    ${SOURCE_DIR}/megatron/bptree/add.cpp
+    ${SOURCE_DIR}/megatron/bptree/bptree.cpp
+    ${SOURCE_DIR}/megatron/bptree/get.cpp
+    ${SOURCE_DIR}/megatron/bptree/indexing.cpp
+    ${SOURCE_DIR}/megatron/bptree/insert.cpp
+    ${SOURCE_DIR}/megatron/bptree/misc.cpp
+    ${SOURCE_DIR}/megatron/bptree/search.cpp
+    ${SOURCE_DIR}/megatron/bptree/split.cpp
     ${SOURCE_DIR}/megatron/ui/buffer_interact.cpp
     ${SOURCE_DIR}/megatron/ui/comparisons.cpp
     ${SOURCE_DIR}/megatron/ui/deletes.cpp

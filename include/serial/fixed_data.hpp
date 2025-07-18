@@ -99,7 +99,8 @@ inline size_t calculate_reg_offset(const FixedDataHeader &header, size_t nth_reg
   return offset;
 }
 
-inline std::vector<unsigned char> serialize_fixed_data_header(const FixedDataHeader &header) {
+inline std::vector<unsigned char> serialize_fixed_data_header(
+    const FixedDataHeader &header) {
   size_t size = calculate_fixed_data_header_size(header);
 
   std::vector<unsigned char> bytes;
@@ -115,7 +116,8 @@ inline std::vector<unsigned char> serialize_fixed_data_header(const FixedDataHea
 }
 
 template <typename Iter>
-inline void serialize_fixed_block_header(const FixedDataHeader &header, Iter &out_it) {
+inline void serialize_fixed_block_header(
+    const FixedDataHeader &header, Iter &out_it) {
   write_v(out_it, header.free_bytes);
   write_v(out_it, header.reg_size);
   write_v(out_it, header.max_n_regs);
@@ -127,7 +129,8 @@ inline void serialize_fixed_block_header(const FixedDataHeader &header, Iter &ou
 }
 
 // Por el hecho de siempre estar despues de un PageHeader, se "salta" el tamanio del page_header del buffer
-inline FixedDataHeader deserialize_fixed_data_header(std::vector<unsigned char> &page_bytes) {
+inline FixedDataHeader deserialize_fixed_data_header(
+    std::vector<unsigned char> &page_bytes) {
   FixedDataHeader header;
   auto it = page_bytes.begin() + sizeof(PageHeader);
 

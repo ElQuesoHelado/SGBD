@@ -67,7 +67,7 @@ ResultSet Megatron::select(serial::TableMetadata &table_metadata,
     std::shared_ptr<Hasher> hasher;
     for (auto &h : table_id_hash[table_metadata.table_block_id]) {
       if (h->hashed_col_index == hashed_col_index) {
-        hasher = h; // h ya es un shared_ptr
+        hasher = h;
         break;
       }
     }
@@ -77,13 +77,30 @@ ResultSet Megatron::select(serial::TableMetadata &table_metadata,
 
       for (auto &r : reg_ptrs) {
         result_set.merge(std::move(
-            select_nth_from_page(table_metadata, r.pagina, r.slot)));
+            select_nth_from_page(table_metadata, r.page_id, r.slot)));
       }
     }
 
     return result_set;
+  } else if (comparator.is_ranged_on_single_col() &&
+             is_column_indexed(table_metadata,
+                               comparator.col_index_at_op(0))) {
+    auto ic = get_indexed_column(table_metadata, comparator.col_index_at_op(0));
+    auto col_index = ic.first;
+    auto root_id = ic.second;
+    auto min_degree =
+        calculate_btree_order(table_metadata.columns[col_index].max_size);
+
+    BPTree tree(*buffer_manager, table_metadata,
+                disk_manager->NULL_BLOCK, root_id,
+                min_degree,
+                table_metadata.columns[col_index].type,
+                table_metadata.columns[col_index].max_size);
+
+    // tree.search(tree.r, Comparator &comp)
   }
 
+  // Busqueda secuencial
   size_t curr_page_id = table_metadata.first_page_id;
   while (curr_page_id != disk_manager->NULL_BLOCK && max_pages_loaded != 0) {
     auto frame = buffer_manager->load_pin_page(curr_page_id);

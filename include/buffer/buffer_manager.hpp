@@ -10,7 +10,7 @@ class BufferManager {
 public:
   BufferManager(size_t capacity, bool is_clock, std::unique_ptr<DiskManager> &disk_manager);
 
-  Frame &get_free_frame();
+  Frame &get_load_free_frame();
 
   // Carga de pagina, necesariamente incrementa pin_count
   Frame &load_pin_page(size_t page_id);

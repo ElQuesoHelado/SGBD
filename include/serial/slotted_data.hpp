@@ -119,7 +119,8 @@ inline size_t add_free_slot(PageHeader &page_header, SlottedDataHeader &slotted_
   return slotted_data_header.n_slots - 1;
 }
 
-inline std::vector<unsigned char> serialize_slotted_data_header(const SlottedDataHeader &header) {
+inline std::vector<unsigned char> serialize_slotted_data_header(
+    const SlottedDataHeader &header) {
   size_t size = calculate_slotted_data_header_size(header);
 
   std::vector<unsigned char> bytes;
@@ -136,7 +137,8 @@ inline std::vector<unsigned char> serialize_slotted_data_header(const SlottedDat
 }
 
 template <typename Iter>
-inline void serialize_slotted_data_header(const SlottedDataHeader &header, Iter &out_it) {
+inline void serialize_slotted_data_header(const SlottedDataHeader &header,
+                                          Iter &out_it) {
   write_v(out_it, header.free_bytes);
   write_v(out_it, header.n_slots); // Garantiza que nunca sea != de n_slots
   write_v(out_it, header.free_space_offset);
@@ -146,7 +148,8 @@ inline void serialize_slotted_data_header(const SlottedDataHeader &header, Iter 
 }
 
 // Siempre esta despues de un PageHeader, se considera como offset
-inline SlottedDataHeader deserialize_slotted_data_header(std::vector<unsigned char> &bytes) {
+inline SlottedDataHeader deserialize_slotted_data_header(
+    std::vector<unsigned char> &bytes) {
   serial::SlottedDataHeader header;
   auto it = bytes.begin() + sizeof(PageHeader);
 

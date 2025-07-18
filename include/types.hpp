@@ -120,7 +120,9 @@ struct VarcharType {
 };
 
 // TODO: cambio a clase, agrupar to_string, length
-typedef std::variant<int8_t, int16_t, int32_t, int64_t, float, double, CharType, VarcharType> SQL_type;
+typedef std::variant<int8_t, int16_t, int32_t, int64_t,
+                     float, double, CharType, VarcharType>
+    SQL_type;
 
 template <typename T>
 concept StringCastable =
@@ -379,7 +381,7 @@ inline std::vector<unsigned char> serialize_sql_type(const SQL_type &value) {
     using T = std::decay_t<decltype(val)>;
 
     if constexpr (std::is_same_v<T, CharType>) {
-      // CHAR: write exactly `length` bytes
+      // Para char se agrega bytes exactos
       std::string padded = val.value;
       if (padded.size() < val.length)
         padded.append(val.length - padded.size(), ' ');
@@ -388,14 +390,14 @@ inline std::vector<unsigned char> serialize_sql_type(const SQL_type &value) {
 
       output.insert(output.end(), padded.begin(), padded.begin() + val.length);
     } else if constexpr (std::is_same_v<T, VarcharType>) {
-      // VARCHAR: 1 byte for length, then raw chars
+      // 1 byte para longitud,
       if (val.value.size() > 255)
-        throw std::runtime_error("VARCHAR length exceeds 255");
+        throw std::runtime_error("VARCHAR muy largo");
 
       output.push_back(static_cast<unsigned char>(val.value.size()));
       output.insert(output.end(), val.value.begin(), val.value.end());
     } else {
-      // Numeric types: copy raw bytes
+      // Numericos
       const unsigned char *ptr = reinterpret_cast<const unsigned char *>(&val);
       output.insert(output.end(), ptr, ptr + sizeof(T));
     }

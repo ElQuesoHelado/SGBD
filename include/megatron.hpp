@@ -1,5 +1,6 @@
 #pragma once
 
+#include "bptree/bptree.hpp"
 #include "buffer/buffer_manager.hpp"
 #include "comparison.hpp"
 #include "disk_manager.hpp"
@@ -53,6 +54,7 @@ class Megatron {
   void init_slotted_data_header(serial::TableMetadata &table_metadata, serial::SlottedDataHeader &slotted_data_header);
 
   void rehash_everything(size_t bucket_size = 4);
+  void reindex_table(serial::TableMetadata &table_metadata);
 
   // Guarda toda pagina sucia y free_space_bitmap, setea managers a null
   void clean_managers();
@@ -260,6 +262,29 @@ public:
   DirectoryPage load_directory_page(size_t page_id);
 
   size_t max_buckets_per_page(MultiBucketPage &mb_page);
+
+  // =============================
+  // Indices
+  // =============================
+  bool is_column_indexed(std::string &table_name, std::string &col_name);
+  bool is_column_indexed(serial::TableMetadata &table_metadata,
+                         std::string &col_name);
+  bool is_column_indexed(serial::TableMetadata &table_metadata, size_t col_index);
+
+  std::pair<uint32_t, uint32_t>
+  get_indexed_column(serial::TableMetadata &table_metadata, size_t col_index);
+
+  std::vector<std::pair<uint32_t, uint32_t>>
+  get_indexed_columns(std::string &table_name);
+
+  std::vector<std::pair<uint32_t, uint32_t>>
+  get_indexed_columns(serial::TableMetadata &table_metadata);
+
+  void add_index_to_table(std::string &table_name, std::string &col_name);
+  void add_index_to_table(serial::TableMetadata &table_metadata, std::string &col_name);
+  void add_index_to_table(serial::TableMetadata &table_metadata, size_t col_index);
+
+  size_t calculate_btree_order(size_t key_size);
 
   // Helprs
   // void print_relation(Relation &relation);

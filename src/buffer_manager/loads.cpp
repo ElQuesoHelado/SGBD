@@ -117,7 +117,7 @@ void BufferManager::load_page(size_t page_id, bool fixed_pin) {
 }
 
 // Se busca un bloque libre en disco, lo carga y pinea
-Frame &BufferManager::get_free_frame() {
+Frame &BufferManager::get_load_free_frame() {
   size_t ith = 0;
   auto free_block_id = disk_manager->get_free_block(ith);
   auto it = frame_map.find(free_block_id);

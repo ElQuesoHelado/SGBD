@@ -37,15 +37,18 @@ inline void read_v(Iter &it, T &value) {
  */
 template <typename T>
 inline void write_v(std::vector<unsigned char> &buffer, const T &value) {
-  static_assert(std::is_trivially_copyable_v<T>, "Write de bytes de tipo no trivial");
+  static_assert(std::is_trivially_copyable_v<T>,
+                "Write de bytes de tipo no trivial");
 
-  auto ptr = reinterpret_cast<const unsigned char *>(&value);
+  auto ptr =
+      reinterpret_cast<const unsigned char *>(&value);
   buffer.insert(buffer.end(), ptr, ptr + sizeof(T));
 }
 
 template <typename T, typename Iter>
 inline void write_v(Iter &it, const T &value) {
-  static_assert(std::is_trivially_copyable_v<T>, "Read de bytes de tipo no trivial");
+  static_assert(std::is_trivially_copyable_v<T>,
+                "Read de bytes de tipo no trivial");
 
   std::memcpy(&(*it), &value, sizeof(T));
   std::advance(it, sizeof(T));
