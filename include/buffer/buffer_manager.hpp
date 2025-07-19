@@ -3,12 +3,14 @@
 #include "disk_manager.hpp"
 #include "frame.hpp"
 #include <cstddef>
+#include <cstdint>
 #include <memory>
 #include <vector>
 
 class BufferManager {
 public:
-  BufferManager(size_t capacity, bool is_clock, std::unique_ptr<DiskManager> &disk_manager);
+  BufferManager(size_t capacity, bool is_clock,
+                std::unique_ptr<DiskManager> &disk_manager);
 
   Frame &get_load_free_frame();
 
@@ -52,6 +54,10 @@ public:
 
     return res;
   }
+
+  uint32_t null_page_id() { return disk_manager->NULL_BLOCK; }
+
+  uint32_t page_size() { return disk_manager->BLOCK_SIZE; }
 
 private:
   size_t find_free_slot();

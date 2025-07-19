@@ -15,23 +15,23 @@ class BPTree {
   BufferManager &buffer;
   size_t min_degree; // TODO: determinado en block_size
 
-  uint8_t key_type{};
   uint32_t null_page_id;
 
   serial::TableMetadata &table_metadata;
   // BPNode root;
 
 public:
-  uint16_t key_size{}; // De acuedo a SQL_type
+  const uint8_t key_type{};
+  const uint16_t key_size{}; // De acuedo a SQL_type
   uint32_t root_id;
 
-  explicit BPTree(BufferManager &buffer,
-                  serial::TableMetadata &table_metadata,
-                  uint32_t null_page_id, uint32_t root_id,
-                  size_t min_degree, size_t key_type, size_t key_size)
+  BPTree(BufferManager &buffer,
+         serial::TableMetadata &table_metadata,
+         uint32_t root_id,
+         size_t min_degree, size_t key_type, size_t key_size)
       : buffer(buffer), table_metadata(table_metadata),
-        null_page_id(null_page_id), root_id(root_id), min_degree(min_degree),
-        key_type(key_type), key_size(key_size) {
+        null_page_id(buffer.null_page_id()), root_id(root_id),
+        min_degree(min_degree), key_type(key_type), key_size(key_size) {
     if (root_id == null_page_id) {
       auto node = allocate_node();
       this->root_id = node.node_id;
@@ -54,7 +54,7 @@ public:
   void split_child(BPNode &x, int i);
   BPNode split_root();
 
-  BPNode load_node(size_t page_id);
+  BPNode load_node(uint32_t page_id);
   BPNode allocate_node();
   void unload_node(BPNode &node, bool is_dirty = false);
 };

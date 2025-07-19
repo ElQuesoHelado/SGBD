@@ -1,48 +1,48 @@
 #pragma once
 
+#include "bucket.hpp"
 #include "serial/generic.hpp"
+#include <cstddef>
 #include <cstdint>
 #include <vector>
-
-#pragma pack(push, 1)
-// Necesario ya que un bucket
-// se encuentra en un array de Buckets
-struct BucketPtr {
-  uint32_t mb_page; // Multi-bucket page
-  uint8_t bucket_idx;
-  uint8_t local_depth;
-};
-#pragma pack(pop)
 
 struct DirectoryPage {
   uint32_t next_page;
   uint16_t global_depth;
-  uint16_t bucket_ptr_count;
-  std::vector<BucketPtr> bucket_ptrs;
+  std::vector<uint32_t> bucket_ptrs;
+
+  uint32_t page_id{}, null_page_id{};
+  size_t capacity{};
+
+  DirectoryPage(std::vector<unsigned char> &bytes, uint32_t directory_id,
+                uint32_t null_page_id, size_t capacity)
+      : page_id(directory_id), null_page_id(null_page_id) {
+    deserialize(bytes, capacity);
+  }
+
+  DirectoryPage(uint32_t directory_id, uint32_t null_page_id, size_t capacity)
+      : page_id(directory_id), null_page_id(null_page_id), capacity(capacity) {
+    bucket_ptrs.resize(capacity, null_page_id);
+  }
+
+  template <typename Iter>
+  void serialize(Iter &out_it) {
+    write_v(out_it, next_page);
+    write_v(out_it, global_depth);
+
+    for (auto &b : bucket_ptrs)
+      write_v(out_it, b);
+  }
+
+  void deserialize(
+      std::vector<unsigned char> &bytes, uint32_t capacity) {
+    auto it = bytes.begin();
+
+    read_v(it, next_page);
+    read_v(it, global_depth);
+
+    bucket_ptrs.resize(capacity);
+    for (auto &b : bucket_ptrs)
+      read_v(it, b);
+  }
 };
-
-template <typename Iter>
-inline void serialize_directory_page(const DirectoryPage &dir_page, Iter &out_it) {
-  write_v(out_it, dir_page.next_page);
-  write_v(out_it, dir_page.global_depth);
-  write_v(out_it, dir_page.bucket_ptr_count);
-
-  for (auto &b : dir_page.bucket_ptrs)
-    write_v(out_it, b);
-}
-
-inline DirectoryPage deserialize_directory_page(
-    std::vector<unsigned char> &bytes) {
-  DirectoryPage dir_page;
-  auto it = bytes.begin();
-
-  read_v(it, dir_page.next_page);
-  read_v(it, dir_page.global_depth);
-  read_v(it, dir_page.bucket_ptr_count);
-
-  dir_page.bucket_ptrs.resize(dir_page.bucket_ptr_count);
-  for (auto &b : dir_page.bucket_ptrs)
-    read_v(it, b);
-
-  return dir_page;
-}

@@ -28,16 +28,7 @@ struct BPNode {
   BPNode(std::vector<unsigned char> &bytes, size_t key_type,
          size_t key_size, uint32_t node_id, size_t min_degree)
       : node_id(node_id), min_degree(min_degree) {
-    size_t max_keys = 2 * min_degree - 1;
-    size_t max_ptrs = 2 * min_degree;
-
-    auto empty = string_to_sql_type("", key_type, key_size);
-
-    keys.resize(max_keys, empty);
-    ptrs.resize(max_ptrs);
-    reg_slots.resize(max_keys);
-
-    deserialize(bytes, key_type, key_size);
+    deserialize(bytes, key_type, key_size, min_degree);
   }
 
   BPNode(uint32_t node_id, size_t key_type, size_t key_size,
@@ -99,28 +90,29 @@ struct BPNode {
   }
 
   void deserialize(std::vector<unsigned char> &bytes,
-                   size_t key_type, size_t key_size) {
+                   size_t key_type, size_t key_size, size_t min_degree) {
     auto it = bytes.begin();
 
     size_t max_keys = 2 * min_degree - 1;
     size_t max_ptrs = 2 * min_degree;
 
-    size_t pos = 0;
+    auto empty = string_to_sql_type("", key_type, key_size);
+
+    keys.resize(max_keys, empty);
+    ptrs.resize(max_ptrs);
+    reg_slots.resize(max_keys);
 
     read_v(it, is_leaf);
     read_v(it, n_keys);
 
-    pos = it - bytes.begin();
     // keys.resize(n_keys);
     for (size_t i{}; i < max_keys; ++i) {
       keys[i] = deserialize_sql_type(it, key_type, key_size);
-      pos = it - bytes.begin();
     }
 
     // ptrs.resize(n_keys + 1);
     for (size_t i{}; i < max_ptrs; ++i) {
       read_v(it, ptrs[i]);
-      pos = it - bytes.begin();
     }
 
     if (is_leaf) {

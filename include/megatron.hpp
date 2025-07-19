@@ -6,7 +6,6 @@
 #include "disk_manager.hpp"
 #include "hash/bucket.hpp"
 #include "hash/directory.hpp"
-#include "hash/inconspicuous.hpp"
 #include "result_set.hpp"
 #include "serial/fixed_data.hpp"
 #include "serial/slotted_data.hpp"
@@ -33,10 +32,9 @@ class Megatron {
   // Tabla catalog tiene formato: (table_id, col_index, hash_type:0, root_block_id)
   std::string catalog_name = "catalog";
 
-  std::unordered_map<size_t, std::vector<std::shared_ptr<Hasher>>> table_id_hash;
   //====
-  // Funciones para llenado de todo campo de headers/metadata,
-  // internamente se realizan conversiones y algunos calculos
+  //  Funciones para llenado de todo campo de headers/metadata,
+  //  internamente se realizan conversiones y algunos calculos
   //====
 
   /*
@@ -245,7 +243,7 @@ public:
   size_t get_root_page_id(serial::TableMetadata &table_metadata, size_t col_index);
 
   ResultSet get_register_on_key_match(serial::TableMetadata &table_metadata,
-                                      RegPtr_ &reg_ptr, size_t hashed_col,
+                                      RegPtr &reg_ptr, size_t hashed_col,
                                       SQL_type &key);
 
   ResultSet find(serial::TableMetadata table_metadata,
@@ -254,14 +252,12 @@ public:
   ResultSet delete_hashed(serial::TableMetadata table_metadata,
                           size_t hashed_col, SQL_type &key);
 
-  size_t find_free_reg_ptr_pos(Bucket_ &bucket);
+  size_t find_free_reg_ptr_pos(Bucket &bucket);
 
   // Encuentra profundidad, sea directorio o bucket
   size_t get_depth(serial::TableMetadata &table_metadata, size_t col_index);
 
   DirectoryPage load_directory_page(size_t page_id);
-
-  size_t max_buckets_per_page(MultiBucketPage &mb_page);
 
   // =============================
   // Indices
