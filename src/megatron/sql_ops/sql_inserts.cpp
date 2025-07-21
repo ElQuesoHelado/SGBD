@@ -1,3 +1,4 @@
+#include "hash/hasher.hpp"
 #include "megatron.hpp"
 #include "result_set.hpp"
 #include "serial/fixed_data.hpp"
@@ -53,7 +54,7 @@ ResultSet Megatron::insert(serial::TableMetadata &table_metadata, std::vector<st
 }
 
 ResultSet Megatron::insert_into_page(serial::TableMetadata &table_metadata,
-                                     size_t insert_page_id,
+                                     uint32_t insert_page_id,
                                      std::vector<std::string> &reg_values) {
   if (table_metadata.columns.size() != reg_values.size()) {
     std::cerr << "Numero de valores diferente a columnas" << std::endl;
@@ -72,15 +73,17 @@ ResultSet Megatron::insert_into_page(serial::TableMetadata &table_metadata,
 }
 
 ResultSet Megatron::insert_into_page(serial::TableMetadata &table_metadata,
-                                     size_t insert_page_id,
+                                     uint32_t insert_page_id,
                                      std::vector<unsigned char> &register_bytes) {
   size_t pos = (table_metadata.are_regs_fixed)
                    ? insert_into_fixed_page(insert_page_id, register_bytes)
                    : insert_into_slotted_page(insert_page_id, register_bytes);
 
-  auto register_values = deserialize_register(table_metadata, register_bytes);
+  auto register_values =
+      deserialize_register(table_metadata, register_bytes);
 
-  RegisterEntry reg{insert_page_id, pos};
+  RegisterEntry reg{static_cast<uint32_t>(insert_page_id),
+                    static_cast<uint16_t>(pos)};
 
   for (auto &v : register_values)
     reg.values.push_back(v);
@@ -89,21 +92,23 @@ ResultSet Megatron::insert_into_page(serial::TableMetadata &table_metadata,
   result_set.add_columns(table_metadata.columns);
   result_set.add_register(std::move(reg));
 
-  // Se tiene hash/es, se actualiza
-  if (!get_hashed_columns(table_metadata).empty()) {
-    for (auto &h : table_id_hash[table_metadata.table_block_id]) {
-      h->actualizarDesdeInsercion(
-          result_set,
-          std::string(
-              array_to_string_view(
-                  table_metadata.columns[h->hashed_col_index].name)));
-    }
+  // Check hashes
+  auto cols = get_hashed_columns(table_metadata);
+  for (auto [col, page_id] : cols) {
+    Hasher hasher(*buffer_manager,
+                  page_id,
+                  table_metadata.columns[col].type,
+                  table_metadata.columns[col].max_size);
+    hasher.insert_from_set(result_set, col);
+    // hasher.insert(const SQL_type &key, const RegPtr &reg_ptr)
   }
+
+  // TODO: indexes
 
   return result_set;
 }
 
-size_t Megatron::insert_into_fixed_page(size_t insert_page_id,
+size_t Megatron::insert_into_fixed_page(uint32_t insert_page_id,
                                         std::vector<unsigned char> &register_bytes) {
   auto &frame = buffer_manager->load_pin_page(insert_page_id);
   std::vector<unsigned char> &insert_page_bytes = frame.page_bytes;
@@ -152,7 +157,7 @@ size_t Megatron::insert_into_fixed_page(size_t insert_page_id,
 }
 
 size_t Megatron::insert_into_slotted_page(
-    size_t insert_page_id,
+    uint32_t insert_page_id,
     std::vector<unsigned char> &register_bytes) {
   // Se lee pagina y saca metadata relevante
   auto &frame = buffer_manager->load_pin_page(insert_page_id);

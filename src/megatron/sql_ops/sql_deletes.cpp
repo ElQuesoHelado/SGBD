@@ -51,7 +51,7 @@ ResultSet Megatron::delete_condition(
 
 // ResultSet Megatron::delete_from_page(
 //     serial::TableMetadata &table_metadata,
-//     size_t delete_page_id, Comparator &comparator) {
+//     uint32_t delete_page_id, Comparator &comparator) {
 //
 //   // Sin condicion no hay delete
 //   if (comparator.empty()) {
@@ -65,7 +65,7 @@ ResultSet Megatron::delete_condition(
 
 ResultSet Megatron::delete_from_page(
     serial::TableMetadata &table_metadata,
-    size_t delete_page_id,
+    uint32_t delete_page_id,
     Comparator &comparator) {
 
   if (comparator.empty()) {
@@ -85,7 +85,7 @@ ResultSet Megatron::delete_from_page(
 
 ResultSet Megatron::delete_from_fixed_page(
     serial::TableMetadata &table_metadata,
-    size_t delete_page_id, Comparator &comparator) {
+    uint32_t delete_page_id, Comparator &comparator) {
   auto &frame = buffer_manager->load_pin_page(delete_page_id);
   std::vector<unsigned char> &page_bytes = frame.page_bytes;
   auto page_bytes_it = page_bytes.begin();
@@ -139,7 +139,7 @@ ResultSet Megatron::delete_from_fixed_page(
 
 ResultSet Megatron::delete_from_slotted_page(
     serial::TableMetadata &table_metadata,
-    size_t delete_page_id, Comparator &comparator) {
+    uint32_t delete_page_id, Comparator &comparator) {
   auto &frame = buffer_manager->load_pin_page(delete_page_id);
   std::vector<unsigned char> &page_bytes = frame.page_bytes;
   auto page_bytes_it = page_bytes.begin();

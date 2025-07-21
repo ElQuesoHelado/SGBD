@@ -50,7 +50,7 @@ ResultSet Megatron::select_nth_reg(
 }
 
 ResultSet Megatron::select_nth_from_page(serial::TableMetadata &table_metadata,
-                                         size_t select_page_id, size_t nth) {
+                                         uint32_t select_page_id, size_t nth) {
   auto result_set =
       (table_metadata.are_regs_fixed)
           ? select_nth_from_fixed_page(table_metadata, select_page_id, nth)
@@ -61,7 +61,7 @@ ResultSet Megatron::select_nth_from_page(serial::TableMetadata &table_metadata,
 
 ResultSet Megatron::select_nth_from_fixed_page(
     serial::TableMetadata &table_metadata,
-    size_t select_page_id, size_t nth) {
+    uint32_t select_page_id, size_t nth) {
   auto &frame = buffer_manager->load_pin_page(select_page_id);
   std::vector<unsigned char> &page_bytes = frame.page_bytes;
   auto page_bytes_it = page_bytes.begin();
@@ -113,7 +113,7 @@ ResultSet Megatron::select_nth_from_fixed_page(
 
 ResultSet Megatron::select_nth_from_slotted_page(
     serial::TableMetadata &table_metadata,
-    size_t select_page_id, size_t nth) {
+    uint32_t select_page_id, size_t nth) {
   auto &frame = buffer_manager->load_pin_page(select_page_id);
   std::vector<unsigned char> &page_bytes = frame.page_bytes;
   auto page_bytes_it = page_bytes.begin();

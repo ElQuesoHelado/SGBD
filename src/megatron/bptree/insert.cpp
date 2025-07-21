@@ -1,7 +1,7 @@
 #include "bptree/bptree.hpp"
 #include <print>
 
-void BPTree::insert(const SQL_type &key, RegPtr reg_ptr) {
+void BPTree::insert(const SQL_type &key, const RegPtr reg_ptr) {
   if (std::get<int32_t>(key) == 6)
     std::print("ITERACION: ");
 

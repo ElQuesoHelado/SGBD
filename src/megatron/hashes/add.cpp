@@ -1,4 +1,4 @@
-#include "hlpr.hpp"
+#include "hash/hasher.hpp"
 #include "megatron.hpp"
 #include <cstddef>
 #include <cstdint>
@@ -45,29 +45,36 @@ void Megatron::add_hash_to_table(serial::TableMetadata &table_metadata,
     return;
   }
 
-  // Creamos una pagina inicial para directorio
-  // auto new_dir_id = create_dir_page();
+  Hasher hasher(*buffer_manager,
+                disk_manager->NULL_BLOCK,
+                table_metadata.columns[col_index].type,
+                table_metadata.columns[col_index].max_size);
 
-  std::vector<std::string> values = {
-      std::to_string(table_metadata.table_block_id),
-      std::to_string(col_index),
-      "0",
-      std::to_string(0)};
+  // FIXME: DEBUG
+  // Hasher hasher(*buffer_manager,
+  //               disk_manager->NULL_BLOCK,
+  //               table_metadata.columns[col_index].type,
+  //               table_metadata.columns[col_index].max_size, 1);
 
-  // Se persiste
+  std::vector<std::string>
+      values = {
+          std::to_string(table_metadata.table_block_id),
+          std::to_string(col_index),
+          "0",
+          std::to_string(hasher.directory_id)};
+
   insert(catalog_name, values);
 
-  // auto hasher = std::make_shared<Hasher>(bucket_size, col_index);
-  // table_id_hash[table_metadata.table_block_id].push_back(hasher);
-  //
-  rehash_everything(bucket_size);
+  Comparator comp;
+  auto registers = select(table_metadata, comp);
 
-  // Tener un depth mayor a 0 es mas eficiente(cc se tiene una busqueda lineal hasta llenarlo)
-  // Se asume depth = 1, por propiedad 2^1 = 2
-  // 2 buckets iniciales
-  // for (size_t i{}; i < std::pow(2, initial_depth); ++i) {
-  //   auto new_bucket_id = create_dir_page();
-  //   auto pointer_bytes = serialize_pointer(new_bucket_id);
-  //   insert_into_fixed_page(new_dir_id, pointer_bytes);
-  // }
+  for (auto &reg : registers) {
+    hasher.insert(
+        reg.values[col_index],
+        {static_cast<uint32_t>(reg.page_id),
+         static_cast<uint16_t>(reg.position)});
+  }
+
+  // Creamos una pagina inicial para directorio
+  // auto new_dir_id = create_dir_page();
 }

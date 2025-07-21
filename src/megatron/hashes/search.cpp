@@ -5,6 +5,10 @@
 std::vector<RegPtr> Hasher::search(Comparator &equals) {
   auto key = equals.compared_at_op(0);
 
+  return search(key);
+}
+
+std::vector<RegPtr> Hasher::search(SQL_type &key) {
   auto bucket_id = locate_bucket(key);
 
   if (bucket_id == null_page_id)

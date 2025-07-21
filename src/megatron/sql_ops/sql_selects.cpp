@@ -1,4 +1,5 @@
 #include "comparison.hpp"
+#include "hash/hasher.hpp"
 #include "megatron.hpp"
 #include "result_set.hpp"
 #include "serial/fixed_data.hpp"
@@ -57,45 +58,48 @@ ResultSet Megatron::select(serial::TableMetadata &table_metadata,
 
   // Se puede usar hash para busqueda
   if (comparator.is_only_equals() &&
-      is_column_hashed(table_metadata, comparator.col_index_at_op(0))) {
+      is_column_hashed(table_metadata,
+                       comparator.col_index_at_op(0))) {
     auto hashed_col_index = comparator.col_index_at_op(0);
+    auto dir_page =
+        get_root_page_id(table_metadata, hashed_col_index);
+
     std::println("Se tiene hash en columna #: {} y solo condicion "
                  "igualdad, se usa hash para busqueda",
                  hashed_col_index);
 
-    // Se busca hasher apropiado
-    std::shared_ptr<Hasher> hasher;
-    for (auto &h : table_id_hash[table_metadata.table_block_id]) {
-      if (h->hashed_col_index == hashed_col_index) {
-        hasher = h;
-        break;
-      }
-    }
+    Hasher hasher(*buffer_manager,
+                  dir_page,
+                  table_metadata.columns[hashed_col_index].type,
+                  table_metadata.columns[hashed_col_index].max_size);
 
-    if (hasher) {
-      auto reg_ptrs = hasher->buscarResultSet(comparator.compared_at_op(0));
+    auto reg_ptrs =
+        hasher.search(comparator);
 
-      for (auto &r : reg_ptrs) {
-        result_set.merge(std::move(
-            select_nth_from_page(table_metadata, r.page_id, r.slot)));
-      }
+    for (auto &r : reg_ptrs) {
+      result_set.merge(std::move(
+          select_nth_from_page(table_metadata, r.page_id,
+                               r.slot)));
     }
 
     return result_set;
   } else if (comparator.is_ranged_on_single_col() &&
              is_column_indexed(table_metadata,
                                comparator.col_index_at_op(0))) {
-    auto ic = get_indexed_column(table_metadata, comparator.col_index_at_op(0));
+    auto ic =
+        get_indexed_column(table_metadata, comparator.col_index_at_op(0));
     auto col_index = ic.first;
     auto root_id = ic.second;
     auto min_degree =
         calculate_btree_order(table_metadata.columns[col_index].max_size);
 
-    BPTree tree(*buffer_manager, table_metadata,
-                disk_manager->NULL_BLOCK, root_id,
-                min_degree,
-                table_metadata.columns[col_index].type,
-                table_metadata.columns[col_index].max_size);
+    // TODO: indexes
+    //
+    //  BPTree tree(*buffer_manager, table_metadata,
+    //              disk_manager->NULL_BLOCK, root_id,
+    //              min_degree,
+    //              table_metadata.columns[col_index].type,
+    //              table_metadata.columns[col_index].max_size);
 
     // tree.search(tree.r, Comparator &comp)
   }
@@ -123,7 +127,7 @@ ResultSet Megatron::select(serial::TableMetadata &table_metadata,
 }
 
 ResultSet Megatron::select_from_page(serial::TableMetadata &table_metadata,
-                                     size_t select_page_id, Comparator &comparator) {
+                                     uint32_t select_page_id, Comparator &comparator) {
   auto result_set =
       (table_metadata.are_regs_fixed)
           ? select_from_fixed_page(table_metadata, select_page_id, comparator)
@@ -134,7 +138,7 @@ ResultSet Megatron::select_from_page(serial::TableMetadata &table_metadata,
 
 ResultSet Megatron::select_from_fixed_page(
     serial::TableMetadata &table_metadata,
-    size_t select_page_id, Comparator &comparator) {
+    uint32_t select_page_id, Comparator &comparator) {
   auto frame = buffer_manager->load_pin_page(select_page_id);
   std::vector<unsigned char> &page_bytes = frame.page_bytes;
 
@@ -154,7 +158,7 @@ ResultSet Megatron::select_from_fixed_page(
       if (!comparator.evaluate(register_values))
         continue;
 
-      RegisterEntry reg{select_page_id, i};
+      RegisterEntry reg{select_page_id, static_cast<uint16_t>(i)};
 
       for (auto &v : register_values)
         reg.values.push_back(v);
@@ -171,7 +175,7 @@ ResultSet Megatron::select_from_fixed_page(
 
 ResultSet Megatron::select_from_slotted_page(
     serial::TableMetadata &table_metadata,
-    size_t select_page_id, Comparator &comparator) {
+    uint32_t select_page_id, Comparator &comparator) {
   auto frame = buffer_manager->load_pin_page(select_page_id);
   std::vector<unsigned char> &page_bytes = frame.page_bytes;
 
@@ -192,7 +196,7 @@ ResultSet Megatron::select_from_slotted_page(
       if (!comparator.evaluate(register_values))
         continue;
 
-      RegisterEntry reg{select_page_id, i};
+      RegisterEntry reg{select_page_id, static_cast<uint16_t>(i)};
 
       for (auto &v : register_values)
         reg.values.push_back(v);

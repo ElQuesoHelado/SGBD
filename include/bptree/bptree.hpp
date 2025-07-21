@@ -18,7 +18,6 @@ class BPTree {
   uint32_t null_page_id;
 
   serial::TableMetadata &table_metadata;
-  // BPNode root;
 
 public:
   const uint8_t key_type{};

@@ -25,17 +25,17 @@ set(MEGATRON_SOURCES
     ${SOURCE_DIR}/megatron/pages/traverse_pages.cpp
     ${SOURCE_DIR}/megatron/pages/pages.cpp
     ${SOURCE_DIR}/megatron/hashes/add.cpp
-    # ${SOURCE_DIR}/megatron/hashes/buckets.cpp
-    # ${SOURCE_DIR}/megatron/hashes/delete.cpp
-    # ${SOURCE_DIR}/megatron/hashes/find.cpp
     ${SOURCE_DIR}/megatron/hashes/get.cpp
-    # ${SOURCE_DIR}/megatron/hashes/hlpr.hpp
-    # ${SOURCE_DIR}/megatron/hashes/insert.cpp
-    # ${SOURCE_DIR}/megatron/hashes/loads.cpp
+    ${SOURCE_DIR}/megatron/hashes/hasher.cpp
+    ${SOURCE_DIR}/megatron/hashes/hlpr.cpp
+    ${SOURCE_DIR}/megatron/hashes/insert.cpp
+    ${SOURCE_DIR}/megatron/hashes/remove.cpp
+    ${SOURCE_DIR}/megatron/hashes/search.cpp
+    ${SOURCE_DIR}/megatron/hashes/split.cpp
+    ${SOURCE_DIR}/megatron/hashes/update.cpp
     ${SOURCE_DIR}/megatron/bptree/add.cpp
     ${SOURCE_DIR}/megatron/bptree/bptree.cpp
     ${SOURCE_DIR}/megatron/bptree/get.cpp
-    ${SOURCE_DIR}/megatron/bptree/indexing.cpp
     ${SOURCE_DIR}/megatron/bptree/insert.cpp
     ${SOURCE_DIR}/megatron/bptree/misc.cpp
     ${SOURCE_DIR}/megatron/bptree/search.cpp
@@ -94,6 +94,11 @@ target_link_libraries(runner PRIVATE megatron disk_manager buffer_manager)
 
 add_executable(tests ${SOURCE_DIR}/test.cpp)
 target_link_libraries(tests PRIVATE megatron disk_manager buffer_manager)
+
+add_executable(hash_test ${SOURCE_DIR}/hash_test.cpp)
+target_link_libraries(hash_test PRIVATE megatron disk_manager buffer_manager)
+
+
 
 add_custom_command(
     TARGET runner POST_BUILD

@@ -50,7 +50,7 @@ ResultSet Megatron::delete_nth_reg(
 }
 
 ResultSet Megatron::delete_nth_from_page(serial::TableMetadata &table_metadata,
-                                         size_t delete_page_id, size_t nth) {
+                                         uint32_t delete_page_id, size_t nth) {
   auto result_set =
       (table_metadata.are_regs_fixed)
           ? delete_nth_from_fixed_page(table_metadata, delete_page_id, nth)
@@ -61,7 +61,7 @@ ResultSet Megatron::delete_nth_from_page(serial::TableMetadata &table_metadata,
 
 ResultSet Megatron::delete_nth_from_fixed_page(
     serial::TableMetadata &table_metadata,
-    size_t delete_page_id, size_t nth) {
+    uint32_t delete_page_id, size_t nth) {
   auto &frame = buffer_manager->load_pin_page(delete_page_id);
   std::vector<unsigned char> &page_bytes = frame.page_bytes;
   auto page_bytes_it = page_bytes.begin();
@@ -111,7 +111,7 @@ ResultSet Megatron::delete_nth_from_fixed_page(
   return result_set;
 }
 
-ResultSet Megatron::delete_nth_from_slotted_page(serial::TableMetadata &table_metadata, size_t delete_page_id, size_t nth) {
+ResultSet Megatron::delete_nth_from_slotted_page(serial::TableMetadata &table_metadata, uint32_t delete_page_id, size_t nth) {
   auto &frame = buffer_manager->load_pin_page(delete_page_id);
   std::vector<unsigned char> &page_bytes = frame.page_bytes;
   auto page_bytes_it = page_bytes.begin();

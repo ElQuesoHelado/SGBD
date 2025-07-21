@@ -9,6 +9,11 @@ void Hasher::split_bucket(uint32_t bucket_id) {
   auto directory = load_directory(directory_id);
 
   auto old_bucket = load_bucket(bucket_id);
+
+  if (old_bucket.local_depth >= directory.global_depth) {
+    expand_directory(directory);
+  }
+
   auto new_bucket =
       allocate_bucket(
           (1 << old_bucket.local_depth) | old_bucket.prefix,
@@ -33,5 +38,16 @@ void Hasher::split_bucket(uint32_t bucket_id) {
 
   unload_bucket(old_bucket, true);
   unload_bucket(new_bucket, true);
-  unload_directory(directory);
+  unload_directory(directory, true);
+}
+
+void Hasher::expand_directory(DirectoryPage &directory) {
+  size_t i = 0, offset = (1 << (directory.global_depth));
+
+  while (i < directory.capacity && i < offset) {
+    directory.bucket_ptrs[i + offset] = directory.bucket_ptrs[i];
+    ++i;
+  }
+
+  directory.global_depth++;
 }

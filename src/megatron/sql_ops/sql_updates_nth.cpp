@@ -69,7 +69,7 @@ ResultSet Megatron::update_nth_reg(serial::TableMetadata &table_metadata,
 
 ResultSet Megatron::update_nth_from_page(
     serial::TableMetadata &table_metadata,
-    size_t update_page_id, size_t nth,
+    uint32_t update_page_id, size_t nth,
     std::string &upd_col_name,
     std::string &upd_col_value) {
   size_t upd_col_index{table_metadata.n_cols};
@@ -96,7 +96,7 @@ ResultSet Megatron::update_nth_from_page(
 
 ResultSet Megatron::update_nth_from_page(
     serial::TableMetadata &table_metadata,
-    size_t update_page_id, size_t nth,
+    uint32_t update_page_id, size_t nth,
     size_t upd_col_index, SQL_type &upd_value) {
   auto result_set =
       (table_metadata.are_regs_fixed)
@@ -110,7 +110,7 @@ ResultSet Megatron::update_nth_from_page(
 
 ResultSet Megatron::update_nth_from_fixed_page(
     serial::TableMetadata &table_metadata,
-    size_t update_page_id, size_t nth,
+    uint32_t update_page_id, size_t nth,
     size_t upd_col_index, SQL_type &upd_value) {
   auto &frame = buffer_manager->load_pin_page(update_page_id);
   std::vector<unsigned char> &page_bytes = frame.page_bytes;
@@ -173,7 +173,7 @@ ResultSet Megatron::update_nth_from_fixed_page(
 
 ResultSet Megatron::update_nth_from_slotted_page(
     serial::TableMetadata &table_metadata,
-    size_t update_page_id, size_t nth,
+    uint32_t update_page_id, size_t nth,
     size_t upd_col_index, SQL_type &upd_value) {
   auto &frame = buffer_manager->load_pin_page(update_page_id);
   std::vector<unsigned char> &page_bytes = frame.page_bytes;

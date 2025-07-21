@@ -35,7 +35,7 @@ struct Bucket {
         string_to_sql_type("", key_type, key_size);
 
     keys.resize(capacity, empty);
-    reg_ptrs.resize(capacity, {0, 0});
+    reg_ptrs.resize(capacity, {null_page_id, 0});
   }
 
   template <typename Iter>

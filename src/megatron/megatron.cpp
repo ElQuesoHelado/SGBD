@@ -173,8 +173,6 @@ void Megatron::load_disk(std::string disk_name, size_t n_frames, bool is_clock) 
       create_table(catalog_name, col_name_type);
     }
 
-    rehash_everything();
-
   } catch (const std::exception &e) {
     n_sectors_in_block = 0;
 
@@ -224,8 +222,6 @@ void Megatron::new_disk(std::string disk_name, size_t surfaces, size_t tracks,
       create_table(catalog_name, col_name_type);
     }
 
-    rehash_everything();
-
   } catch (const std::exception &e) {
     n_sectors_in_block = 0;
     std::cerr << e.what() << std::endl;
@@ -242,39 +238,6 @@ void Megatron::clean_managers() {
   if (disk_manager) {
     disk_manager->persist();
     disk_manager.reset();
-  }
-}
-
-void Megatron::rehash_everything(size_t bucket_size) {
-  table_id_hash.clear(); // Ahora es map<size_t, vector<shared_ptr<Hasher>>>
-
-  Comparator comp;
-  auto results = select(catalog_name, comp);
-
-  for (auto &e : results) {
-    int32_t table_id = std::get<int32_t>(e.values[0]);
-    int8_t hashed_col_index = std::get<int32_t>(e.values[1]);
-
-    // Crear nuevo Hasher con shared_ptr
-    auto hasher = std::make_shared<Hasher>(bucket_size, hashed_col_index);
-    table_id_hash[table_id].push_back(hasher);
-
-    serial::TableMetadata table_metadata;
-    if (!search_table(table_id, table_metadata))
-      continue;
-
-    // Obtener registros
-    Comparator reg_comp;
-    auto registers = select(table_metadata, reg_comp);
-
-    std::string col_name = std::string(array_to_string_view(table_metadata.columns[hashed_col_index].name));
-
-    // Indexar usando el mismo objeto hasher (no una copia)
-    hasher->indexarResultSet(registers, col_name);
-
-    // // Verificación
-    // std::cout << "Registros indexados para tabla " << table_id
-    //           << ": " << hasher->search(SQL_type{0}).size() << std::endl;
   }
 }
 

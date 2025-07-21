@@ -50,7 +50,8 @@ bool Megatron::is_column_hashed(serial::TableMetadata &table_metadata,
   return !results.empty();
 }
 
-std::vector<size_t> Megatron::get_hashed_columns(std::string &table_name) {
+std::vector<std::pair<uint32_t, uint32_t>>
+Megatron::get_hashed_columns(std::string &table_name) {
   serial::TableMetadata table_metadata;
 
   // No existe
@@ -62,7 +63,8 @@ std::vector<size_t> Megatron::get_hashed_columns(std::string &table_name) {
   return get_hashed_columns(table_metadata);
 }
 
-std::vector<size_t> Megatron::get_hashed_columns(serial::TableMetadata &table_metadata) {
+std::vector<std::pair<uint32_t, uint32_t>>
+Megatron::get_hashed_columns(serial::TableMetadata &table_metadata) {
   // Se busca en catalog entrada: (table_id, col_index, hash_type:0)
   std::vector<std::tuple<size_t, std::string, SQL_type>>
       comparisons = {
@@ -74,21 +76,22 @@ std::vector<size_t> Megatron::get_hashed_columns(serial::TableMetadata &table_me
 
   auto result_set = select(catalog_name, comparator);
 
-  std::vector<size_t> hashed_columns;
+  std::vector<std::pair<uint32_t, uint32_t>> hashed_columns;
   for (auto &r : result_set) {
-    hashed_columns.push_back(std::get<int>(r.values[2]));
+    hashed_columns.emplace_back(std::get<int>(r.values[1]),
+                                std::get<int>(r.values[3]));
   }
 
   return hashed_columns;
 }
 
-size_t Megatron::get_root_page_id(serial::TableMetadata &table_metadata,
-                                  size_t col_index) {
+uint32_t Megatron::get_root_page_id(serial::TableMetadata &table_metadata,
+                                    size_t col_index) {
   std::vector<std::tuple<size_t, std::string, SQL_type>>
       comparisons = {
           {0, "==", std::int32_t{(int)table_metadata.table_block_id}},
           {1, "==", std::int32_t{(int)col_index}},
-          {2, "==", std::int32_t{0}},
+          //{2, "==", std::int32_t{0}},
       };
 
   auto comparator = generate_comparator(table_metadata, comparisons);

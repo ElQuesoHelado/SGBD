@@ -51,9 +51,6 @@ class Megatron {
   void init_fixed_data_header(size_t reg_size, serial::FixedDataHeader &fixed_data_header);
   void init_slotted_data_header(serial::TableMetadata &table_metadata, serial::SlottedDataHeader &slotted_data_header);
 
-  void rehash_everything(size_t bucket_size = 4);
-  void reindex_table(serial::TableMetadata &table_metadata);
-
   // Guarda toda pagina sucia y free_space_bitmap, setea managers a null
   void clean_managers();
 
@@ -88,58 +85,58 @@ public:
   ResultSet select(serial::TableMetadata &table_metadata,
                    Comparator &comparator, int max_pages_loaded = -1);
   ResultSet select_from_page(serial::TableMetadata &table_metadata,
-                             size_t select_page_id, Comparator &comparator);
+                             uint32_t select_page_id, Comparator &comparator);
   ResultSet select_from_fixed_page(serial::TableMetadata &table_metadata,
-                                   size_t select_page_id, Comparator &comparator);
+                                   uint32_t select_page_id, Comparator &comparator);
   ResultSet select_from_slotted_page(serial::TableMetadata &table_metadata,
-                                     size_t select_page_id, Comparator &comparator);
+                                     uint32_t select_page_id, Comparator &comparator);
 
   ResultSet select_nth_reg(std::string &table_name, size_t nth);
   ResultSet select_nth_reg(serial::TableMetadata &table_metadata, size_t nth);
   ResultSet select_nth_from_page(serial::TableMetadata &table_metadata,
-                                 size_t delete_page_id, size_t nth);
+                                 uint32_t delete_page_id, size_t nth);
   ResultSet select_nth_from_fixed_page(serial::TableMetadata &table_metadata,
-                                       size_t delete_page_id, size_t nth);
+                                       uint32_t delete_page_id, size_t nth);
   ResultSet select_nth_from_slotted_page(
       serial::TableMetadata &table_metadata,
-      size_t delete_page_id, size_t nth);
+      uint32_t delete_page_id, size_t nth);
 
   ResultSet delete_condition(std::string &table_name, Comparator &comparator);
   ResultSet delete_condition(serial::TableMetadata &table_metadata,
                              Comparator &comparator);
   ResultSet delete_from_page(serial::TableMetadata &table_metadata,
-                             size_t delete_page_id, Comparator &comparator);
+                             uint32_t delete_page_id, Comparator &comparator);
   // ResultSet delete_from_page(serial::TableMetadata &table_metadata,
-  //                            size_t delete_page_id, size_t col_index,
+  //                            uint32_t delete_page_id, size_t col_index,
   //                            SQL_type &cond_val);
   ResultSet delete_from_fixed_page(serial::TableMetadata &table_metadata,
-                                   size_t delete_page_id, Comparator &comparator);
+                                   uint32_t delete_page_id, Comparator &comparator);
   ResultSet delete_from_slotted_page(serial::TableMetadata &table_metadata,
-                                     size_t delete_page_id, Comparator &comparator);
+                                     uint32_t delete_page_id, Comparator &comparator);
   ResultSet delete_nth_reg(std::string &table_name, size_t nth);
   ResultSet delete_nth_reg(serial::TableMetadata &table_metadata, size_t nth);
   ResultSet delete_nth_from_page(serial::TableMetadata &table_metadata,
-                                 size_t delete_page_id, size_t nth);
+                                 uint32_t delete_page_id, size_t nth);
   ResultSet delete_nth_from_fixed_page(serial::TableMetadata &table_metadata,
-                                       size_t delete_page_id, size_t nth);
+                                       uint32_t delete_page_id, size_t nth);
   ResultSet delete_nth_from_slotted_page(
       serial::TableMetadata &table_metadata,
-      size_t delete_page_id, size_t nth);
+      uint32_t delete_page_id, size_t nth);
 
   ResultSet insert(std::string table_name, std::vector<std::string> &values);
   ResultSet insert(serial::TableMetadata &table_metadata, std::vector<std::string> &values);
 
   ResultSet insert_into_page(serial::TableMetadata &table_metadata,
-                             size_t insert_page_id,
+                             uint32_t insert_page_id,
                              std::vector<unsigned char> &register_bytes);
   // Preprocesa registro
   ResultSet insert_into_page(serial::TableMetadata &table_metadata,
-                             size_t insert_page_id,
+                             uint32_t insert_page_id,
                              std::vector<std::string> &reg_values);
 
   // Se entiende que pagina tiene capacidad suficiente para registro/+slot
-  size_t insert_into_fixed_page(size_t insert_page_id, std::vector<unsigned char> &register_bytes);
-  size_t insert_into_slotted_page(size_t insert_page_id, std::vector<unsigned char> &register_bytes);
+  size_t insert_into_fixed_page(uint32_t insert_page_id, std::vector<unsigned char> &register_bytes);
+  size_t insert_into_slotted_page(uint32_t insert_page_id, std::vector<unsigned char> &register_bytes);
 
   ResultSet update_condition(std::string &table_name,
                              Comparator &comparator,
@@ -152,23 +149,23 @@ public:
 
   // Realiza validaciones de input
   ResultSet update_from_page(serial::TableMetadata &table_metadata,
-                             size_t update_page_id,
+                             uint32_t update_page_id,
                              Comparator &comparator,
                              std::string &upd_col_name,
                              std::string &upd_col_value);
 
   ResultSet update_from_page(serial::TableMetadata &table_metadata,
-                             size_t update_page_id,
+                             uint32_t update_page_id,
                              Comparator &comparator,
                              size_t upd_col_index, SQL_type &upd_value);
 
   ResultSet update_from_fixed_page(serial::TableMetadata &table_metadata,
-                                   size_t update_page_id,
+                                   uint32_t update_page_id,
                                    Comparator &comparator,
                                    size_t upd_col_index, SQL_type &upd_value);
 
   ResultSet update_from_slotted_page(serial::TableMetadata &table_metadata,
-                                     size_t update_page_id,
+                                     uint32_t update_page_id,
                                      Comparator &comparator,
                                      size_t upd_col_index, SQL_type &upd_value);
 
@@ -181,21 +178,21 @@ public:
                            std::string &upd_col_value);
 
   ResultSet update_nth_from_page(serial::TableMetadata &table_metadata,
-                                 size_t update_page_id, size_t nth,
+                                 uint32_t update_page_id, size_t nth,
                                  std::string &upd_col_name,
                                  std::string &upd_col_value);
 
   ResultSet update_nth_from_page(serial::TableMetadata &table_metadata,
-                                 size_t update_page_id, size_t nth,
+                                 uint32_t update_page_id, size_t nth,
                                  size_t upd_col_index, SQL_type &upd_value);
 
   ResultSet update_nth_from_fixed_page(serial::TableMetadata &table_metadata,
-                                       size_t update_page_id, size_t nth,
+                                       uint32_t update_page_id, size_t nth,
                                        size_t upd_col_index,
                                        SQL_type &upd_value);
 
   ResultSet update_nth_from_slotted_page(serial::TableMetadata &table_metadata,
-                                         size_t update_page_id, size_t nth,
+                                         uint32_t update_page_id, size_t nth,
                                          size_t upd_col_index,
                                          SQL_type &upd_value);
 
@@ -220,8 +217,10 @@ public:
   bool is_column_hashed(serial::TableMetadata &table_metadata, std::string &col_name);
   bool is_column_hashed(serial::TableMetadata &table_metadata, size_t col_index);
 
-  std::vector<size_t> get_hashed_columns(std::string &table_name);
-  std::vector<size_t> get_hashed_columns(serial::TableMetadata &table_metadata);
+  std::vector<std::pair<uint32_t, uint32_t>>
+  get_hashed_columns(std::string &table_name);
+  std::vector<std::pair<uint32_t, uint32_t>>
+  get_hashed_columns(serial::TableMetadata &table_metadata);
 
   void add_hash_to_table(std::string &table_name, std::string &col_name, size_t bucket_size = 4);
   void add_hash_to_table(serial::TableMetadata &table_metadata, std::string &col_name, size_t bucket_size = 4);
@@ -230,17 +229,13 @@ public:
   size_t create_dir_page();
   size_t create_bucket_page();
 
-  void rehash_table(std::string &table_name, std::string &col_name);
-  void rehash_table(serial::TableMetadata &table_metadata, std::string &col_name);
-  void rehash_table(serial::TableMetadata &table_metadata, size_t col_index);
-
   // void insert_hashed(serial::TableMetadata &table_metadata,
   //                    size_t col_index, size_t page_id, size_t pos,
   //                    std::vector<unsigned char> &register_bytes);
   bool insert_hashed(serial::TableMetadata table_metadata, size_t hashed_col,
                      SQL_type &key, size_t inserted_page, size_t inserted_slot);
 
-  size_t get_root_page_id(serial::TableMetadata &table_metadata, size_t col_index);
+  uint32_t get_root_page_id(serial::TableMetadata &table_metadata, size_t col_index);
 
   ResultSet get_register_on_key_match(serial::TableMetadata &table_metadata,
                                       RegPtr &reg_ptr, size_t hashed_col,

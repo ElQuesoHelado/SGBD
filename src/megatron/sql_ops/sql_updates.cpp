@@ -68,7 +68,7 @@ ResultSet Megatron::update_condition(serial::TableMetadata &table_metadata,
 }
 
 ResultSet Megatron::update_from_page(serial::TableMetadata &table_metadata,
-                                     size_t update_page_id,
+                                     uint32_t update_page_id,
                                      Comparator &comparator,
                                      std::string &upd_col_name,
                                      std::string &upd_col_value) {
@@ -98,7 +98,7 @@ ResultSet Megatron::update_from_page(serial::TableMetadata &table_metadata,
 
 ResultSet Megatron::update_from_page(
     serial::TableMetadata &table_metadata,
-    size_t update_page_id,
+    uint32_t update_page_id,
     Comparator &comparator,
     size_t upd_col_index, SQL_type &upd_value) {
   auto result_set =
@@ -115,7 +115,7 @@ ResultSet Megatron::update_from_page(
 
 ResultSet Megatron::update_from_fixed_page(
     serial::TableMetadata &table_metadata,
-    size_t update_page_id,
+    uint32_t update_page_id,
     Comparator &comparator,
     size_t upd_col_index, SQL_type &upd_value) {
   auto &frame = buffer_manager->load_pin_page(update_page_id);
@@ -178,7 +178,7 @@ ResultSet Megatron::update_from_fixed_page(
 
 ResultSet Megatron::update_from_slotted_page(
     serial::TableMetadata &table_metadata,
-    size_t update_page_id,
+    uint32_t update_page_id,
     Comparator &comparator,
     size_t upd_col_index, SQL_type &upd_value) {
   auto &frame = buffer_manager->load_pin_page(update_page_id);

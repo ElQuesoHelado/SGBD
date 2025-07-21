@@ -45,7 +45,6 @@ void Megatron::add_index_to_table(serial::TableMetadata &table_metadata,
 
   BPTree tree(*buffer_manager, table_metadata,
               disk_manager->NULL_BLOCK,
-              disk_manager->NULL_BLOCK,
               min_degree,
               table_metadata.columns[col_index].type,
               table_metadata.columns[col_index].max_size);
@@ -58,5 +57,13 @@ void Megatron::add_index_to_table(serial::TableMetadata &table_metadata,
 
   insert(catalog_name, values);
 
-  reindex_table(table_metadata);
+  Comparator comp;
+  auto registers = select(table_metadata, comp);
+
+  for (auto &reg : registers) {
+    tree.insert(
+        reg.values[col_index],
+        {static_cast<uint32_t>(reg.page_id),
+         static_cast<uint16_t>(reg.position)});
+  }
 }

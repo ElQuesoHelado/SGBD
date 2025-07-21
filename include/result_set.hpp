@@ -4,14 +4,15 @@
 #include "serial/table.hpp"
 #include "types.hpp"
 #include <cstddef>
+#include <cstdint>
 #include <format>
 #include <iostream>
 #include <string>
 #include <vector>
 
 struct RegisterEntry {
-  size_t page_id{};
-  size_t position{};
+  uint32_t page_id{};
+  uint16_t position{};
   std::vector<SQL_type> values{};
 };
 
