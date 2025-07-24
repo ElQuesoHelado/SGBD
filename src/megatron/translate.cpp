@@ -1,4 +1,8 @@
+#include "bptree/bpnode.hpp"
+#include "bptree/bptree.hpp"
 #include "disk_manager.hpp"
+#include "hash/directory.hpp"
+#include "hash/hasher.hpp"
 #include "megatron.hpp"
 #include "serial/fixed_data.hpp"
 #include "serial/generic.hpp"
@@ -10,6 +14,7 @@
 #include <boost/dynamic_bitset.hpp>
 #include <boost/dynamic_bitset/dynamic_bitset.hpp>
 #include <cstddef>
+#include <cstdint>
 #include <format>
 #include <string>
 
@@ -75,6 +80,28 @@ void Megatron::translate() {
 
       curr_page_id = page_header.next_block_id;
       // std::cout << curr_page_id << std::endl;
+    }
+
+    // Translate de indices/hashes
+    auto hashed_cols = get_hashed_columns(table_metadata);
+    for (auto &[c, r] : hashed_cols) {
+      Hasher hasher(
+          *buffer_manager,
+          r,
+          table_metadata.columns[c].type,
+          table_metadata.columns[c].max_size);
+
+      auto dir =
+          hasher.load_directory(hasher.directory_id);
+
+      hasher.unload_directory(dir);
+
+      translate_hash_directory(
+          table_metadata, dir,
+          std::vector<unsigned char> & page_bytes, uint32_t curr_page_id, hasher.capacity);
+
+      for (auto b : dir.bucket_ptrs) {
+      }
     }
   }
 }
@@ -382,5 +409,183 @@ std::vector<std::string> Megatron::translate_slotted_page(
     // disk_manager->write_block_txt(out_str, curr_page_id);
   }
 
+  return sectors;
+}
+
+std::vector<std::string> Megatron::translate_bptree_node_page(
+    serial::TableMetadata &table_metadata, BPTree &tree,
+    std::vector<unsigned char> &page_bytes,
+    uint32_t curr_page_id) {
+
+  BPNode node(page_bytes, tree.key_type,
+              tree.key_size, curr_page_id,
+              tree.min_degree);
+
+  std::string out_str =
+      "NODO B+tree de: " +
+      std::string(array_to_string_view(
+          table_metadata.name)) +
+      '\n' +
+      "Pagina: " + std::to_string(node.node_id) +
+      " Es hoja: " + std::to_string((node.is_leaf)) +
+      " N_llaves: " + std::to_string(node.n_keys) + "\n";
+
+  // Primer sector tiene la metadata de pagina
+  std::vector<std::string> sectors;
+  sectors.emplace_back();
+
+  int remm_sector_bytes =
+      disk_manager->SECTOR_SIZE - sizeof(BPNode::is_leaf) -
+      sizeof(BPNode::n_keys);
+
+  size_t ith_sector_in_block{};
+
+  sectors.back() += out_str;
+
+  for (size_t i{}; i < node.n_keys; ++i) {
+    sectors.back() +=
+        SQL_type_to_string(node.keys[i]) + " " +
+        std::to_string(node.ptrs[i]);
+
+    if (node.is_leaf)
+      sectors.back() += " " +
+                        std::to_string(node.reg_slots[i]);
+
+    sectors.back() += '\n';
+
+    remm_sector_bytes -= tree.key_size;
+    remm_sector_bytes -= sizeof(uint16_t);
+    remm_sector_bytes -= sizeof(uint32_t);
+
+    if (remm_sector_bytes <= 0) {
+      remm_sector_bytes = disk_manager->SECTOR_SIZE;
+      ith_sector_in_block++;
+
+      sectors.emplace_back();
+      sectors.back() += disk_manager->logic_sector_to_CHS(
+                            disk_manager->free_block_map.get_ith_lba(
+                                curr_page_id, ith_sector_in_block)) +
+                        "\n";
+    }
+  }
+  return sectors;
+}
+
+std::vector<std::string> Megatron::translate_hash_directory(
+    serial::TableMetadata &table_metadata, DirectoryPage &dir,
+    std::vector<unsigned char> &page_bytes,
+    uint32_t curr_page_id, uint32_t capacity) {
+  auto directory =
+      DirectoryPage(page_bytes,
+                    curr_page_id,
+                    disk_manager->NULL_BLOCK,
+                    capacity);
+
+  std::string out_str =
+      "DIRECTORIO HASH de: " +
+      std::string(array_to_string_view(
+          table_metadata.name)) +
+      '\n' +
+      "Pagina: " + std::to_string(dir.page_id) +
+      " Global_Depth: " + std::to_string((dir.global_depth)) +
+      " Capacidad: " + std::to_string(dir.capacity) + "\n";
+
+  // Primer sector tiene la metadata de pagina
+  std::vector<std::string> sectors;
+  sectors.emplace_back();
+
+  int remm_sector_bytes =
+      disk_manager->SECTOR_SIZE -
+      sizeof(DirectoryPage::global_depth) -
+      sizeof(DirectoryPage::capacity);
+
+  size_t ith_sector_in_block{};
+
+  sectors.back() += out_str + "\nPunteros a buckets:\n";
+
+  for (auto b : dir.bucket_ptrs) {
+    sectors.back() +=
+        std::to_string(b);
+
+    sectors.back() += '\n';
+
+    remm_sector_bytes -= sizeof(uint32_t);
+
+    if (remm_sector_bytes <= 0) {
+      remm_sector_bytes = disk_manager->SECTOR_SIZE;
+      ith_sector_in_block++;
+
+      sectors.emplace_back();
+      sectors.back() +=
+          disk_manager->logic_sector_to_CHS(
+              disk_manager->free_block_map.get_ith_lba(
+                  curr_page_id, ith_sector_in_block)) +
+          "\n" + "\nPunteros a buckets:\n";
+    }
+  }
+  return sectors;
+}
+
+std::vector<std::string> Megatron::translate_bucket(
+    serial::TableMetadata &table_metadata, Bucket &bucket,
+    Hasher &hasher,
+    std::vector<unsigned char> &page_bytes,
+    uint32_t curr_page_id, uint16_t capacity) {
+
+  // BPNode node(page_bytes, tree.key_type,
+  //             tree.key_size, curr_page_id,
+  //             tree.min_degree);
+
+  std::string out_str =
+      "BUCKET hash de: " +
+      std::string(array_to_string_view(
+          table_metadata.name)) +
+      '\n' +
+      "Pagina: " + std::to_string(bucket.page_id) +
+      " Local_depth: " + std::to_string((bucket.local_depth)) +
+      " Capacidad: " + std::to_string((bucket.capacity)) +
+      " Size: " + std::to_string(bucket.size) + "\n" +
+      "\nPrefijo: " + std::to_string((bucket.prefix));
+
+  // Primer sector tiene la metadata de pagina
+  std::vector<std::string> sectors;
+  sectors.emplace_back();
+
+  int remm_sector_bytes =
+      disk_manager->SECTOR_SIZE - sizeof(Bucket::overflow_page) -
+      sizeof(Bucket::local_depth) - sizeof(Bucket::size) -
+      sizeof(Bucket::capacity);
+
+  size_t ith_sector_in_block{};
+
+  sectors.back() += out_str;
+
+  for (size_t i{}; i < bucket.capacity; ++i) {
+    if (bucket.reg_ptrs[i].page_id != disk_manager->NULL_BLOCK) {
+      sectors.back() +=
+          SQL_type_to_string(bucket.keys[i]) + " " +
+          std::to_string(bucket.reg_ptrs[i].page_id) +
+          std::to_string(bucket.reg_ptrs[i].slot);
+    } else {
+      sectors.back() += "VACIO";
+    }
+
+    sectors.back() += '\n';
+
+    remm_sector_bytes -= hasher.key_size;
+    remm_sector_bytes -= sizeof(uint16_t);
+    remm_sector_bytes -= sizeof(uint32_t);
+
+    if (remm_sector_bytes <= 0) {
+      remm_sector_bytes = disk_manager->SECTOR_SIZE;
+      ith_sector_in_block++;
+
+      sectors.emplace_back();
+      sectors.back() += disk_manager->logic_sector_to_CHS(
+                            disk_manager->free_block_map.get_ith_lba(
+                                curr_page_id, ith_sector_in_block)) +
+                        "\n" + "\nPunteros a registros:\n";
+    }
+  }
   return sectors;
 }

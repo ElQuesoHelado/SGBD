@@ -269,7 +269,7 @@ int main(int argc, char *argv[]) {
 
   megatron.create_table(titanic, columns);
 
-  megatron.load_CSV("csv/titanic.csv", "titanic", 10);
+  megatron.load_CSV("csv/titanic.csv", "titanic", 30);
 
   serial::TableMetadata table_metadata;
   std::vector<std::tuple<std::string,
@@ -282,7 +282,8 @@ int main(int argc, char *argv[]) {
           {"", "OR", ""},
           {"Embarked", "==", "S"}},
       comparisons2 = {{"Sex", "==", "male"}}, ranged = {
-                                                  {"PassengerId", "<", "300"},
+                                                  {"PassengerId", "<", "15"},
+                                                  {"PassengerId", ">", "13"},
                                               };
 
   megatron.search_table(titanic, table_metadata);

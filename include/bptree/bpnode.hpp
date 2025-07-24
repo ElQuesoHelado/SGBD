@@ -55,7 +55,8 @@ struct BPNode {
 
     for (auto &k : keys) {
       auto type_bytes = serialize_sql_type(k);
-      bytes.insert(bytes.end(), type_bytes.begin(), type_bytes.end());
+      bytes.insert(bytes.end(),
+                   type_bytes.begin(), type_bytes.end());
     }
 
     for (auto &p : ptrs)

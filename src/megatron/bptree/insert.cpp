@@ -1,9 +1,10 @@
 #include "bptree/bptree.hpp"
+#include "types.hpp"
 #include <print>
 
 void BPTree::insert(const SQL_type &key, const RegPtr reg_ptr) {
-  if (std::get<int32_t>(key) == 6)
-    std::print("ITERACION: ");
+  if (SQL_type_to_string(key) == "7")
+    std::print("a");
 
   auto r = load_node(root_id);
 
@@ -12,18 +13,12 @@ void BPTree::insert(const SQL_type &key, const RegPtr reg_ptr) {
     auto s = split_root();
     insert_non_full(s, key, reg_ptr);
   } else {
-    r = load_node(r.node_id);
     insert_non_full(r, key, reg_ptr);
   }
 }
 
 void BPTree::insert_non_full(BPNode &x,
                              const SQL_type &key, const RegPtr &reg_ptr) {
-  std::println("{}", std::get<int32_t>(key));
-
-  if (std::get<int32_t>(key) == 147)
-    std::print("ITERACION: ");
-
   auto i = x.n_keys - 1;
   if (x.is_leaf) {
     while (i >= 0 && key < x.keys[i]) {
@@ -45,8 +40,14 @@ void BPTree::insert_non_full(BPNode &x,
 
     if (child.n_keys == (2 * min_degree - 1)) {
       split_child(x, i);
+
+      unload_node(child);
+
       if (key > x.keys[i])
         i++;
+
+      child = load_node(x.ptrs[i]);
+
     } else {
       unload_node(x);
     }

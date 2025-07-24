@@ -6,6 +6,7 @@
 #include "disk_manager.hpp"
 #include "hash/bucket.hpp"
 #include "hash/directory.hpp"
+#include "hash/hasher.hpp"
 #include "result_set.hpp"
 #include "serial/fixed_data.hpp"
 #include "serial/slotted_data.hpp"
@@ -436,6 +437,22 @@ public:
                                   std::vector<unsigned char> &page_bytes, size_t page_id);
   std::string translate_data_page_no_write(serial::TableMetadata &table_metadata,
                                            std::vector<unsigned char> &page_bytes, size_t page_id);
+
+  std::vector<std::string> translate_bptree_node_page(
+      serial::TableMetadata &table_metadata, BPTree &tree,
+      std::vector<unsigned char> &page_bytes,
+      uint32_t curr_page_id);
+
+  std::vector<std::string> translate_hash_directory(
+      serial::TableMetadata &table_metadata, DirectoryPage &dir,
+      std::vector<unsigned char> &page_bytes,
+      uint32_t curr_page_id, uint32_t capacity);
+
+  std::vector<std::string> translate_bucket(
+      serial::TableMetadata &table_metadata, Bucket &bucket,
+      Hasher &hasher,
+      std::vector<unsigned char> &page_bytes,
+      uint32_t curr_page_id, uint16_t capacity);
 
   std::vector<std::string> translate_fixed_page(
       serial::TableMetadata &table_metadata,

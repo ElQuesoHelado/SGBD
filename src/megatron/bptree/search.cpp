@@ -32,13 +32,13 @@ std::vector<RegPtr> BPTree::linked_leaf_search(
     BPNode &x, Comparator &comp, size_t i) {
   std::vector<RegPtr> reg_ptrs{};
   while (i < x.n_keys && comp.evaluate(x.keys[i])) {
-    reg_ptrs.emplace_back(x.ptrs[i], i);
+    reg_ptrs.emplace_back(x.ptrs[i], x.reg_slots[i]);
     i++;
   }
 
   unload_node(x);
 
-  if (i == x.n_keys && x.ptrs[i] != null_page_id) {
+  if (i == x.n_keys && x.ptrs[i] != 0) {
     auto sibling = load_node(x.ptrs[i]);
 
     auto partial = linked_leaf_search(sibling, comp, 0);

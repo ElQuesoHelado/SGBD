@@ -135,7 +135,8 @@ ResultSet Megatron::update_nth_from_fixed_page(
           deserialize_register(table_metadata, register_bytes);
 
       // Log de registro sobreescrito
-      RegisterEntry reg{update_page_id, i};
+      RegisterEntry reg{update_page_id,
+                        static_cast<uint16_t>(i)};
 
       for (auto &v : register_values)
         reg.values.push_back(v);
@@ -199,7 +200,8 @@ ResultSet Megatron::update_nth_from_slotted_page(
       auto register_values =
           deserialize_register(table_metadata, register_bytes);
 
-      RegisterEntry reg{update_page_id, i};
+      RegisterEntry reg{update_page_id,
+                        static_cast<uint16_t>(i)};
       for (auto &v : register_values)
         reg.values.push_back(v);
 

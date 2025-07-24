@@ -86,22 +86,37 @@ ResultSet Megatron::select(serial::TableMetadata &table_metadata,
   } else if (comparator.is_ranged_on_single_col() &&
              is_column_indexed(table_metadata,
                                comparator.col_index_at_op(0))) {
+
     auto ic =
         get_indexed_column(table_metadata, comparator.col_index_at_op(0));
     auto col_index = ic.first;
     auto root_id = ic.second;
+    // auto min_degree =
+    //     calculate_btree_order(table_metadata.columns[col_index].max_size);
+
+    std::println("Se tiene indice en columna #: {} y condicion "
+                 "por rango, se usa b+tree para busqueda",
+                 ic);
+
     auto min_degree =
-        calculate_btree_order(table_metadata.columns[col_index].max_size);
+        2;
 
-    // TODO: indexes
-    //
-    //  BPTree tree(*buffer_manager, table_metadata,
-    //              disk_manager->NULL_BLOCK, root_id,
-    //              min_degree,
-    //              table_metadata.columns[col_index].type,
-    //              table_metadata.columns[col_index].max_size);
+    BPTree tree(*buffer_manager, table_metadata,
+                root_id,
+                min_degree,
+                table_metadata.columns[col_index].type,
+                table_metadata.columns[col_index].max_size);
 
-    // tree.search(tree.r, Comparator &comp)
+    // tree.print_tree(root_id);
+
+    auto reg_ptrs = tree.search(comparator);
+
+    for (auto &r : reg_ptrs) {
+      result_set.merge(std::move(
+          select_nth_from_page(table_metadata, r.page_id,
+                               r.slot)));
+    }
+    return result_set;
   }
 
   // Busqueda secuencial

@@ -109,7 +109,8 @@ ResultSet Megatron::delete_from_fixed_page(
         continue;
 
       // Registramos eliminado
-      RegisterEntry reg{delete_page_id, i};
+      RegisterEntry reg{delete_page_id,
+                        static_cast<uint16_t>(i)};
 
       for (auto &v : register_values)
         reg.values.push_back(v);
@@ -162,7 +163,8 @@ ResultSet Megatron::delete_from_slotted_page(
       if (!comparator.evaluate(register_values))
         continue;
 
-      RegisterEntry reg{delete_page_id, i};
+      RegisterEntry reg{delete_page_id,
+                        static_cast<uint16_t>(i)};
 
       for (auto &v : register_values)
         reg.values.push_back(v);

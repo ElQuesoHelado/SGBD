@@ -84,7 +84,8 @@ ResultSet Megatron::select_nth_from_fixed_page(
       auto register_values =
           deserialize_register(table_metadata, register_bytes);
 
-      RegisterEntry reg{select_page_id, i};
+      RegisterEntry reg{select_page_id,
+                        static_cast<uint16_t>(i)};
       for (auto &v : register_values)
         reg.values.push_back(v);
 
@@ -138,7 +139,8 @@ ResultSet Megatron::select_nth_from_slotted_page(
       auto register_values =
           deserialize_register(table_metadata, register_bytes);
 
-      RegisterEntry reg{select_page_id, i};
+      RegisterEntry reg{select_page_id,
+                        static_cast<uint16_t>(i)};
       for (auto &v : register_values)
         reg.values.push_back(v);
 

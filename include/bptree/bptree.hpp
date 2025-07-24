@@ -13,7 +13,6 @@
 
 class BPTree {
   BufferManager &buffer;
-  size_t min_degree; // TODO: determinado en block_size
 
   uint32_t null_page_id;
 
@@ -23,6 +22,7 @@ public:
   const uint8_t key_type{};
   const uint16_t key_size{}; // De acuedo a SQL_type
   uint32_t root_id;
+  size_t min_degree; // TODO: determinado en block_size
 
   BPTree(BufferManager &buffer,
          serial::TableMetadata &table_metadata,
@@ -40,6 +40,7 @@ public:
 
   // ~BPTree() {
   // }
+  void print_tree(uint32_t page_id, size_t depth = 0);
 
   std::vector<RegPtr> search(Comparator &comp);
   std::vector<RegPtr> search(BPNode &x, Comparator &comp);

@@ -141,7 +141,8 @@ ResultSet Megatron::update_from_fixed_page(
         continue;
 
       // Log de registro sobreescrito
-      RegisterEntry reg{update_page_id, i};
+      RegisterEntry reg{update_page_id,
+                        static_cast<uint16_t>(i)};
 
       for (auto &v : register_values)
         reg.values.push_back(v);
@@ -202,7 +203,8 @@ ResultSet Megatron::update_from_slotted_page(
       if (!comparator.evaluate(register_values))
         continue;
 
-      RegisterEntry reg{update_page_id, i};
+      RegisterEntry reg{update_page_id,
+                        static_cast<uint16_t>(i)};
 
       for (auto &v : register_values)
         reg.values.push_back(v);

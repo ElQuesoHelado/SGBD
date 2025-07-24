@@ -7,6 +7,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 
+# find_program(CLANGXX clang++)
+# if(CLANGXX)
+#   message(STATUS "clang++ encontrado: usando Clang en lugar de GCC")
+# endif()
+#set(CMAKE_CXX_COMPILER )
+
 set(SOURCE_DIR src)
 set(INCLUDE_DIR include)
 

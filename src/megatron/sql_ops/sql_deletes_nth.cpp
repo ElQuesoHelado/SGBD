@@ -84,7 +84,8 @@ ResultSet Megatron::delete_nth_from_fixed_page(
       auto register_values =
           deserialize_register(table_metadata, register_bytes);
 
-      RegisterEntry reg{delete_page_id, i};
+      RegisterEntry reg{delete_page_id,
+                        static_cast<uint16_t>(i)};
       for (auto &v : register_values)
         reg.values.push_back(v);
 
@@ -132,7 +133,8 @@ ResultSet Megatron::delete_nth_from_slotted_page(serial::TableMetadata &table_me
                                                    slotted_data_header, page_bytes, i);
       auto register_values = deserialize_register(table_metadata, register_bytes);
 
-      RegisterEntry reg{delete_page_id, i};
+      RegisterEntry reg{delete_page_id,
+                        static_cast<uint16_t>(i)};
       for (auto &v : register_values)
         reg.values.push_back(v);
 
