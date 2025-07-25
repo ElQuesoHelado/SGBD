@@ -14,7 +14,7 @@ size_t Megatron::create_bucket_page() {
   return create_fixed_page(2 * sizeof(uint32_t));
 }
 
-void Megatron::add_hash_to_table(std::string &table_name, std::string &col_name, size_t bucket_size) {
+void Megatron::add_hash_to_table(std::string &table_name, std::string &col_name) {
   serial::TableMetadata table_metadata;
 
   // No existe
@@ -23,9 +23,9 @@ void Megatron::add_hash_to_table(std::string &table_name, std::string &col_name,
     return;
   }
 
-  return add_hash_to_table(table_metadata, col_name, bucket_size);
+  return add_hash_to_table(table_metadata, col_name);
 }
-void Megatron::add_hash_to_table(serial::TableMetadata &table_metadata, std::string &col_name, size_t bucket_size) {
+void Megatron::add_hash_to_table(serial::TableMetadata &table_metadata, std::string &col_name) {
   auto col_index = get_column_index(table_metadata, col_name);
 
   // No existe columna
@@ -34,11 +34,11 @@ void Megatron::add_hash_to_table(serial::TableMetadata &table_metadata, std::str
     return;
   }
 
-  return add_hash_to_table(table_metadata, col_index, bucket_size);
+  return add_hash_to_table(table_metadata, col_index);
 }
 
 void Megatron::add_hash_to_table(serial::TableMetadata &table_metadata,
-                                 size_t col_index, size_t bucket_size) {
+                                 size_t col_index) {
   // Busca si hash ya existe
   if (is_column_hashed(table_metadata, col_index)) {
     std::println("Columna ya tiene un hash asignado");
@@ -49,12 +49,6 @@ void Megatron::add_hash_to_table(serial::TableMetadata &table_metadata,
                 disk_manager->NULL_BLOCK,
                 table_metadata.columns[col_index].type,
                 table_metadata.columns[col_index].max_size);
-
-  // FIXME: DEBUG
-  // Hasher hasher(*buffer_manager,
-  //               disk_manager->NULL_BLOCK,
-  //               table_metadata.columns[col_index].type,
-  //               table_metadata.columns[col_index].max_size, 1);
 
   std::vector<std::string>
       values = {
@@ -74,7 +68,4 @@ void Megatron::add_hash_to_table(serial::TableMetadata &table_metadata,
         {static_cast<uint32_t>(reg.page_id),
          static_cast<uint16_t>(reg.position)});
   }
-
-  // Creamos una pagina inicial para directorio
-  // auto new_dir_id = create_dir_page();
 }

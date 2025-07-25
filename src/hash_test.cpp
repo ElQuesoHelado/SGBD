@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
   megatron.create_table(titanic, columns);
 
   megatron.load_CSV("csv/titanic.csv",
-                    "titanic");
+                    "titanic", 10);
 
   serial::TableMetadata table_metadata;
   std::vector<std::tuple<std::string,
@@ -37,16 +37,34 @@ int main(int argc, char *argv[]) {
                          std::string>>
       comparisons1 = {{"Embarked", "==", "S"}},
       comparisons2 = {{"Sex", "==", "male"}},
-      comparisons3 = {{"PassengerId", "==", "800"}};
+      comparisons3 = {{"PassengerId", "==", "800"}},
+      comparisons4 = {
+          {"PassengerId", ">", "100"},
+          {"PassengerId", "<", "200"},
+
+      };
   megatron.search_table(titanic, table_metadata);
   std::string hashed_col1 = "PassengerId", hashed_col2 = "Sex";
 
   megatron.add_hash_to_table(titanic, hashed_col1);
 
-  Comparator equals_comp1 =
-      megatron.generate_comparator(table_metadata, comparisons3);
+  megatron.translate();
 
-  megatron.select_print(titanic, equals_comp1);
+  // megatron.add_index_to_table(titanic, hashed_col1);
+  //
+  // Comparator equals_comp1 =
+  //     megatron.generate_comparator(table_metadata, comparisons3);
+  //
+  // megatron.select_print(titanic, equals_comp1);
+  //
+  // Comparator ranged =
+  //     megatron.generate_comparator(table_metadata, comparisons4);
+  //
+  // megatron.select_print(titanic, ranged);
+  //
+  // megatron.delete_condition(table_metadata, ranged);
+  //
+  // megatron.select_print(titanic, ranged);
 
   return 0;
 }

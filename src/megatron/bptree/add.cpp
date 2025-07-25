@@ -37,11 +37,11 @@ void Megatron::add_index_to_table(serial::TableMetadata &table_metadata,
     return;
   }
 
-  // size_t min_degree =
-  //     calculate_btree_order(table_metadata.columns[col_index].max_size);
-
   size_t min_degree =
-      2;
+      calculate_btree_order(table_metadata.columns[col_index].max_size);
+
+  // size_t min_degree =
+  //     2;
 
   BPTree tree(*buffer_manager, table_metadata,
               disk_manager->NULL_BLOCK,

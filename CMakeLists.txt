@@ -5,7 +5,10 @@ project(SGBD)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
+# set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
+
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules" ${CMAKE_MODULE_PATH})
+
 
 # find_program(CLANGXX clang++)
 # if(CLANGXX)
@@ -43,6 +46,7 @@ set(MEGATRON_SOURCES
     ${SOURCE_DIR}/megatron/bptree/bptree.cpp
     ${SOURCE_DIR}/megatron/bptree/get.cpp
     ${SOURCE_DIR}/megatron/bptree/insert.cpp
+    ${SOURCE_DIR}/megatron/bptree/remove.cpp
     ${SOURCE_DIR}/megatron/bptree/misc.cpp
     ${SOURCE_DIR}/megatron/bptree/search.cpp
     ${SOURCE_DIR}/megatron/bptree/split.cpp
@@ -53,11 +57,16 @@ set(MEGATRON_SOURCES
     ${SOURCE_DIR}/megatron/ui/inserts.cpp
     ${SOURCE_DIR}/megatron/ui/selects.cpp
     ${SOURCE_DIR}/megatron/ui/tables.cpp
+    ${SOURCE_DIR}/megatron/ui/pages.cpp
     ${SOURCE_DIR}/megatron/ui/updates.cpp
+    ${SOURCE_DIR}/megatron/ui/board.cpp
     ${SOURCE_DIR}/megatron/ui/utils.hpp
     ${SOURCE_DIR}/megatron/ui.cpp
     ${SOURCE_DIR}/megatron/registers.cpp
     ${SOURCE_DIR}/megatron/translate.cpp
+    ${SOURCE_DIR}/megatron/translate_data.cpp
+    ${SOURCE_DIR}/megatron/translate_hash.cpp
+    ${SOURCE_DIR}/megatron/translate_index.cpp
     ${SOURCE_DIR}/megatron/misc.cpp
 )
 
@@ -80,6 +89,8 @@ set(BUFFER_MANAGER_SOURCES
 )
 
 find_package(Boost REQUIRED)
+find_package(LIBVLC REQUIRED)
+
 
 add_library(megatron)
 target_sources(megatron PRIVATE ${MEGATRON_SOURCES})
@@ -90,13 +101,15 @@ target_sources(disk_manager PRIVATE ${DISK_MANAGER_SOURCES})
 target_include_directories(disk_manager PUBLIC ${INCLUDE_DIR})
 target_include_directories(disk_manager PRIVATE ${Boost_INCLUDE_DIRS})
 # target_link_libraries(disk_manager PRIVATE Boost::Boost)
+include_directories(${LIBVLC_INCLUDE_DIR})
+
 
 add_library(buffer_manager)
 target_sources(buffer_manager PRIVATE ${BUFFER_MANAGER_SOURCES})
 target_include_directories(buffer_manager PUBLIC ${INCLUDE_DIR})
 
 add_executable(runner ${SOURCE_DIR}/main.cpp)
-target_link_libraries(runner PRIVATE megatron disk_manager buffer_manager)
+target_link_libraries(runner PRIVATE megatron disk_manager buffer_manager ${LIBVLC_LIBRARY})
 
 add_executable(tests ${SOURCE_DIR}/test.cpp)
 target_link_libraries(tests PRIVATE megatron disk_manager buffer_manager)
@@ -105,6 +118,9 @@ add_executable(hash_test ${SOURCE_DIR}/hash_test.cpp)
 target_link_libraries(hash_test PRIVATE megatron disk_manager buffer_manager)
 
 
+add_executable(sgbd_videos ${SOURCE_DIR}/sgbd_videos.cpp)
+target_link_libraries(sgbd_videos PRIVATE megatron disk_manager buffer_manager ${LIBVLC_LIBRARY})
+
 
 add_custom_command(
     TARGET runner POST_BUILD
@@ -112,4 +128,12 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_CURRENT_SOURCE_DIR}/csv
         $<TARGET_FILE_DIR:runner>/csv
+)
+
+add_custom_command(
+    TARGET runner POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:runner>/media
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_SOURCE_DIR}/media
+        $<TARGET_FILE_DIR:runner>/media
 )

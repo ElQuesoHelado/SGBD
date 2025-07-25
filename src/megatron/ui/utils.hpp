@@ -39,7 +39,7 @@ inline void mostrarMenu() {
   std::cout << "3. Crear tabla\n";
   std::cout << "4. Select *\n";
   std::cout << "5. Select con condición\n";
-  std::cout << "6. Ubicar registro\n";
+  std::cout << "6. Mostrar contenido pagina\n";
   std::cout << "7. Insertar registro individual\n";
   std::cout << "8. Modificar por condicion\n";
   std::cout << "9. Modificar n-esimo registro\n";
@@ -54,6 +54,11 @@ inline void mostrarMenu() {
   std::cout << "18. Interactuar Buffer Manager\n";
   std::cout << "19. Mostrar hits\n";
   std::cout << "20. Agregar columna hash a tabla\n";
+  std::cout << "21. Agregar columna indice a tabla\n";
+  std::cout << "22. Mostrar todo hilo de 1 board\n";
+  std::cout << "23. Mostrar todo post de 1 hilo\n";
+  std::cout << "24. Mostrar media en post\n";
+  std::cout << "25. Borrar hilo\n";
   std::cout << "0. Salir\n";
   std::cout << "Seleccione una opción: ";
 }

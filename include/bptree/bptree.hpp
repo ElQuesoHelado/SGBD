@@ -45,6 +45,9 @@ public:
   std::vector<RegPtr> search(Comparator &comp);
   std::vector<RegPtr> search(BPNode &x, Comparator &comp);
 
+  void remove(const SQL_type &key);
+  void remove(BPNode &x, const SQL_type &key);
+
   void insert(const SQL_type &key, const RegPtr reg_ptr);
   void insert_non_full(BPNode &x, const SQL_type &key, const RegPtr &reg_ptr);
 

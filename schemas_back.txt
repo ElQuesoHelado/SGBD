@@ -14,3 +14,4 @@ housing#price#INTEGER#area#INTEGER#bedrooms#SMALLINT#bathrooms#SMALLINT#stories#
 
 housing_var#price#INTEGER#area#INTEGER#bedrooms#SMALLINT#bathrooms#SMALLINT#stories#SMALLINT#mainroad#VARCHAR(3)#guestroom#VARCHAR(3)#basement#VARCHAR(3)#hotwaterheating#VARCHAR(3)#airconditioning#VARCHAR(3)#parking#SMALLINT#prefarea#VARCHAR(3)#furnishingstatus#VARCHAR(15)
 
+media#id#SMALLINT#nombre#CHAR(20)#path#CHAR(20)

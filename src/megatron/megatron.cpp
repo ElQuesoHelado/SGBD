@@ -49,7 +49,7 @@ void Megatron::run() {
     else if (opcion == "5")
       ui_select_table_condition();
     else if (opcion == "6")
-      ui_find_reg();
+      ui_show_page();
     else if (opcion == "7")
       ui_insert_data();
     else if (opcion == "8")
@@ -104,7 +104,22 @@ void Megatron::run() {
 
     } else if (opcion == "20") {
       ui_add_hash_to_table();
+      pauseAndReturn();
 
+    } else if (opcion == "21") {
+      ui_add_index_to_table();
+      pauseAndReturn();
+
+    } else if (opcion == "22") {
+      ui_show_threads_from_board();
+      pauseAndReturn();
+
+    } else if (opcion == "23") {
+      ui_show_posts_from_thread();
+      pauseAndReturn();
+
+    } else if (opcion == "24") {
+      ui_show_post_media();
       pauseAndReturn();
 
     } else if (opcion == "0") {

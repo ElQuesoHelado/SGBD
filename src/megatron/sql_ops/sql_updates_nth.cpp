@@ -105,6 +105,36 @@ ResultSet Megatron::update_nth_from_page(
           : update_nth_from_slotted_page(table_metadata, update_page_id,
                                          nth, upd_col_index, upd_value);
 
+  auto hashed_cols = get_hashed_columns(table_metadata);
+  for (auto &[c, r] : hashed_cols) {
+    Hasher hasher(
+        *buffer_manager,
+        r,
+        table_metadata.columns[c].type,
+        table_metadata.columns[c].max_size);
+
+    for (auto &reg : result_set.registers) {
+      hasher.remove(reg.values[c]);
+      hasher.insert(upd_value, {reg.page_id, reg.position});
+    }
+  }
+
+  auto indexed_cols = get_indexed_columns(table_metadata);
+  for (auto &[c, r] : indexed_cols) {
+    auto min_degree =
+        calculate_btree_order(table_metadata.columns[c].max_size);
+    BPTree tree(*buffer_manager, table_metadata,
+                r,
+                min_degree,
+                table_metadata.columns[c].type,
+                table_metadata.columns[c].max_size);
+
+    for (auto &reg : result_set.registers) {
+      tree.remove(reg.values[c]);
+      tree.insert(upd_value, {reg.page_id, reg.position});
+    }
+  }
+
   return result_set;
 }
 

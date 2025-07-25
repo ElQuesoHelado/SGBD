@@ -1,5 +1,6 @@
 #include <cstddef>
 #include <cstdint>
+#include <print>
 
 #include "hash/directory.hpp"
 #include "hash/hasher.hpp"
@@ -43,6 +44,8 @@ size_t Hasher::calculate_directory_capacity() {
 
 uint32_t Hasher::locate_bucket(const SQL_type &key) {
   auto directory = load_directory(directory_id);
+  // std::println("Directorio en pagina: {}", directory_id);
+
   auto key_bytes =
       serialize_sql_type(key);
 

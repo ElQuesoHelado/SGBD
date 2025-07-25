@@ -19,7 +19,7 @@ void Megatron::select_print(std::string &table_name,
 
   size_t i{1};
   for (auto &reg : result_set) {
-    std::println("{} {}", i, reg);
+    std::println("Bloque: {} ({}) {}", reg.page_id, i, reg);
     i++;
   }
 }
@@ -31,7 +31,8 @@ void Megatron::select_print(serial::TableMetadata &table_metadata,
 
   size_t i{1};
   for (auto &reg : result_set) {
-    std::println("{} {}", i, reg);
+    std::println("Bloque: {} ({}) {}", reg.page_id, i, reg);
+    // std::println("{} {}", i, reg);
     i++;
   }
 }
@@ -64,10 +65,11 @@ ResultSet Megatron::select(serial::TableMetadata &table_metadata,
     auto dir_page =
         get_root_page_id(table_metadata, hashed_col_index);
 
-    std::println("Se tiene hash en columna #: {} y solo condicion "
+    std::println("Se tiene hash en columna #: {}/{} y solo condicion "
                  "igualdad, se usa hash para busqueda",
-                 hashed_col_index);
+                 hashed_col_index, result_set.columns[hashed_col_index]);
 
+    std::println("Pagina directorio en: {}", dir_page);
     Hasher hasher(*buffer_manager,
                   dir_page,
                   table_metadata.columns[hashed_col_index].type,
@@ -91,16 +93,16 @@ ResultSet Megatron::select(serial::TableMetadata &table_metadata,
         get_indexed_column(table_metadata, comparator.col_index_at_op(0));
     auto col_index = ic.first;
     auto root_id = ic.second;
-    // auto min_degree =
-    //     calculate_btree_order(table_metadata.columns[col_index].max_size);
-
-    std::println("Se tiene indice en columna #: {} y condicion "
-                 "por rango, se usa b+tree para busqueda",
-                 ic);
-
     auto min_degree =
-        2;
+        calculate_btree_order(table_metadata.columns[col_index].max_size);
 
+    std::println("Se tiene indice en columna #: {}/{} y condicion "
+                 "por rango, se usa b+tree para busqueda",
+                 ic, result_set.columns[col_index]);
+
+    // auto min_degree =
+    //     2;
+    //
     BPTree tree(*buffer_manager, table_metadata,
                 root_id,
                 min_degree,

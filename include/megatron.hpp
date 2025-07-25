@@ -223,9 +223,9 @@ public:
   std::vector<std::pair<uint32_t, uint32_t>>
   get_hashed_columns(serial::TableMetadata &table_metadata);
 
-  void add_hash_to_table(std::string &table_name, std::string &col_name, size_t bucket_size = 4);
-  void add_hash_to_table(serial::TableMetadata &table_metadata, std::string &col_name, size_t bucket_size = 4);
-  void add_hash_to_table(serial::TableMetadata &table_metadata, size_t col_index, size_t bucket_size = 4);
+  void add_hash_to_table(std::string &table_name, std::string &col_name);
+  void add_hash_to_table(serial::TableMetadata &table_metadata, std::string &col_name);
+  void add_hash_to_table(serial::TableMetadata &table_metadata, size_t col_index);
 
   size_t create_dir_page();
   size_t create_bucket_page();
@@ -361,8 +361,14 @@ public:
   void ui_load_csv();
   void ui_load_n_regs_csv();
   void ui_find_reg();
+  void ui_show_page();
   void ui_show_table_metadata();
   void ui_add_hash_to_table();
+  void ui_add_index_to_table();
+  void ui_show_threads_from_board();
+  void ui_show_posts_from_thread();
+  void ui_delete_thread();
+  void ui_show_post_media();
 
   Comparator ui_generate_comparator(serial::TableMetadata &table_metadata);
   Comparator ui_generate_comparator(std::string &table_name);
@@ -431,24 +437,21 @@ public:
 
   void show_table_metadata(std::string &table_name);
 
-  void translate();
+  std::pair<std::vector<uint32_t>, std::vector<uint32_t>> translate();
   std::string translate_data_page(serial::TableMetadata &table_metadata, size_t page_id);
   std::string translate_data_page(serial::TableMetadata &table_metadata,
                                   std::vector<unsigned char> &page_bytes, size_t page_id);
   std::string translate_data_page_no_write(serial::TableMetadata &table_metadata,
                                            std::vector<unsigned char> &page_bytes, size_t page_id);
 
-  std::vector<std::string> translate_bptree_node_page(
+  std::vector<uint32_t> translate_bptree_node_page(
       serial::TableMetadata &table_metadata, BPTree &tree,
-      std::vector<unsigned char> &page_bytes,
-      uint32_t curr_page_id);
+      uint32_t node_id);
 
-  std::vector<std::string> translate_hash_directory(
-      serial::TableMetadata &table_metadata, DirectoryPage &dir,
-      std::vector<unsigned char> &page_bytes,
-      uint32_t curr_page_id, uint32_t capacity);
+  void translate_hash_directory(
+      serial::TableMetadata &table_metadata, DirectoryPage &dir);
 
-  std::vector<std::string> translate_bucket(
+  void translate_bucket(
       serial::TableMetadata &table_metadata, Bucket &bucket,
       Hasher &hasher,
       std::vector<unsigned char> &page_bytes,

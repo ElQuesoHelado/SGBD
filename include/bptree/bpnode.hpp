@@ -20,7 +20,8 @@ struct BPNode {
   // (heap1, heap2, hermano)
   std::vector<uint32_t> ptrs{};
 
-  std::vector<uint16_t> reg_slots{}; // Posicion exacta registro
+  // Posicion exacta registro
+  std::vector<uint16_t> reg_slots{};
 
   uint32_t node_id{};
   size_t min_degree{};

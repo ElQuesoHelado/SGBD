@@ -80,6 +80,34 @@ ResultSet Megatron::delete_from_page(
           : delete_from_slotted_page(
                 table_metadata, delete_page_id, comparator);
 
+  auto hashed_cols = get_hashed_columns(table_metadata);
+  for (auto &[c, r] : hashed_cols) {
+    Hasher hasher(
+        *buffer_manager,
+        r,
+        table_metadata.columns[c].type,
+        table_metadata.columns[c].max_size);
+
+    for (auto &reg : result_set.registers) {
+      hasher.remove(reg.values[c]);
+    }
+  }
+
+  auto indexed_cols = get_indexed_columns(table_metadata);
+  for (auto &[c, r] : indexed_cols) {
+    auto min_degree =
+        calculate_btree_order(table_metadata.columns[c].max_size);
+    BPTree tree(*buffer_manager, table_metadata,
+                r,
+                min_degree,
+                table_metadata.columns[c].type,
+                table_metadata.columns[c].max_size);
+
+    for (auto &reg : result_set.registers) {
+      tree.remove(reg.values[c]);
+    }
+  }
+
   return result_set;
 }
 

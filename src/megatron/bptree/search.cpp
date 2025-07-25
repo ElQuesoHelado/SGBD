@@ -3,14 +3,19 @@
 #include "reg_ptr.hpp"
 #include "result_set.hpp"
 #include <cstddef>
+#include <print>
 
 std::vector<RegPtr> BPTree::search(Comparator &comp) {
   auto root = load_node(root_id);
+
+  std::println("Arbol con root en: {}", root_id);
 
   return search(root, comp);
 }
 
 std::vector<RegPtr> BPTree::search(BPNode &x, Comparator &comp) {
+  std::println("Buscando en nodo: {}", x.node_id);
+
   size_t i{};
   while (i < x.n_keys && !comp.evaluate(x.keys[i])) {
     i++;
@@ -18,6 +23,7 @@ std::vector<RegPtr> BPTree::search(BPNode &x, Comparator &comp) {
 
   if (x.is_leaf) {
     // Se libera nodo internamente
+    std::println("Se llego a una hoja, se busca secuencialmente");
     return linked_leaf_search(x, comp, i);
   } else {
     // One pass garantiza no ser utilizado otra vez
@@ -31,10 +37,14 @@ std::vector<RegPtr> BPTree::search(BPNode &x, Comparator &comp) {
 std::vector<RegPtr> BPTree::linked_leaf_search(
     BPNode &x, Comparator &comp, size_t i) {
   std::vector<RegPtr> reg_ptrs{};
+  std::println("Nodo hoja: {}", x.node_id);
+  // std::print("Registros encontrados en: ");
   while (i < x.n_keys && comp.evaluate(x.keys[i])) {
+    std::print("({}, {}) ", x.ptrs[i], x.reg_slots[i]);
     reg_ptrs.emplace_back(x.ptrs[i], x.reg_slots[i]);
     i++;
   }
+  std::println();
 
   unload_node(x);
 

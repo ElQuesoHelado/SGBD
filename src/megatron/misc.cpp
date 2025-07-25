@@ -57,6 +57,8 @@ void Megatron::show_table_metadata(std::string &table_name) {
     return;
   }
 
+  auto structures = translate();
+
   // Metadata Basica
   std::cout << std::format("Tabla ubicada en bloque: {}\n"
                            "Nombre: {}\n"
@@ -95,6 +97,13 @@ void Megatron::show_table_metadata(std::string &table_name) {
     curr_page_id = page_header.next_block_id;
   }
 
+  std::cout << "\nPaginas con directorios/buckets: \n";
+  for (auto h : structures.first)
+    std::cout << h << ", ";
+
+  std::cout << "Paginas con nodos B+: \n";
+  for (auto n : structures.second)
+    std::cout << n << ", ";
+
   std::cout << "\nN_registros: " << n_regs << "\nBytes usados: " << total_size << std::endl;
-  // Se itera por todas sus paginas para hallar n_regs y bytes used
 }
