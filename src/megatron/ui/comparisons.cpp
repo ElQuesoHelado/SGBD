@@ -57,7 +57,7 @@ Comparator Megatron::generate_comparator(
     serial::TableMetadata &table_metadata,
     std::vector<std::tuple<size_t,
                            std::string,
-                           SQL_type>>
+                           SQL_type_>>
         &comparisons) {
   Comparator comparator;
 

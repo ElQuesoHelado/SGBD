@@ -11,7 +11,7 @@ void Hasher::insert_from_set(const ResultSet &set, size_t key_col_index) {
   }
 }
 
-void Hasher::insert(const SQL_type &key, const RegPtr &reg_ptr) {
+void Hasher::insert(const SQL_type_ &key, const RegPtr &reg_ptr) {
   auto bucket_id = locate_bucket(key);
 
   auto bucket = load_bucket(bucket_id);
@@ -34,7 +34,7 @@ void Hasher::insert(const SQL_type &key, const RegPtr &reg_ptr) {
 }
 
 void Hasher::insert_non_full_bucket(
-    Bucket &bucket, const SQL_type &key, const RegPtr &reg_ptr) {
+    Bucket &bucket, const SQL_type_ &key, const RegPtr &reg_ptr) {
   for (size_t j{}; j < bucket.capacity; ++j) {
     if (bucket.reg_ptrs[j].page_id == null_page_id) {
       bucket.keys[j] = key;
@@ -46,7 +46,7 @@ void Hasher::insert_non_full_bucket(
 }
 
 void Hasher::insert_overflow_bucket(
-    uint32_t bucket_id, const SQL_type &key, const RegPtr &reg_ptr) {
+    uint32_t bucket_id, const SQL_type_ &key, const RegPtr &reg_ptr) {
   std::println("overflow bucket creado");
   auto bucket = load_bucket(bucket_id);
 

@@ -122,7 +122,7 @@ struct VarcharType {
 // TODO: cambio a clase, agrupar to_string, length
 typedef std::variant<int8_t, int16_t, int32_t, int64_t,
                      float, double, CharType, VarcharType>
-    SQL_type;
+    SQL_type_;
 
 template <typename T>
 concept StringCastable =
@@ -183,7 +183,7 @@ struct overload : Ts... {
 //                     field);
 // }
 
-inline std::string SQL_type_to_string(const SQL_type &var) {
+inline std::string SQL_type_to_string(const SQL_type_ &var) {
   std::ostringstream oss;
   // Configuración segura para todos los tipos
   oss << std::dec << std::noshowbase << std::fixed;
@@ -245,7 +245,7 @@ inline std::string SQL_type_to_string(const SQL_type &var) {
 // }
 
 // TODO: cambiar a optional caso sea nulo
-inline SQL_type string_to_sql_type(std::string input, uint8_t type, uint16_t size) {
+inline SQL_type_ string_to_sql_type(std::string input, uint8_t type, uint16_t size) {
   try {
     switch (type) {
     case TINYINT: {
@@ -299,7 +299,7 @@ inline SQL_type string_to_sql_type(std::string input, uint8_t type, uint16_t siz
 }
 
 template <typename Iter>
-inline SQL_type deserialize_sql_type(Iter &it, uint8_t type, size_t size) {
+inline SQL_type_ deserialize_sql_type(Iter &it, uint8_t type, size_t size) {
   auto read_bytes = [&](size_t count) -> std::vector<uint8_t> {
     std::vector<uint8_t> buffer;
     for (size_t i = 0; i < count; ++i, ++it) {
@@ -367,7 +367,7 @@ inline SQL_type deserialize_sql_type(Iter &it, uint8_t type, size_t size) {
   }
 }
 
-inline std::vector<unsigned char> serialize_sql_type(const SQL_type &value) {
+inline std::vector<unsigned char> serialize_sql_type(const SQL_type_ &value) {
   std::vector<unsigned char> output;
 
   if (value.index() == 2) {
@@ -415,7 +415,7 @@ inline std::vector<unsigned char> serialize_sql_type(const SQL_type &value) {
 //
 // }
 
-inline size_t SQL_type_length(SQL_type &field) {
+inline size_t SQL_type_length(SQL_type_ &field) {
   return std::visit(overload{[](StringCastable auto &arg) { return std::to_string(arg).length(); },
                              [](StringWrapper auto &arg) { return arg.value.length(); }},
                     field);

@@ -2,13 +2,13 @@
 #include "types.hpp"
 #include <print>
 
-void BPTree::remove(const SQL_type &key) {
+void BPTree::remove(const SQL_type_ &key) {
   auto root = load_node(root_id);
 
   return remove(root, key);
 }
 
-void BPTree::remove(BPNode &x, const SQL_type &key) {
+void BPTree::remove(BPNode &x, const SQL_type_ &key) {
   size_t i{};
   while (i < x.n_keys && key > x.keys[i]) {
     i++;

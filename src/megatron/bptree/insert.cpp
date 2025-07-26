@@ -2,7 +2,7 @@
 #include "types.hpp"
 #include <print>
 
-void BPTree::insert(const SQL_type &key, const RegPtr reg_ptr) {
+void BPTree::insert(const SQL_type_ &key, const RegPtr reg_ptr) {
   if (SQL_type_to_string(key) == "7")
     std::print("a");
 
@@ -18,7 +18,7 @@ void BPTree::insert(const SQL_type &key, const RegPtr reg_ptr) {
 }
 
 void BPTree::insert_non_full(BPNode &x,
-                             const SQL_type &key, const RegPtr &reg_ptr) {
+                             const SQL_type_ &key, const RegPtr &reg_ptr) {
   auto i = x.n_keys - 1;
   if (x.is_leaf) {
     while (i >= 0 && key < x.keys[i]) {

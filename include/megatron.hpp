@@ -158,17 +158,17 @@ public:
   ResultSet update_from_page(serial::TableMetadata &table_metadata,
                              uint32_t update_page_id,
                              Comparator &comparator,
-                             size_t upd_col_index, SQL_type &upd_value);
+                             size_t upd_col_index, SQL_type_ &upd_value);
 
   ResultSet update_from_fixed_page(serial::TableMetadata &table_metadata,
                                    uint32_t update_page_id,
                                    Comparator &comparator,
-                                   size_t upd_col_index, SQL_type &upd_value);
+                                   size_t upd_col_index, SQL_type_ &upd_value);
 
   ResultSet update_from_slotted_page(serial::TableMetadata &table_metadata,
                                      uint32_t update_page_id,
                                      Comparator &comparator,
-                                     size_t upd_col_index, SQL_type &upd_value);
+                                     size_t upd_col_index, SQL_type_ &upd_value);
 
   ResultSet update_nth_reg(std::string &table_name, size_t nth,
                            std::string &upd_col_name,
@@ -185,17 +185,17 @@ public:
 
   ResultSet update_nth_from_page(serial::TableMetadata &table_metadata,
                                  uint32_t update_page_id, size_t nth,
-                                 size_t upd_col_index, SQL_type &upd_value);
+                                 size_t upd_col_index, SQL_type_ &upd_value);
 
   ResultSet update_nth_from_fixed_page(serial::TableMetadata &table_metadata,
                                        uint32_t update_page_id, size_t nth,
                                        size_t upd_col_index,
-                                       SQL_type &upd_value);
+                                       SQL_type_ &upd_value);
 
   ResultSet update_nth_from_slotted_page(serial::TableMetadata &table_metadata,
                                          uint32_t update_page_id, size_t nth,
                                          size_t upd_col_index,
-                                         SQL_type &upd_value);
+                                         SQL_type_ &upd_value);
 
   void select_save(std::string table_name, std::string col_name,
                    std::string condition, std::string new_table_name);
@@ -234,19 +234,19 @@ public:
   //                    size_t col_index, size_t page_id, size_t pos,
   //                    std::vector<unsigned char> &register_bytes);
   bool insert_hashed(serial::TableMetadata table_metadata, size_t hashed_col,
-                     SQL_type &key, size_t inserted_page, size_t inserted_slot);
+                     SQL_type_ &key, size_t inserted_page, size_t inserted_slot);
 
   uint32_t get_root_page_id(serial::TableMetadata &table_metadata, size_t col_index);
 
   ResultSet get_register_on_key_match(serial::TableMetadata &table_metadata,
                                       RegPtr &reg_ptr, size_t hashed_col,
-                                      SQL_type &key);
+                                      SQL_type_ &key);
 
   ResultSet find(serial::TableMetadata table_metadata,
-                 size_t hashed_col, SQL_type &key);
+                 size_t hashed_col, SQL_type_ &key);
 
   ResultSet delete_hashed(serial::TableMetadata table_metadata,
-                          size_t hashed_col, SQL_type &key);
+                          size_t hashed_col, SQL_type_ &key);
 
   size_t find_free_reg_ptr_pos(Bucket &bucket);
 
@@ -297,7 +297,7 @@ public:
   Comparator generate_comparator(serial::TableMetadata &table_metadata,
                                  std::vector<std::tuple<size_t,
                                                         std::string,
-                                                        SQL_type>>
+                                                        SQL_type_>>
                                      &comparisons);
 
   /*
@@ -415,11 +415,11 @@ public:
   std::vector<unsigned char> serialize_register(const serial::TableMetadata &table_metadata,
                                                 std::vector<std::string> &values);
   std::vector<unsigned char> serialize_register(const serial::TableMetadata &table_metadata,
-                                                std::vector<SQL_type> &values);
+                                                std::vector<SQL_type_> &values);
 
   // Retornamos todos los valores de un registro
-  std::vector<SQL_type> deserialize_register(const serial::TableMetadata &table_metadata,
-                                             std::vector<unsigned char> &register_bytes);
+  std::vector<SQL_type_> deserialize_register(const serial::TableMetadata &table_metadata,
+                                              std::vector<unsigned char> &register_bytes);
 
   std::vector<unsigned char> get_ith_register_bytes(
       const serial::TableMetadata &table_metadata,

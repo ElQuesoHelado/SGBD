@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <cstring>
 #include <iterator>
+#include <span>
 #include <string_view>
 #include <type_traits>
 #include <vector>
@@ -27,6 +28,19 @@ inline void read_v(Iter &it, T &value) {
 
   std::memcpy(&value, &(*it), sizeof(T));
   std::advance(it, sizeof(T));
+}
+
+template <typename T>
+void read_v(std::span<const std::byte> &data, T &value) {
+  static_assert(std::is_trivially_copyable_v<T>,
+                "Read de bytes de tipo no trivial");
+  if (data.size() < sizeof(T)) {
+    throw std::out_of_range("Span no tiene capacidad suficiente");
+  }
+
+  value = std::bit_cast<T>(
+      *reinterpret_cast<const std::array<std::byte, sizeof(T)> *>(data.data()));
+  data = data.subspan(sizeof(T));
 }
 
 /*
@@ -60,4 +74,7 @@ inline std::string_view array_to_string_view(std::array<char, size> &array) {
   std::size_t len = std::distance(array.begin(), it);
   std::string_view sv(reinterpret_cast<const char *>(array.data()), len);
   return sv;
+}
+
+inline void deserialize(std::span<std::byte> buffer) {
 }

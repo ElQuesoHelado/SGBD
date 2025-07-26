@@ -11,7 +11,7 @@ struct BPNode {
   uint8_t is_leaf{true};
   uint16_t n_keys{};
 
-  std::vector<SQL_type> keys{};
+  std::vector<SQL_type_> keys{};
 
   // Generico, a nodo interno, heapfile page
   // o a la siguiente hoja(ultimo puntero)

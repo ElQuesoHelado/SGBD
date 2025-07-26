@@ -13,7 +13,7 @@
 struct RegisterEntry {
   uint32_t page_id{};
   uint16_t position{};
-  std::vector<SQL_type> values{};
+  std::vector<SQL_type_> values{};
 };
 
 // Solo valores

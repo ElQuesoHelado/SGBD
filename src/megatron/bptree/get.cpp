@@ -36,7 +36,7 @@ bool Megatron::is_column_indexed(serial::TableMetadata &table_metadata,
 bool Megatron::is_column_indexed(serial::TableMetadata &table_metadata,
                                  size_t col_index) {
   // Se busca en catalog entrada: (table_id, col_index, index_type:1)
-  std::vector<std::tuple<size_t, std::string, SQL_type>>
+  std::vector<std::tuple<size_t, std::string, SQL_type_>>
       comparisons = {
           {0, "==", std::int32_t{(int)table_metadata.table_block_id}},
           {1, "==", std::int32_t{(int)col_index}},
@@ -53,7 +53,7 @@ std::pair<uint32_t, uint32_t>
 Megatron::get_indexed_column(serial::TableMetadata &table_metadata,
                              size_t col_index) {
   // Se busca en catalog entrada: (table_id, col_index, index_type:1)
-  std::vector<std::tuple<size_t, std::string, SQL_type>>
+  std::vector<std::tuple<size_t, std::string, SQL_type_>>
       comparisons = {
           {0, "==", std::int32_t{(int)table_metadata.table_block_id}},
           {1, "==", std::int32_t{(int)col_index}},
@@ -89,7 +89,7 @@ Megatron::get_indexed_columns(std::string &table_name) {
 std::vector<std::pair<uint32_t, uint32_t>>
 Megatron::get_indexed_columns(serial::TableMetadata &table_metadata) {
   // Se busca en catalog entrada: (table_id, col_index, index_type:1)
-  std::vector<std::tuple<size_t, std::string, SQL_type>>
+  std::vector<std::tuple<size_t, std::string, SQL_type_>>
       comparisons = {
           {0, "==", std::int32_t{(int)table_metadata.table_block_id}},
           {2, "==", std::int32_t{1}},

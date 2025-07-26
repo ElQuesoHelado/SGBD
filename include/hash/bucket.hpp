@@ -12,7 +12,7 @@ struct Bucket {
   uint8_t local_depth{};
   uint8_t size{};
   uint16_t capacity{}; // Dicta cuando se llena
-  std::vector<SQL_type> keys{};
+  std::vector<SQL_type_> keys{};
   std::vector<RegPtr> reg_ptrs{};
 
   uint32_t page_id{}, null_page_id{};

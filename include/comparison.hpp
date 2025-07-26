@@ -7,8 +7,8 @@
 
 struct Comparison {
   size_t col_index{};
-  SQL_type compared;
-  std::function<bool(const SQL_type &, const SQL_type &)> condition;
+  SQL_type_ compared;
+  std::function<bool(const SQL_type_ &, const SQL_type_ &)> condition;
   bool is_next_and{true}; // representa (A < B) and/or ...
   bool is_equals{};
 };
@@ -48,7 +48,7 @@ public:
     return value_comp_ops[i].col_index;
   }
 
-  SQL_type compared_at_op(size_t i) {
+  SQL_type_ compared_at_op(size_t i) {
     if (i >= value_comp_ops.size())
       return 0;
 
@@ -68,41 +68,41 @@ public:
     return *this;
   }
 
-  Comparator &less_than(const SQL_type &cmp_value, size_t col_index = 0) {
+  Comparator &less_than(const SQL_type_ &cmp_value, size_t col_index = 0) {
     value_comp_ops
         .emplace_back(
             col_index,
             cmp_value,
-            [](const SQL_type &x, const SQL_type &y) { return x < y; }, true);
+            [](const SQL_type_ &x, const SQL_type_ &y) { return x < y; }, true);
     return *this;
   }
 
-  Comparator &greater_than(const SQL_type &cmp_value, size_t col_index = 0) {
+  Comparator &greater_than(const SQL_type_ &cmp_value, size_t col_index = 0) {
     value_comp_ops
-        .emplace_back(col_index, cmp_value, [](const SQL_type &x, const SQL_type &y) { return x > y; }, true);
+        .emplace_back(col_index, cmp_value, [](const SQL_type_ &x, const SQL_type_ &y) { return x > y; }, true);
     return *this;
   }
 
-  Comparator &less_equal_than(const SQL_type &cmp_value, size_t col_index = 0) {
+  Comparator &less_equal_than(const SQL_type_ &cmp_value, size_t col_index = 0) {
     value_comp_ops
-        .emplace_back(col_index, cmp_value, [](const SQL_type &x, const SQL_type &y) { return x <= y; }, true);
+        .emplace_back(col_index, cmp_value, [](const SQL_type_ &x, const SQL_type_ &y) { return x <= y; }, true);
     return *this;
   }
 
-  Comparator &greater_equal_than(const SQL_type &cmp_value, size_t col_index = 0) {
+  Comparator &greater_equal_than(const SQL_type_ &cmp_value, size_t col_index = 0) {
     value_comp_ops
-        .emplace_back(col_index, cmp_value, [](const SQL_type &x, const SQL_type &y) { return x >= y; }, true);
+        .emplace_back(col_index, cmp_value, [](const SQL_type_ &x, const SQL_type_ &y) { return x >= y; }, true);
     return *this;
   }
 
-  Comparator &equals(const SQL_type &cmp_value, size_t col_index = 0) {
+  Comparator &equals(const SQL_type_ &cmp_value, size_t col_index = 0) {
     value_comp_ops
-        .emplace_back(col_index, cmp_value, [](const SQL_type &x, const SQL_type &y) { return x == y; }, true, true);
+        .emplace_back(col_index, cmp_value, [](const SQL_type_ &x, const SQL_type_ &y) { return x == y; }, true, true);
     return *this;
   }
 
   // Se usa row para evaluar toda condicion
-  bool evaluate(const std::vector<SQL_type> &row_values) {
+  bool evaluate(const std::vector<SQL_type_> &row_values) {
     if (value_comp_ops.empty())
       return true;
 
@@ -127,7 +127,7 @@ public:
     return result;
   }
 
-  bool evaluate(const SQL_type &value) {
+  bool evaluate(const SQL_type_ &value) {
     if (value_comp_ops.empty())
       return true;
 

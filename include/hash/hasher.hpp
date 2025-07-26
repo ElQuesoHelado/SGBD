@@ -60,25 +60,25 @@ public:
     }
   }
 
-  uint32_t locate_bucket(const SQL_type &key);
+  uint32_t locate_bucket(const SQL_type_ &key);
 
   std::vector<RegPtr> search(Comparator &equals);
-  std::vector<RegPtr> search(SQL_type &key);
-  std::vector<RegPtr> search_in_bucket(uint32_t bucket_id, SQL_type &key);
+  std::vector<RegPtr> search(SQL_type_ &key);
+  std::vector<RegPtr> search_in_bucket(uint32_t bucket_id, SQL_type_ &key);
 
-  void insert(const SQL_type &key, const RegPtr &reg_ptr);
-  void insert_non_full_bucket(Bucket &bucket, const SQL_type &key,
+  void insert(const SQL_type_ &key, const RegPtr &reg_ptr);
+  void insert_non_full_bucket(Bucket &bucket, const SQL_type_ &key,
                               const RegPtr &reg_ptr);
 
   void insert_overflow_bucket(uint32_t bucket_id,
-                              const SQL_type &key, const RegPtr &reg_ptr);
+                              const SQL_type_ &key, const RegPtr &reg_ptr);
 
   void insert_from_set(const ResultSet &set, size_t key_col_index);
 
-  void remove(SQL_type &key);
-  void remove_in_bucket(uint32_t bucket_id, SQL_type &key);
+  void remove(SQL_type_ &key);
+  void remove_in_bucket(uint32_t bucket_id, SQL_type_ &key);
 
-  void update(SQL_type &old_key, SQL_type &new_key);
+  void update(SQL_type_ &old_key, SQL_type_ &new_key);
 
   void split_bucket(uint32_t bucket_id);
 
@@ -93,7 +93,7 @@ public:
   size_t calculate_bucket_capacity();
   size_t calculate_directory_capacity();
 
-  size_t hash_key(const SQL_type &key, size_t d);
+  size_t hash_key(const SQL_type_ &key, size_t d);
   size_t hash_key_bits(std::vector<unsigned char> &bytes, size_t d);
 
   // Solo asigna punteros, no crea buckets

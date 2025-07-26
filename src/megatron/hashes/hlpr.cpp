@@ -6,7 +6,7 @@
 #include "hash/hasher.hpp"
 #include "types.hpp"
 
-size_t Hasher::hash_key(const SQL_type &key, size_t d) {
+size_t Hasher::hash_key(const SQL_type_ &key, size_t d) {
   auto key_bytes = serialize_sql_type(key);
   return hash_key_bits(key_bytes, d);
 }
@@ -42,7 +42,7 @@ size_t Hasher::calculate_directory_capacity() {
   return remm_bytes / (sizeof(uint32_t));
 }
 
-uint32_t Hasher::locate_bucket(const SQL_type &key) {
+uint32_t Hasher::locate_bucket(const SQL_type_ &key) {
   auto directory = load_directory(directory_id);
   // std::println("Directorio en pagina: {}", directory_id);
 

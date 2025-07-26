@@ -22,7 +22,7 @@ ResultSet Megatron::update_nth_reg(serial::TableMetadata &table_metadata,
                                    size_t nth, std::string &upd_col_name,
                                    std::string &upd_col_value) {
   size_t upd_col_index{table_metadata.n_cols};
-  SQL_type upd_value;
+  SQL_type_ upd_value;
 
   for (size_t i{}; i < table_metadata.columns.size(); ++i) {
     if (upd_col_name ==
@@ -73,7 +73,7 @@ ResultSet Megatron::update_nth_from_page(
     std::string &upd_col_name,
     std::string &upd_col_value) {
   size_t upd_col_index{table_metadata.n_cols};
-  SQL_type upd_value;
+  SQL_type_ upd_value;
 
   for (size_t i{}; i < table_metadata.columns.size(); ++i) {
     if (upd_col_name ==
@@ -97,7 +97,7 @@ ResultSet Megatron::update_nth_from_page(
 ResultSet Megatron::update_nth_from_page(
     serial::TableMetadata &table_metadata,
     uint32_t update_page_id, size_t nth,
-    size_t upd_col_index, SQL_type &upd_value) {
+    size_t upd_col_index, SQL_type_ &upd_value) {
   auto result_set =
       (table_metadata.are_regs_fixed)
           ? update_nth_from_fixed_page(table_metadata, update_page_id,
@@ -141,7 +141,7 @@ ResultSet Megatron::update_nth_from_page(
 ResultSet Megatron::update_nth_from_fixed_page(
     serial::TableMetadata &table_metadata,
     uint32_t update_page_id, size_t nth,
-    size_t upd_col_index, SQL_type &upd_value) {
+    size_t upd_col_index, SQL_type_ &upd_value) {
   auto &frame = buffer_manager->load_pin_page(update_page_id);
   std::vector<unsigned char> &page_bytes = frame.page_bytes;
   auto page_bytes_it = page_bytes.begin();
@@ -205,7 +205,7 @@ ResultSet Megatron::update_nth_from_fixed_page(
 ResultSet Megatron::update_nth_from_slotted_page(
     serial::TableMetadata &table_metadata,
     uint32_t update_page_id, size_t nth,
-    size_t upd_col_index, SQL_type &upd_value) {
+    size_t upd_col_index, SQL_type_ &upd_value) {
   auto &frame = buffer_manager->load_pin_page(update_page_id);
   std::vector<unsigned char> &page_bytes = frame.page_bytes;
   auto page_bytes_it = page_bytes.begin();
