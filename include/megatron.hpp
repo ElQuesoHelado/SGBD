@@ -11,7 +11,7 @@
 #include "serial/fixed_data.hpp"
 #include "serial/slotted_data.hpp"
 #include "serial/table.hpp"
-#include "types.hpp"
+#include "types/types.hpp"
 #include <atomic>
 #include <cstddef>
 #include <cstdint>
@@ -250,9 +250,6 @@ public:
 
   size_t find_free_reg_ptr_pos(Bucket &bucket);
 
-  // Encuentra profundidad, sea directorio o bucket
-  size_t get_depth(serial::TableMetadata &table_metadata, size_t col_index);
-
   DirectoryPage load_directory_page(size_t page_id);
 
   // =============================
@@ -360,7 +357,6 @@ public:
   void ui_delete_nth();
   void ui_load_csv();
   void ui_load_n_regs_csv();
-  void ui_find_reg();
   void ui_show_page();
   void ui_show_table_metadata();
   void ui_add_hash_to_table();

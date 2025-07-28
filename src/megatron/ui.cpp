@@ -15,30 +15,6 @@
 
 using namespace std;
 
-void Megatron::ui_find_reg() {
-  clearScreen();
-
-  try {
-    string table_name;
-    cout << "Nombre de la tabla: ";
-    getline(cin, table_name);
-    cout << "N-esimo registro a encontrar: ";
-    size_t nth_reg;
-    if (!(std::cin >> nth_reg))
-      throw std::invalid_argument("Número de superficies inválido");
-
-    find_nth_reg(table_name, nth_reg);
-
-  } catch (const std::exception &e) {
-    std::cerr << "\nError: " << e.what() << "\n";
-    std::cin.clear();
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-  }
-
-  cout << "\"Registros eliminados (si existían)\"\n";
-  pauseAndReturn();
-}
-
 void Megatron::ui_interact_buffer_manager() {
   string table_name;
   cout << "Nombre de tabla para interpretar\n";

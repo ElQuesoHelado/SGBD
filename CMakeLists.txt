@@ -130,10 +130,10 @@ add_custom_command(
         $<TARGET_FILE_DIR:runner>/csv
 )
 
-add_custom_command(
-    TARGET runner POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:runner>/media
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_CURRENT_SOURCE_DIR}/media
-        $<TARGET_FILE_DIR:runner>/media
-)
+# add_custom_command(
+#     TARGET runner POST_BUILD
+#     COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:runner>/media
+#     COMMAND ${CMAKE_COMMAND} -E copy_directory
+#         ${CMAKE_CURRENT_SOURCE_DIR}/media
+#         $<TARGET_FILE_DIR:runner>/media
+# )

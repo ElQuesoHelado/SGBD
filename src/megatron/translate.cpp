@@ -49,7 +49,7 @@ std::pair<std::vector<uint32_t>, std::vector<uint32_t>> Megatron::translate() {
 
   for (size_t i{}; i < sector1.n_tables; ++i)
     format_str += "Tabla #" + std::to_string(i) +
-                  " ubicada en bloque: " + std::to_string(sector1.table_block_ids[i]);
+                  " ubicada en bloque: " + std::to_string(sector1.table_block_ids[i]) + "\n";
 
   disk_manager->write_sector_txt(format_str, 1);
 
@@ -72,10 +72,9 @@ std::pair<std::vector<uint32_t>, std::vector<uint32_t>> Megatron::translate() {
     while (curr_page_id != disk_manager->NULL_BLOCK) {
       std::vector<unsigned char> page_bytes;
       disk_manager->read_block(page_bytes, curr_page_id);
+      std::span<unsigned char> page_data(page_bytes);
 
-      auto page_bytes_it = page_bytes.begin();
-
-      auto page_header = serial::deserialize_page_header(page_bytes_it);
+      serial::PageHeader page_header(page_data);
 
       auto page_str = translate_data_page(table_metadata, page_bytes, curr_page_id);
 

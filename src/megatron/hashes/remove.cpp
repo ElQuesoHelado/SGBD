@@ -1,5 +1,5 @@
 #include "hash/hasher.hpp"
-#include "types.hpp"
+#include "types/types.hpp"
 #include <cstddef>
 
 void Hasher::remove(SQL_type_ &key) {

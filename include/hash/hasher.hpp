@@ -6,7 +6,7 @@
 #include "hash/directory.hpp"
 #include "reg_ptr.hpp"
 #include "result_set.hpp"
-#include "types.hpp"
+#include "types/types.hpp"
 #include <cstddef>
 #include <cstdint>
 

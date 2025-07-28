@@ -1,6 +1,8 @@
 #include "megatron.hpp"
 #include "result_set.hpp"
+#include "serial/fixed_page.hpp"
 #include "serial/slotted_data.hpp"
+#include "serial/slotted_page.hpp"
 #include <cstddef>
 
 ResultSet Megatron::delete_condition(std::string &table_name,
@@ -31,8 +33,9 @@ ResultSet Megatron::delete_condition(
   size_t curr_page_id = table_metadata.first_page_id;
   while (curr_page_id != disk_manager->NULL_BLOCK) {
     auto &frame = buffer_manager->load_pin_page(curr_page_id);
-    std::vector<unsigned char> &page_bytes = frame.page_bytes;
-    auto page_header = serial::deserialize_page_header(page_bytes);
+    std::span<unsigned char> page_data(frame.page_bytes);
+
+    serial::PageHeader page_header(page_data);
 
     // Solo se dio lectura de header, es limpio
     buffer_manager->free_unpin_page(curr_page_id, false);
@@ -116,17 +119,17 @@ ResultSet Megatron::delete_from_fixed_page(
     uint32_t delete_page_id, Comparator &comparator) {
   auto &frame = buffer_manager->load_pin_page(delete_page_id);
   std::vector<unsigned char> &page_bytes = frame.page_bytes;
-  auto page_bytes_it = page_bytes.begin();
+  std::span<unsigned char> page_data(page_bytes);
+
+  serial::FixedPage fixed_page(page_data, page_bytes);
 
   // Se saca metadata relevante
-  auto page_header =
-      serial::deserialize_page_header(page_bytes_it);
-  auto fixed_data_header =
-      serial::deserialize_fixed_data_header(page_bytes_it);
+  auto &page_header = fixed_page.page_header;
+  auto &fixed_data_header = fixed_page.fixed_data_header;
 
   ResultSet result_set;
   for (size_t i{}; i < fixed_data_header.max_n_regs; ++i) {
-    if (fixed_data_header.free_register_bitmap.at(i)) { // Registro existe
+    if (fixed_data_header.free_register_bitmap->test(i)) { // Registro existe
       auto register_bytes =
           get_ith_register_bytes(table_metadata, page_header,
                                  fixed_data_header, page_bytes, i);
@@ -148,17 +151,10 @@ ResultSet Megatron::delete_from_fixed_page(
       // Si cumple condicion, delete
       // Solo marcamos como libre, ya que todo es fijo se reescribira luego
       fixed_data_header.free_bytes += fixed_data_header.reg_size;
-      fixed_data_header.free_register_bitmap[i] = false;
+      fixed_data_header.free_register_bitmap->set(i, false);
       page_header.free_space += fixed_data_header.reg_size;
       page_header.n_regs--;
     }
-  }
-
-  // Se reescribe tanto page header y fixed_data_header de pagina
-  auto page_it = page_bytes.begin();
-  {
-    serial::serialize_page_header(page_header, page_it);
-    serial::serialize_fixed_block_header(fixed_data_header, page_it);
   }
 
   buffer_manager->free_unpin_page(delete_page_id, true);
@@ -171,13 +167,13 @@ ResultSet Megatron::delete_from_slotted_page(
     uint32_t delete_page_id, Comparator &comparator) {
   auto &frame = buffer_manager->load_pin_page(delete_page_id);
   std::vector<unsigned char> &page_bytes = frame.page_bytes;
-  auto page_bytes_it = page_bytes.begin();
+  std::span<unsigned char> page_data(page_bytes);
+
+  serial::SlottedPage slotted_page(page_data, page_bytes);
 
   // Se saca metadata relevante
-  auto page_header =
-      serial::deserialize_page_header(page_bytes_it);
-  auto slotted_data_header =
-      serial::deserialize_slotted_data_header(page_bytes_it);
+  auto &page_header = slotted_page.page_header;
+  auto &slotted_data_header = slotted_page.slotted_data_header;
 
   ResultSet result_set;
   for (size_t i{}; i < slotted_data_header.n_slots; ++i) {
@@ -204,13 +200,6 @@ ResultSet Megatron::delete_from_slotted_page(
       slotted_data_header.slots[i].is_used = false;
       page_header.n_regs--;
     }
-  }
-
-  // Reemplazamos headers modificados
-  auto page_it = page_bytes.begin();
-  {
-    serial::serialize_page_header(page_header, page_it);
-    serial::serialize_slotted_data_header(slotted_data_header, page_it);
   }
 
   buffer_manager->free_unpin_page(delete_page_id, true);

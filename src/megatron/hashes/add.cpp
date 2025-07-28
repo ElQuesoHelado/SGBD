@@ -5,15 +5,6 @@
 #include <print>
 #include <string>
 
-size_t Megatron::create_dir_page() {
-  return create_fixed_page(sizeof(uint32_t));
-}
-
-// TODO: check sizes, ?tal vez pos no necesita un size_t?
-size_t Megatron::create_bucket_page() {
-  return create_fixed_page(2 * sizeof(uint32_t));
-}
-
 void Megatron::add_hash_to_table(std::string &table_name, std::string &col_name) {
   serial::TableMetadata table_metadata;
 

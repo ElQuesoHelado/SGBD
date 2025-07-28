@@ -1,6 +1,6 @@
 #include "megatron.hpp"
 #include "serial/page_header.hpp"
-#include "types.hpp"
+#include "types/types.hpp"
 #include <cmath>
 #include <cstddef>
 #include <cstdint>

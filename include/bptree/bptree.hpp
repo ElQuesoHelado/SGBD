@@ -6,7 +6,7 @@
 // #include "megatron.hpp"
 #include "reg_ptr.hpp"
 #include "serial/table.hpp"
-#include "types.hpp"
+#include "types/types.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <vector>

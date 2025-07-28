@@ -1,5 +1,6 @@
 #pragma once
 
+#include "bitset.hpp"
 #include "serial/generic.hpp"
 #include "serial/page_header.hpp"
 #include <boost/dynamic_bitset/dynamic_bitset.hpp>
@@ -7,6 +8,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <iostream>
+#include <tuple>
 
 namespace serial {
 /*
@@ -14,14 +16,49 @@ namespace serial {
  * registros son de size fijos
  * @note El bitset tiene tamanio de la max cantidad de registros guardables
  */
+#pragma pack(push, 1)
 struct FixedDataHeader {
-  // Respecto a bloque completo, se resta tamanio mismo de header
-  uint32_t free_bytes{};
-  uint32_t reg_size{};
-  uint16_t max_n_regs{};
-  boost::dynamic_bitset<unsigned char>
-      free_register_bitmap;
+  uint32_t &free_bytes;
+  uint32_t &reg_size;
+  uint16_t &max_n_regs;
+  std::unique_ptr<BitSet> free_register_bitmap;
+
+  FixedDataHeader(std::span<unsigned char> &data)
+      : free_bytes(*reinterpret_cast<uint32_t *>(data.data())),
+        reg_size(*reinterpret_cast<uint32_t *>(data.data() + 4)),
+        max_n_regs(*reinterpret_cast<uint16_t *>(data.data() + 8)) {
+    data = data.subspan(10);
+
+    size_t bitset_byte_size = (max_n_regs + CHAR_BIT - 1) / CHAR_BIT;
+
+    free_register_bitmap =
+        std::make_unique<BitSet>(data.first(bitset_byte_size),
+                                 max_n_regs);
+
+    data = data.subspan(bitset_byte_size);
+  }
+
+  FixedDataHeader(std::span<unsigned char> &data,
+                  size_t free_bytes, size_t reg_size, size_t max_n_regs)
+      : free_bytes(*reinterpret_cast<uint32_t *>(data.data())),
+        reg_size(*reinterpret_cast<uint32_t *>(data.data() + 4)),
+        max_n_regs(*reinterpret_cast<uint16_t *>(data.data() + 8)) {
+    data = data.subspan(10);
+
+    this->free_bytes = free_bytes;
+    this->reg_size = reg_size;
+    this->max_n_regs = max_n_regs;
+
+    size_t bitset_byte_size = (max_n_regs + CHAR_BIT - 1) / CHAR_BIT;
+
+    free_register_bitmap =
+        std::make_unique<BitSet>(data.first(bitset_byte_size),
+                                 max_n_regs);
+
+    data = data.subspan(bitset_byte_size);
+  }
 };
+#pragma pack(pop)
 
 inline size_t calculate_fixed_data_header_size(const FixedDataHeader &header) {
   // if (header.max_n_regs != header.free_register_bitmap.size()) {
@@ -40,19 +77,20 @@ inline size_t calculate_fixed_data_header_size(const FixedDataHeader &header) {
  * Se toma en cuenta el espacio tomado por el page_header
  * @note Asume que ya se dio un valor inicial a reg_size
  */
-inline void calculate_max_n_regs(FixedDataHeader &header, size_t page_size) {
-  const uint32_t static_header_size = sizeof(header.free_bytes) +
-                                      sizeof(header.reg_size) +
-                                      sizeof(header.max_n_regs);
-  if (header.reg_size == 0)
-    throw std::runtime_error("reg_size no seteado para fill de otros campos");
+inline std::tuple<uint32_t, uint16_t>
+calc_free_bytes_max_regs(size_t page_size, size_t reg_size) {
+  const uint32_t static_header_size =
+      sizeof(FixedDataHeader::free_bytes) +
+      sizeof(FixedDataHeader::reg_size) +
+      sizeof(FixedDataHeader::max_n_regs);
 
   size_t bitmap_size = 1, page_header_size = sizeof(PageHeader);
   size_t n_regs = 0, new_bitmap_size = 0;
 
   while (true) {
-    uint32_t free_space = page_size - static_header_size - bitmap_size - page_header_size;
-    n_regs = free_space / header.reg_size;
+    uint32_t free_space = page_size - static_header_size -
+                          bitmap_size - page_header_size;
+    n_regs = free_space / reg_size;
     new_bitmap_size = (n_regs + CHAR_BIT - 1) / CHAR_BIT;
 
     if (new_bitmap_size == bitmap_size)
@@ -61,14 +99,18 @@ inline void calculate_max_n_regs(FixedDataHeader &header, size_t page_size) {
     bitmap_size = new_bitmap_size;
   }
 
-  size_t usable_for_regs = page_size - static_header_size - bitmap_size - page_header_size;
+  size_t usable_for_regs = page_size -
+                           static_header_size -
+                           bitmap_size - page_header_size;
 
-  header.free_bytes = static_cast<uint32_t>(usable_for_regs);
-  header.max_n_regs = static_cast<uint16_t>(n_regs);
-  header.free_register_bitmap.resize(bitmap_size * CHAR_BIT);
+  // header.free_bytes = static_cast<uint32_t>(usable_for_regs);
+  // header.max_n_regs = static_cast<uint16_t>(n_regs);
+  // header.free_register_bitmap.resize(bitmap_size * CHAR_BIT);
 
-  assert(header.free_bytes == n_regs * header.reg_size ||
-         header.free_bytes >= (n_regs * header.reg_size && header.free_bytes < ((n_regs + 1) * header.reg_size)));
+  // assert(header.free_bytes == n_regs * header.reg_size ||
+  //        header.free_bytes >= (n_regs * header.reg_size && header.free_bytes < ((n_regs + 1) * header.reg_size)));
+
+  return {usable_for_regs, n_regs};
 }
 
 // Encuentra la posicion en bitmap que se encuentra libre
@@ -79,7 +121,7 @@ inline size_t find_free_reg_pos(const FixedDataHeader &header) {
   // }
 
   size_t ith_reg{};
-  while (ith_reg < header.max_n_regs && header.free_register_bitmap[ith_reg])
+  while (ith_reg < header.max_n_regs && header.free_register_bitmap->test(ith_reg))
     ith_reg++;
 
   return ith_reg;
@@ -99,71 +141,71 @@ inline size_t calculate_reg_offset(const FixedDataHeader &header, size_t nth_reg
   return offset;
 }
 
-inline std::vector<unsigned char> serialize_fixed_data_header(
-    const FixedDataHeader &header) {
-  size_t size = calculate_fixed_data_header_size(header);
-
-  std::vector<unsigned char> bytes;
-  bytes.reserve(size);
-
-  write_v(bytes, header.free_bytes);
-  write_v(bytes, header.reg_size);
-  write_v(bytes, header.max_n_regs);
-
-  boost::to_block_range(header.free_register_bitmap, std::back_inserter(bytes));
-
-  return bytes;
-}
-
-template <typename Iter>
-inline void serialize_fixed_block_header(
-    const FixedDataHeader &header, Iter &out_it) {
-  write_v(out_it, header.free_bytes);
-  write_v(out_it, header.reg_size);
-  write_v(out_it, header.max_n_regs);
-
-  size_t bitset_byte_size = (header.max_n_regs + CHAR_BIT - 1) / CHAR_BIT;
-
-  boost::to_block_range(header.free_register_bitmap, out_it);
-  std::advance(out_it, bitset_byte_size);
-}
-
-// Por el hecho de siempre estar despues de un PageHeader, se "salta" el tamanio del page_header del buffer
-inline FixedDataHeader deserialize_fixed_data_header(
-    std::vector<unsigned char> &page_bytes) {
-  FixedDataHeader header;
-  auto it = page_bytes.begin() + sizeof(PageHeader);
-
-  read_v(it, header.free_bytes);
-  read_v(it, header.reg_size);
-  read_v(it, header.max_n_regs);
-
-  size_t bitset_byte_size = (header.max_n_regs + CHAR_BIT - 1) / CHAR_BIT;
-
-  // DeSerializacion de bitmap
-  header.free_register_bitmap.resize(header.max_n_regs);
-  boost::from_block_range(it, it + bitset_byte_size, header.free_register_bitmap);
-  it += bitset_byte_size;
-
-  return header;
-}
-
-template <typename Iter>
-inline FixedDataHeader deserialize_fixed_data_header(Iter &in_it) {
-  FixedDataHeader header;
-
-  read_v(in_it, header.free_bytes);
-  read_v(in_it, header.reg_size);
-  read_v(in_it, header.max_n_regs);
-
-  size_t bitset_byte_size = (header.max_n_regs + CHAR_BIT - 1) / CHAR_BIT;
-
-  // DeSerializacion de bitmap
-  header.free_register_bitmap.resize(header.max_n_regs);
-  boost::from_block_range(in_it, std::next(in_it, bitset_byte_size), header.free_register_bitmap);
-  std::advance(in_it, bitset_byte_size);
-
-  return header;
-}
+// inline std::vector<unsigned char> serialize_fixed_data_header(
+//     const FixedDataHeader &header) {
+//   size_t size = calculate_fixed_data_header_size(header);
+//
+//   std::vector<unsigned char> bytes;
+//   bytes.reserve(size);
+//
+//   write_v(bytes, header.free_bytes);
+//   write_v(bytes, header.reg_size);
+//   write_v(bytes, header.max_n_regs);
+//
+//   boost::to_block_range(header.free_register_bitmap, std::back_inserter(bytes));
+//
+//   return bytes;
+// }
+//
+// template <typename Iter>
+// inline void serialize_fixed_block_header(
+//     const FixedDataHeader &header, Iter &out_it) {
+//   write_v(out_it, header.free_bytes);
+//   write_v(out_it, header.reg_size);
+//   write_v(out_it, header.max_n_regs);
+//
+//   size_t bitset_byte_size = (header.max_n_regs + CHAR_BIT - 1) / CHAR_BIT;
+//
+//   boost::to_block_range(header.free_register_bitmap, out_it);
+//   std::advance(out_it, bitset_byte_size);
+// }
+//
+// // Por el hecho de siempre estar despues de un PageHeader, se "salta" el tamanio del page_header del buffer
+// inline FixedDataHeader deserialize_fixed_data_header(
+//     std::vector<unsigned char> &page_bytes) {
+//   FixedDataHeader header;
+//   auto it = page_bytes.begin() + sizeof(PageHeader);
+//
+//   read_v(it, header.free_bytes);
+//   read_v(it, header.reg_size);
+//   read_v(it, header.max_n_regs);
+//
+//   size_t bitset_byte_size = (header.max_n_regs + CHAR_BIT - 1) / CHAR_BIT;
+//
+//   // DeSerializacion de bitmap
+//   header.free_register_bitmap.resize(header.max_n_regs);
+//   boost::from_block_range(it, it + bitset_byte_size, header.free_register_bitmap);
+//   it += bitset_byte_size;
+//
+//   return header;
+// }
+//
+// template <typename Iter>
+// inline FixedDataHeader deserialize_fixed_data_header(Iter &in_it) {
+//   FixedDataHeader header;
+//
+//   read_v(in_it, header.free_bytes);
+//   read_v(in_it, header.reg_size);
+//   read_v(in_it, header.max_n_regs);
+//
+//   size_t bitset_byte_size = (header.max_n_regs + CHAR_BIT - 1) / CHAR_BIT;
+//
+//   // DeSerializacion de bitmap
+//   header.free_register_bitmap.resize(header.max_n_regs);
+//   boost::from_block_range(in_it, std::next(in_it, bitset_byte_size), header.free_register_bitmap);
+//   std::advance(in_it, bitset_byte_size);
+//
+//   return header;
+// }
 
 } // namespace serial

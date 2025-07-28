@@ -3,11 +3,12 @@
 #include "serial/generic.hpp"
 #include "serial/page_header.hpp"
 #include "serial/slotted_data.hpp"
-#include "types.hpp"
+#include "types/types.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <functional>
 #include <iostream>
+#include <span>
 #include <string_view>
 #include <unordered_map>
 
@@ -88,53 +89,73 @@ void Megatron::init_table_metadata(serial::TableMetadata &table_metadata,
   }
 
   // Se crea una pagina inicial
-  serial::FixedDataHeader fixed_data_header;
-  serial::SlottedDataHeader slotted_data_header;
-  serial::PageHeader page_header;
+  // serial::FixedDataHeader fixed_data_header;
+  // serial::SlottedDataHeader slotted_data_header;
+  // serial::PageHeader page_header;
 
   // buffer_manager_ptr->get_block(size_t block_id);
-  std::vector<unsigned char> page_bytes(disk_manager->BLOCK_SIZE);
-  auto page_it = page_bytes.begin();
+  // std::vector<unsigned char> page_bytes(disk_manager->BLOCK_SIZE);
+  // auto page_it = page_bytes.begin();
+  auto &frame = buffer_manager->get_load_free_frame();
+  std::span<unsigned char> page_data(frame.page_bytes);
 
   if (table_metadata.are_regs_fixed) {
+    serial::PageHeader page_header(page_data);
+    serial::FixedDataHeader fixed_data_header(page_data);
+
     init_fixed_data_header(table_metadata, fixed_data_header);
     init_page_header(page_header, fixed_data_header.free_bytes);
 
-    serial::serialize_page_header(page_header, page_it);
-    serial::serialize_fixed_block_header(fixed_data_header, page_it);
+    // serial::serialize_page_header(page_header, page_it);
+    // serial::serialize_fixed_block_header(fixed_data_header, page_it);
 
   } else {
+    serial::PageHeader page_header(page_data);
+    serial::SlottedDataHeader slotted_data_header(page_data);
+
     init_slotted_data_header(table_metadata, slotted_data_header);
     init_page_header(page_header, slotted_data_header.free_bytes);
 
-    serial::serialize_page_header(page_header, page_it);
-    serial::serialize_slotted_data_header(slotted_data_header, page_it);
+    // serial::serialize_page_header(page_header, page_it);
+    // serial::serialize_slotted_data_header(slotted_data_header, page_it);
   }
 
-  // TODO: logica en buffer manager, deberia ser una dirty page mas del resto
-  auto page_id = disk_manager->write_block(page_bytes);
+  buffer_manager->free_unpin_page(frame.page_id, true);
 
-  table_metadata.first_page_id = page_id;
-  table_metadata.last_page_id = page_id;
+  table_metadata.first_page_id = frame.page_id;
+  table_metadata.last_page_id = frame.page_id;
 }
 
-void Megatron::init_page_header(serial::PageHeader &page_header, uint32_t initial_free_space) {
+void Megatron::init_page_header(serial::PageHeader &page_header,
+                                uint32_t initial_free_space) {
   page_header.next_block_id = disk_manager->NULL_BLOCK;
   page_header.free_space = initial_free_space;
   page_header.n_regs = 0;
 }
 
-void Megatron::init_fixed_data_header(serial::TableMetadata &table_metadata, serial::FixedDataHeader &fixed_data_header) {
-  fixed_data_header.reg_size = table_metadata.max_reg_size;
-  serial::calculate_max_n_regs(fixed_data_header, disk_manager->BLOCK_SIZE);
+void Megatron::init_fixed_data_header(
+    serial::TableMetadata &table_metadata,
+    serial::FixedDataHeader &fixed_data_header) {
+  init_fixed_data_header(table_metadata.max_reg_size,
+                         fixed_data_header);
 }
 
-void Megatron::init_fixed_data_header(size_t reg_size, serial::FixedDataHeader &fixed_data_header) {
+void Megatron::init_fixed_data_header(
+    size_t reg_size,
+    serial::FixedDataHeader &fixed_data_header) {
+  auto [free_bytes, max_n_regs] =
+      serial::calc_free_bytes_max_regs(
+          disk_manager->BLOCK_SIZE, reg_size);
+
   fixed_data_header.reg_size = reg_size;
-  serial::calculate_max_n_regs(fixed_data_header, disk_manager->BLOCK_SIZE);
 }
 
-void Megatron::init_slotted_data_header(serial::TableMetadata &table_metadata, serial::SlottedDataHeader &slotted_data_header) {
-  slotted_data_header.free_bytes = disk_manager->BLOCK_SIZE - serial::base_slotted_data_header_size(slotted_data_header) - sizeof(serial::PageHeader);
+void Megatron::init_slotted_data_header(
+    serial::TableMetadata &table_metadata,
+    serial::SlottedDataHeader &slotted_data_header) {
+  slotted_data_header.free_bytes =
+      disk_manager->BLOCK_SIZE -
+      serial::base_slotted_data_header_size(slotted_data_header) -
+      sizeof(serial::PageHeader);
   slotted_data_header.free_space_offset = disk_manager->BLOCK_SIZE;
 }

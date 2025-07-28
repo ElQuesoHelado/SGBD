@@ -1,5 +1,5 @@
 #include "bptree/bptree.hpp"
-#include "types.hpp"
+#include "types/types.hpp"
 #include <print>
 
 void BPTree::remove(const SQL_type_ &key) {

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "serial/generic.hpp"
-#include "types.hpp"
+#include "types/types.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <sys/types.h>

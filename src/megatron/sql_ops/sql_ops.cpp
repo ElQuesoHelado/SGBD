@@ -3,7 +3,7 @@
 #include "serial/generic.hpp"
 #include "serial/sector1.hpp"
 #include "serial/table.hpp"
-#include "types.hpp"
+#include "types/types.hpp"
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>

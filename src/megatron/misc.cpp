@@ -15,40 +15,6 @@ size_t Megatron::get_column_index(serial::TableMetadata &table_metadata,
   return table_metadata.n_cols;
 }
 
-void Megatron::find_nth_reg(std::string &table_name, size_t nth) {
-  serial::TableMetadata table_metadata;
-
-  // No existe
-  if (!search_table(table_name, table_metadata)) {
-    std::cerr << "Tabla: " << table_name << " no existe" << std::endl;
-    return;
-  }
-
-  // Se iteran por todas las paginas
-  size_t curr_page_id = table_metadata.first_page_id;
-
-  std::vector<unsigned char> page_bytes;
-  while (curr_page_id != disk_manager->NULL_BLOCK) {
-    disk_manager->read_block(page_bytes, curr_page_id);
-    auto page_bytes_it = page_bytes.begin();
-
-    // Se lee PageHeader para contar registros
-    serial::PageHeader page_header;
-
-    page_header = serial::deserialize_page_header(page_bytes_it);
-
-    // En esta pagina si esta el registro
-    if (page_header.n_regs >= nth) {
-      break;
-    }
-
-    nth -= page_header.n_regs;
-    curr_page_id = page_header.next_block_id;
-  }
-
-  std::cout << "Registro en bloque: " << curr_page_id << "\nNumero: " << nth << std::endl;
-}
-
 void Megatron::show_table_metadata(std::string &table_name) {
   serial::TableMetadata table_metadata;
   // No existe
@@ -83,12 +49,12 @@ void Megatron::show_table_metadata(std::string &table_name) {
   std::vector<unsigned char> page_bytes;
   while (curr_page_id != disk_manager->NULL_BLOCK) {
     disk_manager->read_block(page_bytes, curr_page_id);
-    auto page_bytes_it = page_bytes.begin();
+    std::span<unsigned char> page_data(page_bytes);
 
     // Se lee PageHeader para contar registros
-    serial::PageHeader page_header;
+    serial::PageHeader page_header(page_data);
 
-    page_header = serial::deserialize_page_header(page_bytes_it);
+    // page_header = serial::deserialize_page_header(page_bytes_it);
 
     total_size += disk_manager->BLOCK_SIZE - page_header.free_space;
     n_regs += page_header.n_regs;

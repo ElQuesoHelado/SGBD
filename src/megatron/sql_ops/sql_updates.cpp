@@ -1,6 +1,8 @@
 #include "megatron.hpp"
 #include "result_set.hpp"
+#include "serial/fixed_page.hpp"
 #include "serial/slotted_data.hpp"
+#include "serial/slotted_page.hpp"
 #include <cstddef>
 #include <print>
 
@@ -50,9 +52,10 @@ ResultSet Megatron::update_condition(serial::TableMetadata &table_metadata,
     auto frame = buffer_manager->load_pin_page(curr_page_id);
 
     std::vector<unsigned char> &page_bytes = frame.page_bytes;
-    auto page_header =
-        serial::deserialize_page_header(page_bytes);
 
+    std::span<unsigned char> page_data(frame.page_bytes);
+
+    serial::PageHeader page_header(page_data);
     buffer_manager->free_unpin_page(curr_page_id, false);
 
     auto partial_result_set =
@@ -150,17 +153,17 @@ ResultSet Megatron::update_from_fixed_page(
     size_t upd_col_index, SQL_type_ &upd_value) {
   auto &frame = buffer_manager->load_pin_page(update_page_id);
   std::vector<unsigned char> &page_bytes = frame.page_bytes;
-  auto page_bytes_it = page_bytes.begin();
+  std::span<unsigned char> page_data(page_bytes);
+
+  serial::FixedPage fixed_page(page_data, page_bytes);
 
   // Se saca metadata relevante
-  auto page_header =
-      serial::deserialize_page_header(page_bytes_it);
-  auto fixed_data_header =
-      serial::deserialize_fixed_data_header(page_bytes_it);
+  auto &page_header = fixed_page.page_header;
+  auto &fixed_data_header = fixed_page.fixed_data_header;
 
   ResultSet result_set;
   for (size_t i{}; i < fixed_data_header.max_n_regs; ++i) {
-    if (fixed_data_header.free_register_bitmap.at(i)) { // Registro existe
+    if (fixed_data_header.free_register_bitmap->test(i)) { // Registro existe
       auto register_bytes =
           get_ith_register_bytes(table_metadata, page_header,
                                  fixed_data_header, page_bytes, i);
@@ -188,16 +191,8 @@ ResultSet Megatron::update_from_fixed_page(
         continue;
       }
 
-      // Sobreescribir en misma posicion
-
-      size_t byte_offset_free_reg =
-          serial::calculate_reg_offset(fixed_data_header, i);
-
-      auto page_it = page_bytes.begin() + byte_offset_free_reg;
-
-      // Copia registro como tal
-      std::copy(register_bytes.begin(), register_bytes.end(),
-                page_it);
+      fixed_page.insert_register_bytes_on_pos(
+          register_bytes, i);
     }
   }
 
@@ -214,12 +209,15 @@ ResultSet Megatron::update_from_slotted_page(
     size_t upd_col_index, SQL_type_ &upd_value) {
   auto &frame = buffer_manager->load_pin_page(update_page_id);
   std::vector<unsigned char> &page_bytes = frame.page_bytes;
+  std::span<unsigned char> page_data(page_bytes);
+
+  auto page_bytes_it = page_bytes.begin();
+
+  serial::SlottedPage slotted_page(page_data, page_bytes);
 
   // Se saca metadata relevante
-  auto page_header =
-      serial::deserialize_page_header(page_bytes);
-  auto slotted_data_header =
-      serial::deserialize_slotted_data_header(page_bytes);
+  auto &page_header = slotted_page.page_header;
+  auto &slotted_data_header = slotted_page.slotted_data_header;
 
   ResultSet result_set;
   for (size_t i{}; i < slotted_data_header.n_slots; ++i) {
@@ -255,19 +253,12 @@ ResultSet Megatron::update_from_slotted_page(
                                          i,
                                          register_bytes.size());
 
-      // Sobreescritura de registro en offset correcto
+      //  Sobreescritura de registro en offset correcto
+      // FIXME: ?Probar, ?interno a slotted_page?
       auto page_it = page_bytes.begin() + byte_offset_free_reg;
       std::copy(register_bytes.begin(), register_bytes.end(),
                 page_it);
     }
-  }
-
-  // Slots modificados, se tiene que escribir
-  // TODO: No es necesario serializar page header
-  auto page_it = page_bytes.begin();
-  {
-    serial::serialize_page_header(page_header, page_it);
-    serial::serialize_slotted_data_header(slotted_data_header, page_it);
   }
 
   buffer_manager->free_unpin_page(update_page_id, true);

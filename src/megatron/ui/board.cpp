@@ -1,7 +1,7 @@
 #include "comparison.hpp"
 #include "megatron.hpp"
 #include "serial/table.hpp"
-#include "types.hpp"
+#include "types/types.hpp"
 #include <cstddef>
 #include <cstdlib>
 #include <print>

@@ -2,7 +2,7 @@
 #include "serial/fixed_data.hpp"
 #include "serial/page_header.hpp"
 #include "serial/slotted_data.hpp"
-#include "types.hpp"
+#include "types/types.hpp"
 #include <cstddef>
 
 /*

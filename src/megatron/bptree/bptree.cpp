@@ -1,6 +1,6 @@
 #include "bptree/bptree.hpp"
 #include "bptree/bpnode.hpp"
-#include "types.hpp"
+#include "types/types.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <print>

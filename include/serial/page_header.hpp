@@ -8,9 +8,15 @@ namespace serial {
 
 #pragma pack(push, 1)
 struct PageHeader {
-  uint32_t next_block_id{};
-  uint32_t free_space{};
-  uint16_t n_regs{};
+  uint32_t &next_block_id;
+  uint32_t &free_space;
+  uint16_t &n_regs;
+
+  PageHeader(std::span<unsigned char> &data) : next_block_id(*reinterpret_cast<uint32_t *>(data.data())),
+                                               free_space(*reinterpret_cast<uint32_t *>(data.data() + 4)),
+                                               n_regs(*reinterpret_cast<uint16_t *>(data.data() + 8)) {
+    data = data.subspan(10); // Avanza el span
+  }
 };
 #pragma pack(pop)
 
@@ -28,21 +34,21 @@ inline void serialize_page_header(const PageHeader &header, Iter &out_it) {
   write_v(out_it, header);
 }
 
-inline PageHeader deserialize_page_header(std::vector<unsigned char> &bytes) {
-  PageHeader header;
-  auto it = bytes.begin();
-
-  read_v(it, header);
-
-  return header;
-}
-
-template <typename Iter>
-inline PageHeader deserialize_page_header(Iter &in_it) {
-  PageHeader header;
-
-  read_v(in_it, header);
-
-  return header;
-}
+// inline PageHeader deserialize_page_header(std::vector<unsigned char> &bytes) {
+//   PageHeader header;
+//   auto it = bytes.begin();
+//
+//   read_v(it, header);
+//
+//   return header;
+// }
+//
+// template <typename Iter>
+// inline PageHeader deserialize_page_header(Iter &in_it) {
+//   PageHeader header;
+//
+//   read_v(in_it, header);
+//
+//   return header;
+// }
 } // namespace serial

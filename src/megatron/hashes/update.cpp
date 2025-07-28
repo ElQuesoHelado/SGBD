@@ -1,5 +1,5 @@
 #include "hash/hasher.hpp"
-#include "types.hpp"
+#include "types/types.hpp"
 #include <cstddef>
 
 void Hasher::update(SQL_type_ &old_key, SQL_type_ &new_key) {

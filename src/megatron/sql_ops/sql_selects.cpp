@@ -3,11 +3,13 @@
 #include "megatron.hpp"
 #include "result_set.hpp"
 #include "serial/fixed_data.hpp"
+#include "serial/fixed_page.hpp"
 #include "serial/generic.hpp"
 #include "serial/page_header.hpp"
 #include "serial/slotted_data.hpp"
+#include "serial/slotted_page.hpp"
 #include "serial/table.hpp"
-#include "types.hpp"
+#include "types/types.hpp"
 #include <cstddef>
 #include <iostream>
 #include <print>
@@ -127,8 +129,11 @@ ResultSet Megatron::select(serial::TableMetadata &table_metadata,
     auto frame = buffer_manager->load_pin_page(curr_page_id);
     max_pages_loaded--;
 
-    std::vector<unsigned char> &page_bytes = frame.page_bytes;
-    auto page_header = serial::deserialize_page_header(page_bytes);
+    std::span<unsigned char> page_data(frame.page_bytes);
+
+    serial::PageHeader page_header(page_data);
+
+    // auto page_header = serial::deserialize_page_header(page_bytes);
 
     buffer_manager->free_unpin_page(curr_page_id, false);
 
@@ -158,16 +163,17 @@ ResultSet Megatron::select_from_fixed_page(
     uint32_t select_page_id, Comparator &comparator) {
   auto frame = buffer_manager->load_pin_page(select_page_id);
   std::vector<unsigned char> &page_bytes = frame.page_bytes;
+  std::span<unsigned char> page_data(page_bytes);
 
-  auto page_bytes_it = page_bytes.begin();
+  serial::FixedPage fixed_page(page_data, page_bytes);
 
   // Se saca metadata relevante
-  auto page_header = serial::deserialize_page_header(page_bytes_it);
-  auto fixed_data_header = serial::deserialize_fixed_data_header(page_bytes_it);
+  auto &page_header = fixed_page.page_header;
+  auto &fixed_data_header = fixed_page.fixed_data_header;
 
   ResultSet result_set;
   for (size_t i{}; i < fixed_data_header.max_n_regs; ++i) {
-    if (fixed_data_header.free_register_bitmap.at(i)) { // Registro existe
+    if (fixed_data_header.free_register_bitmap->test(i)) { // Registro existe
       auto register_bytes = get_ith_register_bytes(table_metadata, page_header, fixed_data_header, page_bytes, i);
       auto register_values = deserialize_register(table_metadata, register_bytes);
 
@@ -195,12 +201,15 @@ ResultSet Megatron::select_from_slotted_page(
     uint32_t select_page_id, Comparator &comparator) {
   auto frame = buffer_manager->load_pin_page(select_page_id);
   std::vector<unsigned char> &page_bytes = frame.page_bytes;
+  std::span<unsigned char> page_data(page_bytes);
 
   auto page_bytes_it = page_bytes.begin();
 
+  serial::SlottedPage slotted_page(page_data, page_bytes);
+
   // Se saca metadata relevante
-  auto page_header = serial::deserialize_page_header(page_bytes_it);
-  auto slotted_data_header = serial::deserialize_slotted_data_header(page_bytes_it);
+  auto &page_header = slotted_page.page_header;
+  auto &slotted_data_header = slotted_page.slotted_data_header;
 
   ResultSet result_set;
   for (size_t i{}; i < slotted_data_header.n_slots; ++i) {

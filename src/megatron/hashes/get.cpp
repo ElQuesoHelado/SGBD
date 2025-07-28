@@ -1,6 +1,6 @@
 #include "megatron.hpp"
 #include "serial/page_header.hpp"
-#include "types.hpp"
+#include "types/types.hpp"
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
@@ -102,24 +102,4 @@ uint32_t Megatron::get_root_page_id(serial::TableMetadata &table_metadata,
     return disk_manager->NULL_BLOCK;
 
   return std::get<int>(result_set.registers.front().values[3]);
-}
-
-size_t Megatron::get_depth(serial::TableMetadata &table_metadata, size_t col_index) {
-  auto page_id = get_root_page_id(table_metadata, col_index);
-  size_t counter{};
-
-  while (page_id != disk_manager->NULL_BLOCK) {
-    auto &frame = buffer_manager->load_pin_page(page_id);
-    std::vector<unsigned char> &page_bytes = frame.page_bytes;
-    auto it = page_bytes.begin();
-
-    auto page_header = serial::deserialize_page_header(it);
-    counter += page_header.n_regs;
-
-    page_id = page_header.next_block_id;
-
-    buffer_manager->free_unpin_page(page_id, false);
-  }
-
-  return std::log2(counter);
 }
