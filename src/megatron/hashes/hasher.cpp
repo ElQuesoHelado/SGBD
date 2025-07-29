@@ -1,9 +1,4 @@
 #include "hash/hasher.hpp"
-#include "hash/bucket.hpp"
-#include "hash/directory.hpp"
-#include "reg_ptr.hpp"
-#include <cstddef>
-#include <cstdint>
 
 DirectoryPage Hasher::load_directory(uint32_t page_id) {
   auto &frame = buffer.load_pin_page(page_id);

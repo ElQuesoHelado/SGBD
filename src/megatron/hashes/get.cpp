@@ -1,11 +1,6 @@
 #include "megatron.hpp"
-#include "serial/page_header.hpp"
-#include "types/types.hpp"
-#include <cmath>
-#include <cstddef>
-#include <cstdint>
+#include <iostream>
 #include <print>
-#include <string>
 
 bool Megatron::is_column_hashed(std::string &table_name, std::string &col_name) {
   serial::TableMetadata table_metadata;

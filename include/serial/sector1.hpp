@@ -1,7 +1,6 @@
 #pragma once
 
 #include "serial/generic.hpp"
-#include <cstddef>
 #include <cstdint>
 
 namespace serial {

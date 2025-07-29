@@ -1,10 +1,6 @@
-// #include "hlpr.hpp"
-#include "bptree/bptree.hpp"
 #include "megatron.hpp"
-#include <cstddef>
-#include <cstdint>
+#include <iostream>
 #include <print>
-#include <string>
 
 void Megatron::add_index_to_table(std::string &table_name, std::string &col_name) {
   serial::TableMetadata table_metadata;

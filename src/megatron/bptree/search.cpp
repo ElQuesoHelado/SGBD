@@ -1,8 +1,4 @@
 #include "bptree/bptree.hpp"
-#include "megatron.hpp"
-#include "reg_ptr.hpp"
-#include "result_set.hpp"
-#include <cstddef>
 #include <print>
 
 std::vector<RegPtr> BPTree::search(Comparator &comp) {

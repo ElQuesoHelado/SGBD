@@ -1,7 +1,5 @@
 #include "buffer/buffer_manager.hpp"
-#include <cstddef>
 #include <iostream>
-#include <print>
 
 // Carga de pagina, necesariamente incrementa pin_count
 Frame &BufferManager::load_pin_page(size_t page_id) {

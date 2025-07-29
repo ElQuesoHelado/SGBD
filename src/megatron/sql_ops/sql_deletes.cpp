@@ -1,9 +1,7 @@
 #include "megatron.hpp"
-#include "result_set.hpp"
 #include "serial/fixed_page.hpp"
-#include "serial/slotted_data.hpp"
 #include "serial/slotted_page.hpp"
-#include <cstddef>
+#include <iostream>
 
 ResultSet Megatron::delete_condition(std::string &table_name,
                                      Comparator &comparator) {
@@ -51,20 +49,6 @@ ResultSet Megatron::delete_condition(
 
   return result_set;
 }
-
-// ResultSet Megatron::delete_from_page(
-//     serial::TableMetadata &table_metadata,
-//     uint32_t delete_page_id, Comparator &comparator) {
-//
-//   // Sin condicion no hay delete
-//   if (comparator.empty()) {
-//     std::cerr << "No se encontro columna para realizar un delete" << std::endl;
-//     return {};
-//   }
-//
-//   return delete_from_page(table_metadata, delete_page_id,
-//                           comparator);
-// }
 
 ResultSet Megatron::delete_from_page(
     serial::TableMetadata &table_metadata,

@@ -1,9 +1,4 @@
 #include "megatron.hpp"
-#include "serial/fixed_data.hpp"
-#include "serial/page_header.hpp"
-#include "serial/slotted_data.hpp"
-#include "serial/table.hpp"
-#include <cstdint>
 
 uint32_t Megatron::get_insertable_page_id(uint32_t first_page_id, uint32_t reg_size) {
   uint32_t curr_block_id = first_page_id;

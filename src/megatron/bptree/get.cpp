@@ -1,11 +1,6 @@
 #include "megatron.hpp"
-#include "serial/page_header.hpp"
-#include "types/types.hpp"
-#include <cmath>
-#include <cstddef>
-#include <cstdint>
+#include <iostream>
 #include <print>
-#include <string>
 
 bool Megatron::is_column_indexed(
     std::string &table_name, std::string &col_name) {

@@ -1,13 +1,6 @@
 #include "megatron.hpp"
-#include "serial/fixed_data.hpp"
 #include "serial/fixed_page.hpp"
-#include "serial/page_header.hpp"
-#include "serial/slotted_data.hpp"
 #include "serial/slotted_page.hpp"
-#include "serial/table.hpp"
-#include <cstddef>
-#include <cstdint>
-#include <utility>
 
 // Implica modificar page y metadata de tabla
 // Se inserta al final

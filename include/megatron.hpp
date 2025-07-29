@@ -1,26 +1,10 @@
 #pragma once
 
 #include "bptree/bptree.hpp"
-#include "buffer/buffer_manager.hpp"
-#include "comparison.hpp"
-#include "disk_manager.hpp"
-#include "hash/bucket.hpp"
-#include "hash/directory.hpp"
 #include "hash/hasher.hpp"
-#include "result_set.hpp"
 #include "serial/fixed_data.hpp"
 #include "serial/slotted_data.hpp"
-#include "serial/table.hpp"
-#include "types/types.hpp"
 #include <atomic>
-#include <cstddef>
-#include <cstdint>
-#include <fstream>
-#include <memory>
-#include <string>
-#include <tuple>
-#include <unordered_map>
-#include <vector>
 
 class Megatron {
   std::unique_ptr<DiskManager> disk_manager{};
@@ -238,19 +222,11 @@ public:
 
   uint32_t get_root_page_id(serial::TableMetadata &table_metadata, size_t col_index);
 
-  ResultSet get_register_on_key_match(serial::TableMetadata &table_metadata,
-                                      RegPtr &reg_ptr, size_t hashed_col,
-                                      SQL_type_ &key);
-
   ResultSet find(serial::TableMetadata table_metadata,
                  size_t hashed_col, SQL_type_ &key);
 
   ResultSet delete_hashed(serial::TableMetadata table_metadata,
                           size_t hashed_col, SQL_type_ &key);
-
-  size_t find_free_reg_ptr_pos(Bucket &bucket);
-
-  DirectoryPage load_directory_page(size_t page_id);
 
   // =============================
   // Indices
@@ -278,8 +254,6 @@ public:
   // Helprs
   // void print_relation(Relation &relation);
   size_t char_size(std::string type);
-
-  float table_size(std::string name);
 
   // Concatenacion de operaciones en varias columnas
   // Se pasa tuplas nombre_columna, operacion, valor | AND/OR

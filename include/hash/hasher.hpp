@@ -4,11 +4,7 @@
 #include "comparison.hpp"
 #include "hash/bucket.hpp"
 #include "hash/directory.hpp"
-#include "reg_ptr.hpp"
 #include "result_set.hpp"
-#include "types/types.hpp"
-#include <cstddef>
-#include <cstdint>
 
 class Hasher {
   BufferManager &buffer;

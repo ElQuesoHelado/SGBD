@@ -1,10 +1,8 @@
 #pragma once
 
 #include <climits>
-#include <cstdint>
 #include <span>
 #include <stdexcept>
-#include <vector>
 
 class BitSet {
   std::span<unsigned char> buffer_;

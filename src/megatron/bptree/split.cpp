@@ -1,7 +1,4 @@
-#include "bptree/bpnode.hpp"
 #include "bptree/bptree.hpp"
-#include <cstddef>
-#include <print>
 
 // x nodo padre NO lleno
 void BPTree::split_child(BPNode &x, int i) {

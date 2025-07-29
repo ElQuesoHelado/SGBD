@@ -1,9 +1,4 @@
 #include "megatron.hpp"
-#include "serial/fixed_data.hpp"
-#include "serial/page_header.hpp"
-#include "serial/slotted_data.hpp"
-#include "types/types.hpp"
-#include <cstddef>
 
 /*
  * Retorna los bytes de un registro arbitrario en una pagina fija

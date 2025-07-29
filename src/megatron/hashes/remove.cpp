@@ -1,6 +1,4 @@
 #include "hash/hasher.hpp"
-#include "types/types.hpp"
-#include <cstddef>
 
 void Hasher::remove(SQL_type_ &key) {
   auto bucket_id = locate_bucket(key);

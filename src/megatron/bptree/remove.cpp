@@ -1,6 +1,4 @@
 #include "bptree/bptree.hpp"
-#include "types/types.hpp"
-#include <print>
 
 void BPTree::remove(const SQL_type_ &key) {
   auto root = load_node(root_id);

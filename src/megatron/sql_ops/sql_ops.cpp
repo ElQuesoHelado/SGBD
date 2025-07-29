@@ -1,14 +1,6 @@
-#include "disk_manager.hpp"
 #include "megatron.hpp"
-#include "serial/generic.hpp"
 #include "serial/sector1.hpp"
-#include "serial/table.hpp"
-#include "types/types.hpp"
-#include <algorithm>
-#include <cstddef>
-#include <cstdint>
 #include <iostream>
-#include <string_view>
 
 bool Megatron::create_table(std::string name, std::vector<std::pair<std::string, std::string>> &columns) {
   if (name.empty() || columns.empty()) {
@@ -31,16 +23,18 @@ bool Megatron::create_table(std::string name, std::vector<std::pair<std::string,
 
   // Bloque donde se va a almacenar tabla
   sector1_meta.n_tables++;
-  sector1_meta.table_block_ids.push_back(disk_manager->reserve_free_block());
+  // sector1_meta.table_block_ids.push_back(disk_manager->reserve_free_block());
+  auto new_table_frame = buffer_manager->get_load_free_frame();
+  sector1_meta.table_block_ids.push_back(new_table_frame.page_id);
 
-  init_table_metadata(table_metadata, name, sector1_meta.table_block_ids.back(), columns);
+  init_table_metadata(table_metadata, name, new_table_frame.page_id, columns);
 
   auto table_block_bytes =
       serial::serialize_table_metadata(
           table_metadata, disk_manager->BLOCK_SIZE);
 
-  // buffer_manager.res
-  disk_manager->write_block(table_block_bytes, table_metadata.table_block_id);
+  // disk_manager->write_block(table_block_bytes, table_metadata.table_block_id);
+  buffer_manager->free_unpin_page(new_table_frame.page_id, true);
 
   sector1_bytes = serial::serialize_sector1(sector1_meta);
   disk_manager->write_sector(sector1_bytes, 1);
@@ -116,44 +110,4 @@ bool Megatron::search_table(size_t table_id,
   }
 
   return false;
-}
-
-float Megatron::table_size(std::string table_name) {
-  serial::TableMetadata table_metadata;
-
-  // No existe
-  if (!search_table(table_name, table_metadata)) {
-    std::cerr << "Tabla: " << table_name << " no existe" << std::endl;
-    return 0;
-  }
-
-  // Revisamos todos los bloques asociados a file
-  // auto blocks = extract_blocks_from_schema(table_name);
-
-  // TODO: En base a lbas, revisa header para bytes libres/usados
-  size_t total_size{};
-  // for (size_t page_index{1}, page_lba{};
-  //      page_index < file_header.n_blocks; ++page_index) {
-  //   page_lba = table_metadata.file_lba +
-  //              static_cast<size_t>(std::ceil((page_index * file_header.block_size) /
-  //                                            static_cast<double>(disk_manager::SECTOR_SIZE)));
-  //   std::vector<unsigned char> bytes;
-  //   disk.read_block(bytes, file_header.block_size, page_lba);
-  //
-  //   auto fixed_block_header = serial::deserialize_fixed_block_header(bytes);
-  //
-  //   auto it_page_byte = bytes.begin();
-  //
-  //   // Revisamos todo registro marcado como ocupado
-  //   for (size_t bmp_i{}; bmp_i < fixed_block_header.max_n_regs; ++bmp_i) {
-  //     // Se encuentra registro
-  //     if (fixed_block_header.free_register_bitmap.at(bmp_i)) {
-  //       total_size += fixed_block_header.reg_size;
-  //     }
-  //   }
-  // }
-
-  // std::cout << metadata.tuple_size << " " << metadata.n_rows << std::endl;
-  // return 1.f * metadata.tuple_size * metadata.n_rows / 1024;
-  return total_size / 1024.;
 }

@@ -1,13 +1,4 @@
-#include "comparison.hpp"
 #include "megatron.hpp"
-#include <boost/dynamic_bitset/dynamic_bitset.hpp>
-#include <cstddef>
-#include <cstdint>
-#include <fstream>
-#include <iostream>
-#include <limits>
-#include <print>
-#include <sstream>
 #include <string>
 
 #include <vector>
@@ -53,9 +44,9 @@ int main(int argc, char *argv[]) {
 
   megatron.create_table(titanic, columns);
 
-  megatron.translate();
-
-  // megatron.load_CSV("csv/titanic.csv", titanic, 1);
+  // megatron.show_table_metadata(catalog);
+  // megatron.translate();
+  megatron.load_CSV("csv/titanic.csv", titanic, 1);
 
   return 0;
   serial::TableMetadata table_metadata;

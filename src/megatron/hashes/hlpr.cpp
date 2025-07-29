@@ -1,10 +1,4 @@
-#include <cstddef>
-#include <cstdint>
-#include <print>
-
-#include "hash/directory.hpp"
 #include "hash/hasher.hpp"
-#include "types/types.hpp"
 
 size_t Hasher::hash_key(const SQL_type_ &key, size_t d) {
   auto key_bytes = serialize_sql_type(key);

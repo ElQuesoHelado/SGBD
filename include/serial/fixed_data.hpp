@@ -1,14 +1,8 @@
 #pragma once
 
 #include "bitset.hpp"
-#include "serial/generic.hpp"
 #include "serial/page_header.hpp"
-#include <boost/dynamic_bitset/dynamic_bitset.hpp>
-#include <climits>
-#include <cstddef>
-#include <cstdint>
-#include <iostream>
-#include <tuple>
+#include <memory>
 
 namespace serial {
 /*

@@ -1,23 +1,9 @@
 #include "megatron.hpp"
-#include "comparison.hpp"
-#include "disk_manager.hpp"
-#include "serial/table.hpp"
-#include "ui.cpp"
+#include "ui/utils.hpp"
 #include <csignal>
-#include <cstddef>
-#include <cstdlib>
-#include <filesystem>
-#include <fstream>
-#include <ios>
-#include <iostream>
-#include <memory>
-#include <sstream>
-#include <string>
-#include <sys/types.h>
-#include <vector>
 
 void Megatron::run() {
-  string opcion;
+  std::string opcion;
   while (!global_shutdown.load()) {
     clearScreen();
 
@@ -31,10 +17,10 @@ void Megatron::run() {
     if (global_shutdown.load())
       break;
 
-    if (!getline(cin, opcion)) {
+    if (!getline(std::cin, opcion)) {
       if (global_shutdown.load())
         break;
-      cin.clear();
+      std::cin.clear();
       continue;
     }
 
@@ -66,18 +52,18 @@ void Megatron::run() {
       ui_load_n_regs_csv();
     else if (opcion == "14") {
       clearScreen();
-      cout << "Especificaciones de disco" << endl;
-      cout << "Superficies: " << disk_manager->SURFACES << endl;
-      cout << "Pistas/superf: " << disk_manager->TRACKS_PER_SURFACE << endl;
-      cout << "Sectores/pista: " << disk_manager->SECTORS_PER_TRACK << endl;
-      cout << "Sectores totales: " << disk_manager->TOTAL_SECTORS << endl;
-      cout << "Pistas totales: " << disk_manager->TRACKS_PER_SURFACE * disk_manager->SURFACES << endl;
-      cout << "Capacidad de sector: " << disk_manager->SECTOR_SIZE << endl;
-      cout << "Capacidad de bloque: " << disk_manager->BLOCK_SIZE << endl;
-      cout << "Bloques por pista: " << disk_manager->TRACK_SIZE / (disk_manager->BLOCK_SIZE) << endl;
-      cout << "Bloques por superficie: " << disk_manager->SURFACE_SIZE / (disk_manager->BLOCK_SIZE) << endl;
-      cout << "Bloques totales: " << disk_manager->DISK_CAPACITY / (disk_manager->BLOCK_SIZE) << endl;
-      cout << "Bytes Usados: " << disk_manager->calculate_free_space() << " / " << disk_manager->DISK_CAPACITY << endl;
+      std::cout << "Especificaciones de disco" << std::endl;
+      std::cout << "Superficies: " << disk_manager->SURFACES << std::endl;
+      std::cout << "Pistas/superf: " << disk_manager->TRACKS_PER_SURFACE << std::endl;
+      std::cout << "Sectores/pista: " << disk_manager->SECTORS_PER_TRACK << std::endl;
+      std::cout << "Sectores totales: " << disk_manager->TOTAL_SECTORS << std::endl;
+      std::cout << "Pistas totales: " << disk_manager->TRACKS_PER_SURFACE * disk_manager->SURFACES << std::endl;
+      std::cout << "Capacidad de sector: " << disk_manager->SECTOR_SIZE << std::endl;
+      std::cout << "Capacidad de bloque: " << disk_manager->BLOCK_SIZE << std::endl;
+      std::cout << "Bloques por pista: " << disk_manager->TRACK_SIZE / (disk_manager->BLOCK_SIZE) << std::endl;
+      std::cout << "Bloques por superficie: " << disk_manager->SURFACE_SIZE / (disk_manager->BLOCK_SIZE) << std::endl;
+      std::cout << "Bloques totales: " << disk_manager->DISK_CAPACITY / (disk_manager->BLOCK_SIZE) << std::endl;
+      std::cout << "Bytes Usados: " << disk_manager->calculate_free_space() << " / " << disk_manager->DISK_CAPACITY << std::endl;
 
       pauseAndReturn();
 
@@ -124,10 +110,10 @@ void Megatron::run() {
 
     } else if (opcion == "0") {
       clearScreen();
-      cout << "\"Cerrando el programa\"\n";
+      std::cout << "\"Cerrando el programa\"\n";
       break;
     } else {
-      cout << "\nOpción inválida. Intente de nuevo.\n";
+      std::cout << "\nOpción inválida. Intente de nuevo.\n";
       pauseAndReturn();
     }
   }

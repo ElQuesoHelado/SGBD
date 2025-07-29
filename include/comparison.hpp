@@ -1,9 +1,7 @@
 #pragma once
-#include "types/types.hpp"
 
-#include <cstddef>
+#include "types/types.hpp"
 #include <functional>
-#include <vector>
 
 struct Comparison {
   size_t col_index{};

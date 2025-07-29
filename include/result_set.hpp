@@ -1,14 +1,7 @@
 #pragma once
 
-#include "serial/generic.hpp"
 #include "serial/table.hpp"
 #include "types/types.hpp"
-#include <cstddef>
-#include <cstdint>
-#include <format>
-#include <iostream>
-#include <string>
-#include <vector>
 
 struct RegisterEntry {
   uint32_t page_id{};

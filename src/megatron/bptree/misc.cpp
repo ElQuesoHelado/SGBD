@@ -1,8 +1,4 @@
-#include "bptree/bpnode.hpp"
-#include "bptree/bptree.hpp"
 #include "megatron.hpp"
-#include <cstddef>
-#include <cstdint>
 
 size_t Megatron::calculate_btree_order(size_t key_size) {
   size_t meta_size = sizeof(BPNode::is_leaf) + sizeof(BPNode::n_keys);

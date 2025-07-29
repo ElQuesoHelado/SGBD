@@ -1,6 +1,4 @@
 #include "disk_manager.hpp"
-#include <cstddef>
-#include <cstdint>
 
 void DiskManager::write_block(std::vector<unsigned char> &block_bytes, uint32_t block_id) {
   if (block_bytes.size() != BLOCK_SIZE && block_id >= free_block_map.blocks.size())

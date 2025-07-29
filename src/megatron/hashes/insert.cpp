@@ -1,9 +1,4 @@
 #include "hash/hasher.hpp"
-#include "types/types.hpp"
-#include <cstddef>
-#include <cstdint>
-#include <print>
-#include <string>
 
 void Hasher::insert_from_set(const ResultSet &set, size_t key_col_index) {
   for (auto &r : set) {
@@ -47,7 +42,6 @@ void Hasher::insert_non_full_bucket(
 
 void Hasher::insert_overflow_bucket(
     uint32_t bucket_id, const SQL_type_ &key, const RegPtr &reg_ptr) {
-  std::println("overflow bucket creado");
   auto bucket = load_bucket(bucket_id);
 
   if (bucket.size == bucket.capacity) {

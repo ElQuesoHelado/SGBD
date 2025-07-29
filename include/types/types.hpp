@@ -1,17 +1,7 @@
 #pragma once
 
-#include "serial/generic.hpp"
-#include <concepts>
-#include <cstddef>
-#include <cstdint>
 #include <cstring>
-#include <iostream>
-#include <iterator>
 #include <sstream>
-#include <string>
-#include <string_view>
-#include <tuple>
-#include <type_traits>
 #include <unordered_map>
 #include <variant>
 #include <vector>

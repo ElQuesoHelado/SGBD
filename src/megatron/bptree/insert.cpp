@@ -1,10 +1,6 @@
 #include "bptree/bptree.hpp"
-#include "types/types.hpp"
-#include <print>
 
 void BPTree::insert(const SQL_type_ &key, const RegPtr reg_ptr) {
-  if (SQL_type_to_string(key) == "7")
-    std::print("a");
 
   auto r = load_node(root_id);
 

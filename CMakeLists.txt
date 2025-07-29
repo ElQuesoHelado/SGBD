@@ -74,7 +74,6 @@ set(DISK_MANAGER_SOURCES
     ${SOURCE_DIR}/disk_manager/disk_manager.cpp
     ${SOURCE_DIR}/disk_manager/block_reads.cpp
     ${SOURCE_DIR}/disk_manager/block_writes.cpp
-    ${SOURCE_DIR}/disk_manager/folder_ops.cpp
     ${SOURCE_DIR}/disk_manager/header_ops.cpp
     ${SOURCE_DIR}/disk_manager/sector_reads.cpp
     ${SOURCE_DIR}/disk_manager/sector_writes.cpp
@@ -100,13 +99,13 @@ add_library(disk_manager)
 target_sources(disk_manager PRIVATE ${DISK_MANAGER_SOURCES})
 target_include_directories(disk_manager PUBLIC ${INCLUDE_DIR})
 target_include_directories(disk_manager PRIVATE ${Boost_INCLUDE_DIRS})
-# target_link_libraries(disk_manager PRIVATE Boost::Boost)
 include_directories(${LIBVLC_INCLUDE_DIR})
 
 
 add_library(buffer_manager)
 target_sources(buffer_manager PRIVATE ${BUFFER_MANAGER_SOURCES})
 target_include_directories(buffer_manager PUBLIC ${INCLUDE_DIR})
+target_link_libraries(buffer_manager PRIVATE disk_manager)
 
 add_executable(runner ${SOURCE_DIR}/main.cpp)
 target_link_libraries(runner PRIVATE megatron disk_manager buffer_manager ${LIBVLC_LIBRARY})
@@ -116,7 +115,6 @@ target_link_libraries(tests PRIVATE megatron disk_manager buffer_manager)
 
 add_executable(hash_test ${SOURCE_DIR}/hash_test.cpp)
 target_link_libraries(hash_test PRIVATE megatron disk_manager buffer_manager)
-
 
 add_executable(sgbd_videos ${SOURCE_DIR}/sgbd_videos.cpp)
 target_link_libraries(sgbd_videos PRIVATE megatron disk_manager buffer_manager ${LIBVLC_LIBRARY})

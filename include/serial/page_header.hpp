@@ -2,7 +2,6 @@
 
 #include "serial/generic.hpp"
 #include <cstdint>
-#include <vector>
 
 namespace serial {
 

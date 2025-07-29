@@ -1,7 +1,5 @@
-#include "comparison.hpp"
 #include "megatron.hpp"
 #include "utils.hpp"
-#include <iomanip>
 
 void Megatron::ui_select_table() {
   clearScreen();

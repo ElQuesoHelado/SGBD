@@ -1,5 +1,4 @@
 #include "buffer/buffer_manager.hpp"
-#include "buffer/frame.hpp"
 #include <iostream>
 
 void BufferManager::print_buffer_LRU() const {

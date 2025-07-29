@@ -1,7 +1,5 @@
 #include "megatron.hpp"
-#include "serial/table.hpp"
 #include "utils.hpp"
-#include <iomanip>
 
 void Megatron::ui_update_reg() {
   clearScreen();

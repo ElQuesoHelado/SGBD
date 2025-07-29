@@ -1,6 +1,4 @@
 #include "disk_manager.hpp"
-#include <cstddef>
-#include <cstdint>
 
 void DiskManager::read_block(std::vector<unsigned char> &block,
                              uint32_t block_id) {

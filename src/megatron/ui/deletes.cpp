@@ -1,6 +1,5 @@
 #include "megatron.hpp"
 #include "utils.hpp"
-#include <iomanip>
 
 void Megatron::ui_delete_data() {
   clearScreen();

@@ -1,7 +1,5 @@
 #include "megatron.hpp"
 #include "utils.hpp"
-#include <fstream>
-#include <string>
 
 void Megatron::ui_show_page() {
   using namespace std;

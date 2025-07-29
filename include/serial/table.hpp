@@ -1,14 +1,7 @@
 #pragma once
 
 #include "generic.hpp"
-#include <algorithm>
-#include <array>
-#include <cstddef>
 #include <cstdint>
-#include <cstring>
-#include <string>
-#include <sys/types.h>
-#include <vector>
 
 namespace serial {
 

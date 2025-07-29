@@ -1,11 +1,6 @@
-#include "comparison.hpp"
 #include "megatron.hpp"
-#include "serial/table.hpp"
-#include "types/types.hpp"
-#include <cstddef>
-#include <cstdlib>
+#include <iostream>
 #include <print>
-#include <string>
 
 void Megatron::ui_show_threads_from_board() {
   std::string board = "board", thread = "thread";

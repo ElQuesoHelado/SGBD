@@ -2,11 +2,7 @@
 
 #include "block_map.hpp"
 #include <boost/dynamic_bitset/dynamic_bitset.hpp>
-#include <cstddef>
-#include <cstdint>
 #include <fstream>
-#include <vector>
-// #include <sector>
 
 /*
  * Representa toda operacion relacionada a disco

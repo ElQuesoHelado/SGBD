@@ -1,6 +1,5 @@
 #include "disk_manager.hpp"
 #include <iostream>
-#include <string>
 
 // Solo escribe un sector en disco
 // Asume que ha sido posicionado previamente en un lugar valido

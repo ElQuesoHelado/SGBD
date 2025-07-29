@@ -3,13 +3,8 @@
 #include "bpnode.hpp"
 #include "buffer/buffer_manager.hpp"
 #include "comparison.hpp"
-// #include "megatron.hpp"
 #include "reg_ptr.hpp"
 #include "serial/table.hpp"
-#include "types/types.hpp"
-#include <cstddef>
-#include <cstdint>
-#include <vector>
 
 class BPTree {
   BufferManager &buffer;
@@ -38,8 +33,6 @@ public:
     }
   }
 
-  // ~BPTree() {
-  // }
   void print_tree(uint32_t page_id, size_t depth = 0);
 
   std::vector<RegPtr> search(Comparator &comp);

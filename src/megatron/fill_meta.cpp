@@ -1,16 +1,5 @@
 #include "megatron.hpp"
-#include "serial/fixed_data.hpp"
-#include "serial/generic.hpp"
-#include "serial/page_header.hpp"
-#include "serial/slotted_data.hpp"
-#include "types/types.hpp"
-#include <cstddef>
-#include <cstdint>
-#include <functional>
 #include <iostream>
-#include <span>
-#include <string_view>
-#include <unordered_map>
 
 /*
  * Mapa para asignar tamanios a tipos sql,
@@ -88,42 +77,10 @@ void Megatron::init_table_metadata(serial::TableMetadata &table_metadata,
     table_metadata.max_reg_size += col_max_size;
   }
 
-  // Se crea una pagina inicial
-  // serial::FixedDataHeader fixed_data_header;
-  // serial::SlottedDataHeader slotted_data_header;
-  // serial::PageHeader page_header;
+  auto new_page_id = create_page(table_metadata);
 
-  // buffer_manager_ptr->get_block(size_t block_id);
-  // std::vector<unsigned char> page_bytes(disk_manager->BLOCK_SIZE);
-  // auto page_it = page_bytes.begin();
-  auto &frame = buffer_manager->get_load_free_frame();
-  std::span<unsigned char> page_data(frame.page_bytes);
-
-  if (table_metadata.are_regs_fixed) {
-    serial::PageHeader page_header(page_data);
-    serial::FixedDataHeader fixed_data_header(page_data);
-
-    init_fixed_data_header(table_metadata, fixed_data_header);
-    init_page_header(page_header, fixed_data_header.free_bytes);
-
-    // serial::serialize_page_header(page_header, page_it);
-    // serial::serialize_fixed_block_header(fixed_data_header, page_it);
-
-  } else {
-    serial::PageHeader page_header(page_data);
-    serial::SlottedDataHeader slotted_data_header(page_data);
-
-    init_slotted_data_header(table_metadata, slotted_data_header);
-    init_page_header(page_header, slotted_data_header.free_bytes);
-
-    // serial::serialize_page_header(page_header, page_it);
-    // serial::serialize_slotted_data_header(slotted_data_header, page_it);
-  }
-
-  buffer_manager->free_unpin_page(frame.page_id, true);
-
-  table_metadata.first_page_id = frame.page_id;
-  table_metadata.last_page_id = frame.page_id;
+  table_metadata.first_page_id = new_page_id;
+  table_metadata.last_page_id = new_page_id;
 }
 
 void Megatron::init_page_header(serial::PageHeader &page_header,

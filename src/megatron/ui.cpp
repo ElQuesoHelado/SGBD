@@ -1,24 +1,10 @@
-#include "disk_manager.hpp"
 #include "megatron.hpp"
 #include "ui/utils.hpp"
-#include <cstddef>
-#include <cstdlib>
-#include <iomanip>
-#include <ios>
-#include <iostream>
-#include <memory>
-#include <print>
-#include <sstream>
-#include <string>
-#include <sys/types.h>
-#include <vector>
-
-using namespace std;
 
 void Megatron::ui_interact_buffer_manager() {
-  string table_name;
-  cout << "Nombre de tabla para interpretar\n";
-  getline(cin, table_name);
+  std::string table_name;
+  std::cout << "Nombre de tabla para interpretar\n";
+  getline(std::cin, table_name);
 
   serial::TableMetadata table_metadata;
 
@@ -53,33 +39,33 @@ void Megatron::ui_interact_buffer_manager() {
 
     buffer_manager->print_hit_rate();
 
-    // cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cout << "\n\033[1m=== MENU ===\033[0m\n";
-    cout << "1. Cargar pagina\n";
-    cout << "2. Establecer pin fijo\n";
-    cout << "3. Quitar pin fijo\n";
-    cout << "4. Mostrar contenido pagina\n";
-    cout << "5. Select *\n";
-    cout << "6. Select from\n";
-    cout << "7. Select nth registro(empieza en 0)\n"; // FIXME: Tal vez irrelevante
-    cout << "8. Update de pagina(condicion)\n";
-    cout << "9. Update de pagina(nth, empieza en 0)\n";
-    cout << "10. Delete de pagina(condicion)\n";
-    cout << "11. Delete de pagina(nth, empieza en 0)\n";
-    cout << "12. Insert 1 registro a pagina(manual)\n";
-    cout << "13. Insert n registros a pagina(de csv)\n";
-    cout << "14. Guardar una pagina\n";
-    cout << "15. Guardar TODAS las paginas\n";
-    cout << "16. Clear buffer(NO GUARDA)\n";
-    cout << "17. Mostrar paginas usadas por tabla\n";
-    cout << "0. Salir\n";
-    cout << "Opcion: ";
-    cin >> opcion;
+    // std::cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    std::cout << "\n\033[1m=== MENU ===\033[0m\n";
+    std::cout << "1. Cargar pagina\n";
+    std::cout << "2. Establecer pin fijo\n";
+    std::cout << "3. Quitar pin fijo\n";
+    std::cout << "4. Mostrar contenido pagina\n";
+    std::cout << "5. Select *\n";
+    std::cout << "6. Select from\n";
+    std::cout << "7. Select nth registro(empieza en 0)\n"; // FIXME: Tal vez irrelevante
+    std::cout << "8. Update de pagina(condicion)\n";
+    std::cout << "9. Update de pagina(nth, empieza en 0)\n";
+    std::cout << "10. Delete de pagina(condicion)\n";
+    std::cout << "11. Delete de pagina(nth, empieza en 0)\n";
+    std::cout << "12. Insert 1 registro a pagina(manual)\n";
+    std::cout << "13. Insert n registros a pagina(de csv)\n";
+    std::cout << "14. Guardar una pagina\n";
+    std::cout << "15. Guardar TODAS las paginas\n";
+    std::cout << "16. Clear buffer(NO GUARDA)\n";
+    std::cout << "17. Mostrar paginas usadas por tabla\n";
+    std::cout << "0. Salir\n";
+    std::cout << "Opcion: ";
+    std::cin >> opcion;
 
     if (opcion == 0) {
-      cout << "Deseas guardar las paginas existentes en buffer(dirty) antes de salir?(0:no, 1:si) ";
+      std::cout << "Deseas guardar las paginas existentes en buffer(dirty) antes de salir?(0:no, 1:si) ";
       int guardar;
-      cin >> guardar;
+      std::cin >> guardar;
 
       if (!guardar)
         buffer_manager->clear();
@@ -95,14 +81,14 @@ void Megatron::ui_interact_buffer_manager() {
       buf_load_page();
     } else if (opcion == 2) {
       int page_id;
-      cout << "ID de pagina a fijar: ";
-      cin >> page_id;
+      std::cout << "ID de pagina a fijar: ";
+      std::cin >> page_id;
       buffer_manager->set_fixed_pin(page_id, true);
 
     } else if (opcion == 3) {
       int page_id;
-      cout << "ID de pagina a desfijar: ";
-      cin >> page_id;
+      std::cout << "ID de pagina a desfijar: ";
+      std::cin >> page_id;
       buffer_manager->set_fixed_pin(page_id, false);
 
     } else if (opcion == 4) {
@@ -133,7 +119,7 @@ void Megatron::ui_interact_buffer_manager() {
         std::cout << e.first << " " << e.second << '\n';
       std::cout << std::endl;
     } else {
-      cout << "Opcion invalida.\n";
+      std::cout << "Opcion invalida.\n";
     }
 
     pauseAndReturn();

@@ -1,12 +1,8 @@
 #pragma once
 #include <algorithm>
-#include <array>
-#include <cstddef>
 #include <cstring>
 #include <iterator>
 #include <span>
-#include <string_view>
-#include <type_traits>
 #include <vector>
 
 namespace serial {

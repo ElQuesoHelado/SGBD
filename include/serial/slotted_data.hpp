@@ -1,12 +1,6 @@
 #pragma once
 
-#include "serial/generic.hpp"
 #include "serial/page_header.hpp"
-#include <cstddef>
-#include <cstdint>
-#include <iostream>
-#include <ostream>
-#include <stdexcept>
 
 namespace serial {
 

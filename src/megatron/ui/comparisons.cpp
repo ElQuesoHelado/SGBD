@@ -1,7 +1,5 @@
 #include "megatron.hpp"
-#include "serial/generic.hpp"
-#include "types/types.hpp"
-#include <cstddef>
+#include <iostream>
 #include <print>
 
 //(nombre columna, operacion de comparacion, valor)

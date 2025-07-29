@@ -1,7 +1,5 @@
 #include "megatron.hpp"
-#include "serial/generic.hpp"
-#include <cstddef>
-#include <format>
+#include <iostream>
 
 size_t Megatron::get_column_index(serial::TableMetadata &table_metadata,
                                   std::string &col_name) {

@@ -1,9 +1,7 @@
 #pragma once
 
 #include "serial/generic.hpp"
-#include <cstddef>
 #include <cstdint>
-#include <vector>
 
 struct DirectoryPage {
   uint16_t global_depth{};

@@ -1,5 +1,5 @@
 #include "megatron.hpp"
-#include "serial/table.hpp"
+#include <iostream>
 #include <print>
 
 void Megatron::buf_load_page() {

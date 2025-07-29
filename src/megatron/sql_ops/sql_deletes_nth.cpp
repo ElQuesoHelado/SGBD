@@ -1,9 +1,7 @@
 #include "megatron.hpp"
-#include "result_set.hpp"
 #include "serial/fixed_page.hpp"
-#include "serial/slotted_data.hpp"
 #include "serial/slotted_page.hpp"
-#include <cstddef>
+#include <iostream>
 
 ResultSet Megatron::delete_nth_reg(std::string &table_name, size_t nth) {
   serial::TableMetadata table_metadata;

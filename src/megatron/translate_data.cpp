@@ -1,24 +1,6 @@
-#include "bptree/bpnode.hpp"
-#include "bptree/bptree.hpp"
-#include "disk_manager.hpp"
-#include "hash/directory.hpp"
-#include "hash/hasher.hpp"
 #include "megatron.hpp"
-#include "serial/fixed_data.hpp"
 #include "serial/fixed_page.hpp"
-#include "serial/generic.hpp"
-#include "serial/page_header.hpp"
-#include "serial/sector0.hpp"
-#include "serial/sector1.hpp"
-#include "serial/slotted_data.hpp"
 #include "serial/slotted_page.hpp"
-#include "serial/table.hpp"
-#include <boost/dynamic_bitset.hpp>
-#include <boost/dynamic_bitset/dynamic_bitset.hpp>
-#include <cstddef>
-#include <cstdint>
-#include <format>
-#include <string>
 
 // Escribe sectores al disco
 std::string Megatron::translate_data_page(serial::TableMetadata &table_metadata,

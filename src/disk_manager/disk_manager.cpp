@@ -1,18 +1,6 @@
 #include "disk_manager.hpp"
 #include "serial/sector0.hpp"
-#include <algorithm>
-#include <boost/dynamic_bitset/dynamic_bitset.hpp>
-#include <climits>
-#include <cmath>
-#include <cstddef>
-#include <cstdint>
-#include <cstdlib>
 #include <filesystem>
-#include <iostream>
-
-// size_t disk_manager::get_free_logic_sectors_dbms(size_t n_sectors) {
-//   return get_zeros_sequence_bitset(free_space_bitmap, FIRST_DBMS_LBA, FIRST_STORABLE_LBA, n_sectors);
-// }
 
 size_t DiskManager::get_free_logic_sectors_storable(size_t n_sectors) {
   return get_zeros_sequence_bitset(free_space_bitmap, 0, free_space_bitmap.size(), n_sectors);

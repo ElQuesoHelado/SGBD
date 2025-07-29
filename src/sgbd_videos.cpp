@@ -1,13 +1,4 @@
-#include "comparison.hpp"
 #include "megatron.hpp"
-#include "serial/table.hpp"
-#include "types/types.hpp"
-#include <filesystem>
-#include <print>
-#include <string>
-#include <utility>
-#include <vector>
-// #include <vlc/vlc.h>
 
 int main(int argc, char *argv[]) {
   Megatron megatron;

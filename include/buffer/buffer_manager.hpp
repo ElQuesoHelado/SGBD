@@ -2,10 +2,6 @@
 
 #include "disk_manager.hpp"
 #include "frame.hpp"
-#include <cstddef>
-#include <cstdint>
-#include <memory>
-#include <vector>
 
 class BufferManager {
 public:
