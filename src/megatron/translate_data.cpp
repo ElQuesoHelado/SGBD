@@ -218,8 +218,11 @@ std::vector<std::string> Megatron::translate_slotted_page(
     out_str += std::to_string(S.offset_reg_start) + "|\n|";
   }
 
-  sectors.back() += out_str + disk_manager->logic_sector_to_CHS(
-                                  disk_manager->free_block_map.get_ith_lba(curr_page_id, ith_sector_in_block));
+  sectors.back() += out_str +
+                    disk_manager->logic_sector_to_CHS(
+                        disk_manager->free_block_map.get_ith_lba(
+                            curr_page_id, ith_sector_in_block)) +
+                    "\n";
 
   // disk_manager->write_block_txt(out_str, curr_page_id);
   // disk_manager->write_block_txt(disk_manager->logic_sector_to_CHS(

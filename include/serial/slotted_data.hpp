@@ -6,22 +6,22 @@ namespace serial {
 
 #pragma pack(push, 1)
 struct Slot {
-  uint16_t reg_size{};
-  uint16_t offset_reg_start{};
-  uint8_t is_used{}; // Borrado o no
+  uint16_t &reg_size;
+  uint16_t &offset_reg_start;
+  uint8_t &is_used; // Borrado o no
   Slot(std::span<unsigned char> &data)
       : reg_size(*reinterpret_cast<uint16_t *>(data.data())),
         offset_reg_start(*reinterpret_cast<uint16_t *>(data.data() + 2)),
         is_used(*reinterpret_cast<uint8_t *>(data.data() + 4)) {
-    data = data.subspan(sizeof(Slot));
+    data = data.subspan(5);
   }
 };
 #pragma pack(pop)
 
 struct SlottedDataHeader {
-  uint16_t free_bytes{};
-  uint16_t n_slots{};
-  uint16_t free_space_offset{};
+  uint16_t &free_bytes;
+  uint16_t &n_slots;
+  uint16_t &free_space_offset;
   std::vector<Slot> slots{};
 
   SlottedDataHeader(std::span<unsigned char> &buffer)

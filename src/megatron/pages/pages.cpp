@@ -72,6 +72,8 @@ uint32_t Megatron::create_page(serial::TableMetadata &table_metadata) {
     init_page_header(
         slotted_page.page_header,
         slotted_page.slotted_data_header.free_bytes);
+
+    int x = 5;
   }
 
   buffer_manager->free_unpin_page(free_block_id, true);
