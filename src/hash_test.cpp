@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
   megatron.create_table(titanic, columns);
 
   megatron.load_CSV("csv/titanic.csv",
-                    "titanic", 10);
+                    "titanic");
 
   serial::TableMetadata table_metadata;
   std::vector<std::tuple<std::string,

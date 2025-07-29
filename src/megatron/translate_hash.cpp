@@ -1,4 +1,5 @@
 #include "megatron.hpp"
+#include <print>
 
 void Megatron::translate_hash_directory(
     serial::TableMetadata &table_metadata, DirectoryPage &dir) {
@@ -37,7 +38,7 @@ void Megatron::translate_hash_directory(
     sectors.back() +=
         std::to_string(b);
 
-    sectors.back() += '\n';
+    sectors.back() += ' ';
 
     remm_sector_bytes -= sizeof(uint32_t);
 
@@ -48,6 +49,7 @@ void Megatron::translate_hash_directory(
       // std::println("{}", ith_sector_in_block);
       // if (ith_sector_in_block >= disk_manager->SECTORS_PER_BLOCK)
       //   continue;
+      sectors.back() += '\n';
 
       sectors.emplace_back();
       sectors.back() +=
@@ -98,8 +100,11 @@ void Megatron::translate_bucket(
   sectors.emplace_back();
 
   int remm_sector_bytes =
-      disk_manager->SECTOR_SIZE - sizeof(Bucket::overflow_page) -
-      sizeof(Bucket::local_depth) - sizeof(Bucket::size) -
+      disk_manager->SECTOR_SIZE -
+      sizeof(Bucket::overflow_page) -
+      sizeof(Bucket::prefix) -
+      sizeof(Bucket::local_depth) -
+      sizeof(Bucket::size) -
       sizeof(Bucket::capacity);
 
   size_t ith_sector_in_block{};
@@ -112,11 +117,11 @@ void Megatron::translate_bucket(
 
   for (size_t i{}; i < bucket.capacity; ++i) {
     if (bucket.reg_ptrs[i].page_id != disk_manager->NULL_BLOCK &&
-        bucket.reg_ptrs[i].page_id != 0) {
+        bucket.reg_ptrs[i].page_id != 0) { // FIXME: ?no se inicializa con nullptr?
       sectors.back() +=
-          SQL_type_to_string(bucket.keys[i]) + " " +
-          std::to_string(bucket.reg_ptrs[i].page_id) +
-          std::to_string(bucket.reg_ptrs[i].slot);
+          SQL_type_to_string(bucket.keys[i]) + " (" +
+          std::to_string(bucket.reg_ptrs[i].page_id) + ", " +
+          std::to_string(bucket.reg_ptrs[i].slot) + ")";
     } else {
       sectors.back() += "VACIO";
     }
@@ -131,11 +136,15 @@ void Megatron::translate_bucket(
       remm_sector_bytes = disk_manager->SECTOR_SIZE;
       ith_sector_in_block++;
 
-      if (ith_sector_in_block >= disk_manager->SECTORS_PER_BLOCK)
+      if (ith_sector_in_block >= disk_manager->SECTORS_PER_BLOCK) {
+        std::println("algo esta mal en size de bucket/capacidad respecto a bloque total");
         continue;
+      }
 
       sectors.emplace_back();
+      // FIXME: ?Por que se llega a tener un bloque nulo?
       if (curr_page_id == disk_manager->NULL_BLOCK || curr_page_id == 0) {
+        std::println("BLOQUE NULO? QUE FUE");
         sectors.back() += "VACIO\n";
 
       } else {
