@@ -4,8 +4,6 @@ uint32_t Megatron::get_insertable_page_id(uint32_t first_page_id, uint32_t reg_s
   uint32_t curr_block_id = first_page_id;
 
   while (curr_block_id != disk_manager->NULL_BLOCK) {
-    // disk.read_block(block, curr_block_id);
-
     auto &frame = buffer_manager->load_pin_page(curr_block_id);
     std::span<unsigned char> page_data(frame.page_bytes);
 

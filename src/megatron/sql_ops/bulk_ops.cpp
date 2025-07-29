@@ -1,5 +1,6 @@
 #include "megatron.hpp"
 #include <iostream>
+#include <print>
 
 void Megatron::load_CSV(std::string path, std::string table_name, size_t n_regs) {
   std::ifstream file(path);

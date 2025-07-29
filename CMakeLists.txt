@@ -63,10 +63,11 @@ set(MEGATRON_SOURCES
     ${SOURCE_DIR}/megatron/ui/utils.hpp
     ${SOURCE_DIR}/megatron/ui.cpp
     ${SOURCE_DIR}/megatron/registers.cpp
-    ${SOURCE_DIR}/megatron/translate.cpp
-    ${SOURCE_DIR}/megatron/translate_data.cpp
-    ${SOURCE_DIR}/megatron/translate_hash.cpp
-    ${SOURCE_DIR}/megatron/translate_index.cpp
+    ${SOURCE_DIR}/megatron/translate/translate.cpp
+    ${SOURCE_DIR}/megatron/translate/reserved_sectors.cpp
+    ${SOURCE_DIR}/megatron/translate/translate_data.cpp
+    ${SOURCE_DIR}/megatron/translate/translate_hash.cpp
+    ${SOURCE_DIR}/megatron/translate/translate_index.cpp
     ${SOURCE_DIR}/megatron/misc.cpp
 )
 
@@ -88,7 +89,6 @@ set(BUFFER_MANAGER_SOURCES
 )
 
 find_package(Boost REQUIRED)
-find_package(LIBVLC REQUIRED)
 
 
 add_library(megatron)
@@ -99,8 +99,6 @@ add_library(disk_manager)
 target_sources(disk_manager PRIVATE ${DISK_MANAGER_SOURCES})
 target_include_directories(disk_manager PUBLIC ${INCLUDE_DIR})
 target_include_directories(disk_manager PRIVATE ${Boost_INCLUDE_DIRS})
-include_directories(${LIBVLC_INCLUDE_DIR})
-
 
 add_library(buffer_manager)
 target_sources(buffer_manager PRIVATE ${BUFFER_MANAGER_SOURCES})
@@ -108,7 +106,7 @@ target_include_directories(buffer_manager PUBLIC ${INCLUDE_DIR})
 target_link_libraries(buffer_manager PRIVATE disk_manager)
 
 add_executable(runner ${SOURCE_DIR}/main.cpp)
-target_link_libraries(runner PRIVATE megatron disk_manager buffer_manager ${LIBVLC_LIBRARY})
+target_link_libraries(runner PRIVATE megatron disk_manager buffer_manager)
 
 add_executable(tests ${SOURCE_DIR}/test.cpp)
 target_link_libraries(tests PRIVATE megatron disk_manager buffer_manager)
@@ -116,8 +114,8 @@ target_link_libraries(tests PRIVATE megatron disk_manager buffer_manager)
 add_executable(hash_test ${SOURCE_DIR}/hash_test.cpp)
 target_link_libraries(hash_test PRIVATE megatron disk_manager buffer_manager)
 
-add_executable(sgbd_videos ${SOURCE_DIR}/sgbd_videos.cpp)
-target_link_libraries(sgbd_videos PRIVATE megatron disk_manager buffer_manager ${LIBVLC_LIBRARY})
+add_executable(forito ${SOURCE_DIR}/forito.cpp)
+target_link_libraries(forito PRIVATE megatron disk_manager buffer_manager)
 
 
 add_custom_command(
@@ -128,10 +126,10 @@ add_custom_command(
         $<TARGET_FILE_DIR:runner>/csv
 )
 
-# add_custom_command(
-#     TARGET runner POST_BUILD
-#     COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:runner>/media
-#     COMMAND ${CMAKE_COMMAND} -E copy_directory
-#         ${CMAKE_CURRENT_SOURCE_DIR}/media
-#         $<TARGET_FILE_DIR:runner>/media
-# )
+add_custom_command(
+    TARGET runner POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:runner>/media
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_SOURCE_DIR}/media
+        $<TARGET_FILE_DIR:runner>/media
+)

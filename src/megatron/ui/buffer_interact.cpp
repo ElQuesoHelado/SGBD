@@ -27,8 +27,8 @@ void Megatron::buf_show_page_content(serial::TableMetadata &table_metadata) {
   if (page_bytes.empty())
     std::cout << "Pagina no cargada\n";
   else {
-    std::cout << "\n"
-              << translate_data_page_no_write(table_metadata, page_bytes, page_id) << std::endl;
+    // std::cout << "\n"
+    //           << translate_data_page_no_write(table_metadata, page_bytes, page_id) << std::endl;
   }
 }
 

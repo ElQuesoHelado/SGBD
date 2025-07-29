@@ -1,7 +1,9 @@
 #pragma once
 
 #include "serial/generic.hpp"
+#include <cstddef>
 #include <cstdint>
+#include <string>
 
 namespace serial {
 
@@ -10,6 +12,16 @@ struct PageHeader {
   uint32_t &next_block_id;
   uint32_t &free_space;
   uint16_t &n_regs;
+
+  static size_t size() {
+    return sizeof(next_block_id) + sizeof(free_space) + sizeof(n_regs);
+  }
+
+  std::string to_string() {
+    return "Next_page_id: " + std::to_string(next_block_id) + " " +
+           "N_registers: " + std::to_string(n_regs) + " " +
+           "Free_space: " + std::to_string(free_space);
+  }
 
   PageHeader(std::span<unsigned char> &data) : next_block_id(*reinterpret_cast<uint32_t *>(data.data())),
                                                free_space(*reinterpret_cast<uint32_t *>(data.data() + 4)),

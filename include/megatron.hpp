@@ -408,11 +408,10 @@ public:
   void show_table_metadata(std::string &table_name);
 
   std::pair<std::vector<uint32_t>, std::vector<uint32_t>> translate();
+  std::vector<uint32_t> translate_reserved_sectors();
   std::string translate_data_page(serial::TableMetadata &table_metadata, size_t page_id);
   std::string translate_data_page(serial::TableMetadata &table_metadata,
                                   std::vector<unsigned char> &page_bytes, size_t page_id);
-  std::string translate_data_page_no_write(serial::TableMetadata &table_metadata,
-                                           std::vector<unsigned char> &page_bytes, size_t page_id);
 
   std::vector<uint32_t> translate_bptree_node_page(
       serial::TableMetadata &table_metadata, BPTree &tree,

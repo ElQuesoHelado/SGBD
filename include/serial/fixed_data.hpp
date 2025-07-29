@@ -17,6 +17,19 @@ struct FixedDataHeader {
   uint16_t &max_n_regs;
   std::unique_ptr<BitSet> free_register_bitmap;
 
+  size_t size() const {
+    return sizeof(free_bytes) +
+           sizeof(reg_size) +
+           sizeof(max_n_regs) +
+           (max_n_regs + CHAR_BIT - 1) / CHAR_BIT;
+  }
+
+  std::string to_string() {
+    return "Register size: " + std::to_string(reg_size) + " " +
+           "Max registers: " + std::to_string(max_n_regs) + " " +
+           "Free_register_bitmap: " + free_register_bitmap->to_string();
+  }
+
   FixedDataHeader(std::span<unsigned char> &data)
       : free_bytes(*reinterpret_cast<uint32_t *>(data.data())),
         reg_size(*reinterpret_cast<uint32_t *>(data.data() + 4)),
@@ -53,18 +66,6 @@ struct FixedDataHeader {
   }
 };
 #pragma pack(pop)
-
-inline size_t calculate_fixed_data_header_size(const FixedDataHeader &header) {
-  // if (header.max_n_regs != header.free_register_bitmap.size()) {
-  //   std::cerr << "Corrupted FixedDataHeader" << std::endl;
-  //   return 0;
-  // }
-
-  return sizeof(header.free_bytes) +
-         sizeof(header.reg_size) +
-         sizeof(header.max_n_regs) +
-         (header.max_n_regs + CHAR_BIT - 1) / CHAR_BIT;
-}
 
 /*
  * Calcula todo menos reg_size, que es interno
@@ -124,7 +125,7 @@ inline size_t find_free_reg_pos(const FixedDataHeader &header) {
 // Calcula offset en bytes hacia un n registro
 // @note Se considera size de page_header
 inline size_t calculate_reg_offset(const FixedDataHeader &header, size_t nth_reg) {
-  size_t offset = calculate_fixed_data_header_size(header) + sizeof(PageHeader);
+  size_t offset = header.size() + sizeof(PageHeader);
 
   if (nth_reg >= header.max_n_regs) {
     throw std::runtime_error("FixedDataHeader invalido, sin capacidad suficiente");

@@ -24,6 +24,28 @@ struct SlottedDataHeader {
   uint16_t &free_space_offset;
   std::vector<Slot> slots{};
 
+  size_t size() {
+    return sizeof(free_bytes) +
+           sizeof(n_slots) +
+           sizeof(free_space_offset) +
+           n_slots * sizeof(serial::Slot);
+  }
+
+  std::string to_string() {
+    std::string str{};
+    str +=
+        "Free_space_offset: " + std::to_string(free_space_offset) + " " +
+        "# Slots: " + std::to_string(n_slots) + "\n |";
+
+    for (auto &s : slots) {
+      str += std::to_string(s.is_used) + '|';
+      str += std::to_string(s.reg_size) + '|';
+      str += std::to_string(s.offset_reg_start) + "|\n|";
+    }
+
+    return str;
+  }
+
   SlottedDataHeader(std::span<unsigned char> &buffer)
       : free_bytes(*reinterpret_cast<uint16_t *>(buffer.data())),
         n_slots(*reinterpret_cast<uint16_t *>(buffer.data() + 2)),
@@ -68,13 +90,6 @@ struct SlottedDataHeader {
     return n_slots;
   }
 };
-
-inline size_t calculate_slotted_data_header_size(const SlottedDataHeader &header) {
-  return sizeof(header.free_bytes) +
-         sizeof(header.n_slots) +
-         sizeof(header.free_space_offset) +
-         header.n_slots * sizeof(serial::Slot);
-}
 
 inline size_t base_slotted_data_header_size(const SlottedDataHeader &header) {
   return sizeof(header.free_bytes) +
