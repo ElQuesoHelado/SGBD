@@ -24,14 +24,13 @@ bool Megatron::create_table(std::string name, std::vector<std::pair<std::string,
   // Bloque donde se va a almacenar tabla
   sector1_meta.n_tables++;
   // sector1_meta.table_block_ids.push_back(disk_manager->reserve_free_block());
-  auto new_table_frame = buffer_manager->get_load_free_frame();
+  auto &new_table_frame = buffer_manager->get_load_free_frame();
   sector1_meta.table_block_ids.push_back(new_table_frame.page_id);
 
   init_table_metadata(table_metadata, name, new_table_frame.page_id, columns);
 
-  auto table_block_bytes =
-      serial::serialize_table_metadata(
-          table_metadata, disk_manager->BLOCK_SIZE);
+  new_table_frame.page_bytes = serial::serialize_table_metadata(
+      table_metadata, disk_manager->BLOCK_SIZE);
 
   // disk_manager->write_block(table_block_bytes, table_metadata.table_block_id);
   buffer_manager->free_unpin_page(new_table_frame.page_id, true);

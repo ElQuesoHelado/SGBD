@@ -44,11 +44,8 @@ int main(int argc, char *argv[]) {
 
   megatron.create_table(titanic, columns);
 
-  // megatron.show_table_metadata(catalog);
-  // megatron.translate();
-  megatron.load_CSV("csv/titanic.csv", titanic, 1);
+  megatron.load_CSV("csv/titanic.csv", titanic);
 
-  return 0;
   serial::TableMetadata table_metadata;
   std::vector<std::tuple<std::string,
                          std::string,
@@ -66,11 +63,11 @@ int main(int argc, char *argv[]) {
 
   megatron.search_table(titanic, table_metadata);
 
-  // std::string hashed_col1 = "PassengerId", hashed_col2 = "Sex";
+  std::string hashed_col1 = "PassengerId", hashed_col2 = "Sex";
 
   std::string indexed_col1 = "PassengerId", indexed_col2 = "Sex";
 
-  // megatron.add_hash_to_table(titanic, hashed_col2);
+  megatron.add_hash_to_table(titanic, hashed_col2);
   megatron.add_index_to_table(titanic, indexed_col1);
 
   Comparator empty_comp{};
@@ -81,6 +78,7 @@ int main(int argc, char *argv[]) {
 
   megatron.select_print(titanic, ranged_comp);
 
+  megatron.select_print(titanic, sex_comp);
   megatron.translate();
 
   // Comparator comp = megatron.generate_comparator(table_metadata, comparisons);
