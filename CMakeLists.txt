@@ -42,14 +42,17 @@ set(MEGATRON_SOURCES
     ${SOURCE_DIR}/megatron/hashes/search.cpp
     ${SOURCE_DIR}/megatron/hashes/split.cpp
     ${SOURCE_DIR}/megatron/hashes/update.cpp
+    ${SOURCE_DIR}/megatron/hashes/set_based.cpp
     ${SOURCE_DIR}/megatron/bptree/add.cpp
     ${SOURCE_DIR}/megatron/bptree/bptree.cpp
     ${SOURCE_DIR}/megatron/bptree/get.cpp
     ${SOURCE_DIR}/megatron/bptree/insert.cpp
     ${SOURCE_DIR}/megatron/bptree/remove.cpp
+    ${SOURCE_DIR}/megatron/bptree/update.cpp
     ${SOURCE_DIR}/megatron/bptree/misc.cpp
     ${SOURCE_DIR}/megatron/bptree/search.cpp
     ${SOURCE_DIR}/megatron/bptree/split.cpp
+    ${SOURCE_DIR}/megatron/bptree/set_based.cpp
     ${SOURCE_DIR}/megatron/ui/buffer_interact.cpp
     ${SOURCE_DIR}/megatron/ui/comparisons.cpp
     ${SOURCE_DIR}/megatron/ui/deletes.cpp

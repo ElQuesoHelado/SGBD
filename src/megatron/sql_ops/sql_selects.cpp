@@ -11,7 +11,7 @@ void Megatron::select_print(std::string &table_name,
 
   size_t i{1};
   for (auto &reg : result_set) {
-    std::println("Bloque: {} ({}) {}", reg.page_id, i, reg);
+    std::println("Bloque: {} ({}) {}", reg.reg_ptr.page_id, i, reg);
     i++;
   }
 }
@@ -23,8 +23,7 @@ void Megatron::select_print(serial::TableMetadata &table_metadata,
 
   size_t i{1};
   for (auto &reg : result_set) {
-    std::println("Bloque: {} ({}) {}", reg.page_id, i, reg);
-    // std::println("{} {}", i, reg);
+    std::println("Bloque: {} ({}) {}", reg.reg_ptr.page_id, i, reg);
     i++;
   }
 }
@@ -92,16 +91,11 @@ ResultSet Megatron::select(serial::TableMetadata &table_metadata,
                  "por rango, se usa b+tree para busqueda",
                  ic, result_set.columns[col_index]);
 
-    // auto min_degree =
-    //     2;
-    //
     BPTree tree(*buffer_manager, table_metadata,
                 root_id,
                 min_degree,
                 table_metadata.columns[col_index].type,
                 table_metadata.columns[col_index].max_size);
-
-    // tree.print_tree(root_id);
 
     auto reg_ptrs = tree.search(comparator);
 
@@ -171,13 +165,9 @@ ResultSet Megatron::select_from_fixed_page(
       if (!comparator.evaluate(register_values))
         continue;
 
-      RegisterEntry reg{select_page_id, static_cast<uint16_t>(i)};
+      RegisterEntry reg(select_page_id,
+                        i, std::move(register_values));
 
-      for (auto &v : register_values)
-        reg.values.push_back(v);
-      // std::cout << SQL_type_to_string(v) << " | ";
-
-      // std::cout << std::endl;
       result_set.add_register(std::move(reg));
     }
   }
@@ -212,13 +202,8 @@ ResultSet Megatron::select_from_slotted_page(
       if (!comparator.evaluate(register_values))
         continue;
 
-      RegisterEntry reg{select_page_id, static_cast<uint16_t>(i)};
-
-      for (auto &v : register_values)
-        reg.values.push_back(v);
-      // std::cout << SQL_type_to_string(v) << " | ";
-
-      // std::cout << std::endl;
+      RegisterEntry reg(select_page_id,
+                        i, std::move(register_values));
 
       result_set.add_register(std::move(reg));
     }

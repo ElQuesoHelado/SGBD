@@ -58,9 +58,9 @@ public:
 
   uint32_t locate_bucket(const SQL_type_ &key);
 
-  std::vector<RegPtr> search(Comparator &equals);
-  std::vector<RegPtr> search(SQL_type_ &key);
-  std::vector<RegPtr> search_in_bucket(uint32_t bucket_id, SQL_type_ &key);
+  std::vector<RegPtr> search(const Comparator &equals);
+  std::vector<RegPtr> search(const SQL_type_ &key);
+  std::vector<RegPtr> search_in_bucket(uint32_t bucket_id, const SQL_type_ &key);
 
   void insert(const SQL_type_ &key, const RegPtr &reg_ptr);
   void insert_non_full_bucket(Bucket &bucket, const SQL_type_ &key,
@@ -71,10 +71,15 @@ public:
 
   void insert_from_set(const ResultSet &set, size_t key_col_index);
 
-  void remove(SQL_type_ &key);
-  void remove_in_bucket(uint32_t bucket_id, SQL_type_ &key);
+  void remove(const SQL_type_ &key);
+  void remove_in_bucket(uint32_t bucket_id, const SQL_type_ &key);
 
-  void update(SQL_type_ &old_key, SQL_type_ &new_key);
+  void remove_from_set(const ResultSet &set, size_t key_col_index);
+
+  void update_from_set(const ResultSet &old_set,
+                       const ResultSet &new_set, size_t key_col_index);
+
+  void update(const SQL_type_ &old_key, const SQL_type_ &new_key);
 
   void split_bucket(uint32_t bucket_id);
 

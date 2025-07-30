@@ -77,7 +77,7 @@ public:
     return value_comp_ops[i].col_index;
   }
 
-  SQL_type_ compared_at_op(size_t i) {
+  SQL_type_ compared_at_op(size_t i) const {
     if (i >= value_comp_ops.size())
       return 0;
 

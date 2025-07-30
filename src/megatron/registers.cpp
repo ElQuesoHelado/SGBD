@@ -1,4 +1,5 @@
 #include "megatron.hpp"
+#include "result_set.hpp"
 
 /*
  * Retorna los bytes de un registro arbitrario en una pagina fija
@@ -83,6 +84,23 @@ std::vector<unsigned char> Megatron::serialize_register(
   }
 
   return register_bytes;
+}
+
+RegisterEntry Megatron::str_values_to_register_entry(
+    const serial::TableMetadata &table_metadata,
+    std::vector<std::string> &values) {
+  if (values.size() != table_metadata.n_cols)
+    throw std::runtime_error("Columnas a insertar diferentes a tabla");
+
+  std::vector<SQL_type_> casted{};
+  for (size_t col{}; col < table_metadata.n_cols; ++col) {
+    casted.emplace_back(
+        string_to_sql_type(values[col],
+                           table_metadata.columns[col].type,
+                           table_metadata.columns[col].max_size));
+  }
+
+  return {disk_manager->NULL_BLOCK, 0, std::move(casted)};
 }
 
 std::vector<SQL_type_> Megatron::deserialize_register(

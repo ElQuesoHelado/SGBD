@@ -47,6 +47,15 @@ int main(int argc, char *argv[]) {
   megatron.create_table(titanic, columns);
   megatron.create_table(titanic_var, columns_var);
 
+  std::string hashed_col1 = "PassengerId", hashed_col2 = "Sex";
+
+  std::string indexed_col1 = "PassengerId", indexed_col2 = "Sex";
+
+  megatron.add_hash_to_table(titanic, hashed_col2);
+  megatron.add_index_to_table(titanic, indexed_col1);
+  megatron.add_hash_to_table(titanic_var, hashed_col2);
+  megatron.add_index_to_table(titanic_var, indexed_col1);
+
   // megatron.load_CSV("csv/titanic.csv", titanic);
   megatron.load_CSV("csv/titanic.csv", titanic_var);
 
@@ -69,16 +78,7 @@ int main(int argc, char *argv[]) {
           {"PassengerId", ">", "13"},
       };
 
-  megatron.search_table(titanic, table_metadata);
-
-  std::string hashed_col1 = "PassengerId", hashed_col2 = "Sex";
-
-  std::string indexed_col1 = "PassengerId", indexed_col2 = "Sex";
-
-  megatron.add_hash_to_table(titanic, hashed_col2);
-  megatron.add_index_to_table(titanic, indexed_col1);
-  megatron.add_hash_to_table(titanic_var, hashed_col2);
-  megatron.add_index_to_table(titanic_var, indexed_col1);
+  megatron.search_table(titanic_var, table_metadata);
 
   Comparator empty_comp{};
   // megatron.select_print(titanic, empty_comp);
@@ -89,8 +89,8 @@ int main(int argc, char *argv[]) {
   // megatron.select_print(titanic, ranged_comp);
   // megatron.select_print(titanic, sex_comp);
   //
-  megatron.select_print(titanic_var, ranged_comp);
-  // megatron.select_print(titanic, empty_comp);
+  // megatron.select_print(titanic_var, ranged_comp);
+  megatron.select_print(titanic_var, sex_comp);
   // megatron.select_print(titanic_var, empty_comp);
   // std::println("{}", sex_comp.is_ranged_on_single_col());
 

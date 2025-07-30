@@ -30,14 +30,14 @@ void Megatron::ui_show_threads_from_board() {
   std::println("{} ", boards.columns);
   size_t i{1};
   for (auto &reg : boards) {
-    std::println("Bloque: {} ({}) {}", reg.page_id, i, reg);
+    std::println("Bloque: {} ({}) {}", reg.reg_ptr.page_id, i, reg);
     i++;
   }
 
   std::println("{} ", threads.columns);
   i = 1;
   for (auto &reg : threads) {
-    std::println("Bloque: {} ({}) {}", reg.page_id, i, reg);
+    std::println("Bloque: {} ({}) {}", reg.reg_ptr.page_id, i, reg);
     i++;
   }
 }
@@ -70,14 +70,14 @@ void Megatron::ui_show_posts_from_thread() {
   std::println("{} ", threads.columns);
   size_t i{1};
   for (auto &reg : threads) {
-    std::println("Bloque: {} ({}) {}", reg.page_id, i, reg);
+    std::println("Bloque: {} ({}) {}", reg.reg_ptr.page_id, i, reg);
     i++;
   }
 
   i = 1;
   std::println("{} ", posts.columns);
   for (auto &reg : posts) {
-    std::println("Bloque: {} ({}) {}", reg.page_id, i, reg);
+    std::println("Bloque: {} ({}) {}", reg.reg_ptr.page_id, i, reg);
     i++;
   }
 }
@@ -109,7 +109,7 @@ void Megatron::ui_show_post_media() {
   size_t i = 1;
   std::println("{} ", posts.columns);
   for (auto &reg : posts) {
-    std::println("Bloque: {} ({}) {}", reg.page_id, i, reg);
+    std::println("Bloque: {} ({}) {}", reg.reg_ptr.page_id, i, reg);
     i++;
   }
 

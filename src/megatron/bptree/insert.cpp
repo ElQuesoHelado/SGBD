@@ -1,6 +1,12 @@
 #include "bptree/bptree.hpp"
 
-void BPTree::insert(const SQL_type_ &key, const RegPtr reg_ptr) {
+void BPTree::insert_from_set(const ResultSet &set, size_t key_col_index) {
+  for (auto &r : set) {
+    insert(r.values[key_col_index], r.reg_ptr);
+  }
+}
+
+void BPTree::insert(const SQL_type_ &key, const RegPtr &reg_ptr) {
 
   auto r = load_node(root_id);
 

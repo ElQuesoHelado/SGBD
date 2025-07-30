@@ -36,9 +36,6 @@ void Megatron::add_index_to_table(serial::TableMetadata &table_metadata,
   size_t min_degree =
       calculate_btree_order(table_metadata.columns[col_index].max_size);
 
-  // size_t min_degree =
-  //     2;
-
   BPTree tree(*buffer_manager, table_metadata,
               disk_manager->NULL_BLOCK,
               min_degree,
@@ -56,10 +53,5 @@ void Megatron::add_index_to_table(serial::TableMetadata &table_metadata,
   Comparator comp;
   auto registers = select(table_metadata, comp);
 
-  for (auto &reg : registers) {
-    tree.insert(
-        reg.values[col_index],
-        {static_cast<uint32_t>(reg.page_id),
-         static_cast<uint16_t>(reg.position)});
-  }
+  tree.insert_from_set(registers, col_index);
 }

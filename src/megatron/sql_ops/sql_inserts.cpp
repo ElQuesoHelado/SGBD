@@ -77,44 +77,15 @@ ResultSet Megatron::insert_into_page(serial::TableMetadata &table_metadata,
   auto register_values =
       deserialize_register(table_metadata, register_bytes);
 
-  RegisterEntry reg{static_cast<uint32_t>(insert_page_id),
-                    static_cast<uint16_t>(pos)};
-
-  for (auto &v : register_values)
-    reg.values.push_back(v);
+  RegisterEntry reg(insert_page_id,
+                    pos, std::move(register_values));
 
   ResultSet result_set;
   result_set.add_columns(table_metadata.columns);
   result_set.add_register(std::move(reg));
 
-  // Hashes
-  auto hashed_cols = get_hashed_columns(table_metadata);
-  for (auto [col, page_id] : hashed_cols) {
-    Hasher hasher(*buffer_manager,
-                  page_id,
-                  table_metadata.columns[col].type,
-                  table_metadata.columns[col].max_size);
-    hasher.insert_from_set(result_set, col);
-  }
-
-  // Indices
-  auto indexed_cols = get_indexed_columns(table_metadata);
-  for (auto [col, page_id] : indexed_cols) {
-    size_t min_degree =
-        calculate_btree_order(table_metadata.columns[col].max_size);
-    BPTree tree(*buffer_manager, table_metadata,
-                page_id,
-                min_degree,
-                table_metadata.columns[col].type,
-                table_metadata.columns[col].max_size);
-
-    for (auto &reg : result_set) {
-      tree.insert(
-          reg.values[col],
-          {static_cast<uint32_t>(reg.page_id),
-           static_cast<uint16_t>(reg.position)});
-    }
-  }
+  insert_set_hash(table_metadata, result_set);
+  insert_set_index(table_metadata, result_set);
 
   return result_set;
 }

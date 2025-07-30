@@ -2,7 +2,7 @@
 
 void Hasher::insert_from_set(const ResultSet &set, size_t key_col_index) {
   for (auto &r : set) {
-    insert(r.values[key_col_index], {r.page_id, r.position});
+    insert(r.values[key_col_index], r.reg_ptr);
   }
 }
 

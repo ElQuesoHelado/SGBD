@@ -40,13 +40,15 @@ void Megatron::bulk_insert(
       (table_metadata.are_regs_fixed)
           ? bulk_insert_fixed(table_metadata, csv_file, regs_to_insert)
           : bulk_insert_slotted(table_metadata, csv_file, regs_to_insert);
-  // FIXME: Inserts en hash/b+tree
+
+  insert_set_hash(table_metadata, result_set);
+  insert_set_index(table_metadata, result_set);
 }
 
 ResultSet Megatron::bulk_insert_fixed(
     serial::TableMetadata &table_metadata,
     rapidcsv::Document &csv_file, size_t regs_to_insert) {
-  ResultSet result_set; // FIXME: se necesita keys, ?overhead?
+  ResultSet result_set;
   result_set.add_columns(table_metadata.columns);
 
   auto page_id = table_metadata.last_page_id;
@@ -62,16 +64,21 @@ ResultSet Megatron::bulk_insert_fixed(
                table_metadata.max_reg_size &&
            regs_to_insert > 0) {
       auto reg_row = csv_file.GetRow<std::string>(i);
+      auto register_entry =
+          str_values_to_register_entry(table_metadata, reg_row);
       auto register_bytes =
-          serialize_register(table_metadata, reg_row);
+          serialize_register(table_metadata, register_entry.values);
 
       auto free_reg_pos =
           fixed_page.insert_register_bytes(register_bytes);
+
       regs_to_insert--;
       i++;
 
-      result_set.add_register({page_id,
-                               static_cast<uint16_t>(free_reg_pos)});
+      register_entry.reg_ptr.page_id = page_id;
+      register_entry.reg_ptr.slot = free_reg_pos;
+
+      result_set.add_register(std::move(register_entry));
     }
 
     buffer_manager->free_unpin_page(page_id, true);
@@ -87,7 +94,7 @@ ResultSet Megatron::bulk_insert_fixed(
 ResultSet Megatron::bulk_insert_slotted(
     serial::TableMetadata &table_metadata,
     rapidcsv::Document &csv_file, size_t regs_to_insert) {
-  ResultSet result_set; // FIXME: se necesita keys, ?overhead?
+  ResultSet result_set;
   auto page_id = table_metadata.last_page_id;
 
   size_t i{};
@@ -98,9 +105,11 @@ ResultSet Megatron::bulk_insert_slotted(
                                      frame.page_bytes);
 
     while (regs_to_insert > 0) {
-      auto reg = csv_file.GetRow<std::string>(i);
+      auto reg_row = csv_file.GetRow<std::string>(i);
+      auto register_entry =
+          str_values_to_register_entry(table_metadata, reg_row);
       auto register_bytes =
-          serialize_register(table_metadata, reg);
+          serialize_register(table_metadata, register_entry.values);
 
       if (slotted_page.slotted_data_header.free_bytes <
           register_bytes.size() + sizeof(serial::Slot)) {
@@ -112,8 +121,10 @@ ResultSet Megatron::bulk_insert_slotted(
       regs_to_insert--;
       i++;
 
-      result_set.add_register({page_id,
-                               static_cast<uint16_t>(free_reg_pos)});
+      register_entry.reg_ptr.page_id = page_id;
+      register_entry.reg_ptr.slot = free_reg_pos;
+
+      result_set.add_register(std::move(register_entry));
     }
 
     buffer_manager->free_unpin_page(page_id, true);

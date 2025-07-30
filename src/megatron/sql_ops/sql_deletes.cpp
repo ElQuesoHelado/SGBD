@@ -67,33 +67,8 @@ ResultSet Megatron::delete_from_page(
           : delete_from_slotted_page(
                 table_metadata, delete_page_id, comparator);
 
-  auto hashed_cols = get_hashed_columns(table_metadata);
-  for (auto &[c, r] : hashed_cols) {
-    Hasher hasher(
-        *buffer_manager,
-        r,
-        table_metadata.columns[c].type,
-        table_metadata.columns[c].max_size);
-
-    for (auto &reg : result_set.registers) {
-      hasher.remove(reg.values[c]);
-    }
-  }
-
-  auto indexed_cols = get_indexed_columns(table_metadata);
-  for (auto &[c, r] : indexed_cols) {
-    auto min_degree =
-        calculate_btree_order(table_metadata.columns[c].max_size);
-    BPTree tree(*buffer_manager, table_metadata,
-                r,
-                min_degree,
-                table_metadata.columns[c].type,
-                table_metadata.columns[c].max_size);
-
-    for (auto &reg : result_set.registers) {
-      tree.remove(reg.values[c]);
-    }
-  }
+  delete_set_hash(table_metadata, result_set);
+  delete_set_index(table_metadata, result_set);
 
   return result_set;
 }
@@ -124,11 +99,8 @@ ResultSet Megatron::delete_from_fixed_page(
         continue;
 
       // Registramos eliminado
-      RegisterEntry reg{delete_page_id,
-                        static_cast<uint16_t>(i)};
-
-      for (auto &v : register_values)
-        reg.values.push_back(v);
+      RegisterEntry reg(delete_page_id,
+                        i, std::move(register_values));
 
       result_set.add_register(std::move(reg));
 
@@ -171,11 +143,8 @@ ResultSet Megatron::delete_from_slotted_page(
       if (!comparator.evaluate(register_values))
         continue;
 
-      RegisterEntry reg{delete_page_id,
-                        static_cast<uint16_t>(i)};
-
-      for (auto &v : register_values)
-        reg.values.push_back(v);
+      RegisterEntry reg(delete_page_id,
+                        i, std::move(register_values));
 
       result_set.add_register(std::move(reg));
 

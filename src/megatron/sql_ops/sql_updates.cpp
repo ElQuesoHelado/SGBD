@@ -121,7 +121,7 @@ ResultSet Megatron::update_from_page(
 
     for (auto &reg : result_set.registers) {
       hasher.remove(reg.values[c]);
-      hasher.insert(upd_value, {reg.page_id, reg.position});
+      hasher.insert(upd_value, reg.reg_ptr);
     }
   }
 
@@ -137,7 +137,7 @@ ResultSet Megatron::update_from_page(
 
     for (auto &reg : result_set.registers) {
       tree.remove(reg.values[c]);
-      tree.insert(upd_value, {reg.page_id, reg.position});
+      tree.insert(upd_value, reg.reg_ptr);
     }
   }
 
@@ -172,11 +172,8 @@ ResultSet Megatron::update_from_fixed_page(
         continue;
 
       // Log de registro sobreescrito
-      RegisterEntry reg{update_page_id,
-                        static_cast<uint16_t>(i)};
-
-      for (auto &v : register_values)
-        reg.values.push_back(v);
+      RegisterEntry reg(update_page_id,
+                        i, std::move(register_values));
 
       result_set.add_register(std::move(reg));
 
@@ -229,11 +226,8 @@ ResultSet Megatron::update_from_slotted_page(
       if (!comparator.evaluate(register_values))
         continue;
 
-      RegisterEntry reg{update_page_id,
-                        static_cast<uint16_t>(i)};
-
-      for (auto &v : register_values)
-        reg.values.push_back(v);
+      RegisterEntry reg(update_page_id,
+                        i, std::move(register_values));
 
       result_set.add_register(std::move(reg));
 

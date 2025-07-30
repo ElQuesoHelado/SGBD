@@ -50,10 +50,5 @@ void Megatron::add_hash_to_table(serial::TableMetadata &table_metadata,
   Comparator comp;
   auto registers = select(table_metadata, comp);
 
-  for (auto &reg : registers) {
-    hasher.insert(
-        reg.values[col_index],
-        {static_cast<uint32_t>(reg.page_id),
-         static_cast<uint16_t>(reg.position)});
-  }
+  hasher.insert_from_set(registers, col_index);
 }

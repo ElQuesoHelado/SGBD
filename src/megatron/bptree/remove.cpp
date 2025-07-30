@@ -1,5 +1,11 @@
 #include "bptree/bptree.hpp"
 
+void BPTree::remove_from_set(const ResultSet &set, size_t key_col_index) {
+  for (auto &r : set) {
+    remove(r.values[key_col_index]);
+  }
+}
+
 void BPTree::remove(const SQL_type_ &key) {
   auto root = load_node(root_id);
 

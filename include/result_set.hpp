@@ -1,12 +1,21 @@
 #pragma once
 
+#include "reg_ptr.hpp"
 #include "serial/table.hpp"
 #include "types/types.hpp"
+#include <cstdint>
 
 struct RegisterEntry {
-  uint32_t page_id{};
-  uint16_t position{};
+  RegPtr reg_ptr;
+
   std::vector<SQL_type_> values{};
+  RegisterEntry(uint32_t page_id,
+                uint16_t position, std::vector<SQL_type_> &values)
+      : reg_ptr(page_id, position), values(values) {}
+
+  RegisterEntry(uint32_t page_id,
+                uint16_t position, std::vector<SQL_type_> &&values)
+      : reg_ptr(page_id, position), values(std::move(values)) {}
 };
 
 // Solo valores
@@ -48,7 +57,7 @@ public:
   }
 
   void add_register(RegisterEntry &&reg) {
-    registers.push_back(reg);
+    registers.push_back(std::move(reg));
   }
 
   // Agrega todos los registros de otro set

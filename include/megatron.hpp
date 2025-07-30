@@ -3,9 +3,11 @@
 #include "bptree/bptree.hpp"
 #include "hash/hasher.hpp"
 #include "rapidcsv.h"
+#include "result_set.hpp"
 #include "serial/fixed_data.hpp"
 #include "serial/slotted_data.hpp"
 #include <atomic>
+#include <cstdint>
 
 class Megatron {
   std::unique_ptr<DiskManager> disk_manager{};
@@ -226,19 +228,13 @@ public:
   size_t create_dir_page();
   size_t create_bucket_page();
 
-  // void insert_hashed(serial::TableMetadata &table_metadata,
-  //                    size_t col_index, size_t page_id, size_t pos,
-  //                    std::vector<unsigned char> &register_bytes);
-  bool insert_hashed(serial::TableMetadata table_metadata, size_t hashed_col,
-                     SQL_type_ &key, size_t inserted_page, size_t inserted_slot);
-
   uint32_t get_root_page_id(serial::TableMetadata &table_metadata, size_t col_index);
 
-  ResultSet find(serial::TableMetadata table_metadata,
-                 size_t hashed_col, SQL_type_ &key);
-
-  ResultSet delete_hashed(serial::TableMetadata table_metadata,
-                          size_t hashed_col, SQL_type_ &key);
+  // Realiza inserts en toda columna hasheada
+  void insert_set_hash(serial::TableMetadata &table_metadata, ResultSet &set);
+  void delete_set_hash(serial::TableMetadata &table_metadata, ResultSet &set);
+  void update_set_hash(serial::TableMetadata &table_metadata,
+                       ResultSet &old_set, ResultSet &new_set);
 
   // =============================
   // Indices
@@ -260,6 +256,11 @@ public:
   void add_index_to_table(std::string &table_name, std::string &col_name);
   void add_index_to_table(serial::TableMetadata &table_metadata, std::string &col_name);
   void add_index_to_table(serial::TableMetadata &table_metadata, size_t col_index);
+
+  void insert_set_index(serial::TableMetadata &table_metadata, ResultSet &set);
+  void delete_set_index(serial::TableMetadata &table_metadata, ResultSet &set);
+  void update_set_index(serial::TableMetadata &table_metadata,
+                        ResultSet &old_set, ResultSet &new_set);
 
   size_t calculate_btree_order(size_t key_size);
 
@@ -396,8 +397,13 @@ public:
   // @notes realiza cast interno de string->SQL_Type
   std::vector<unsigned char> serialize_register(const serial::TableMetadata &table_metadata,
                                                 std::vector<std::string> &values);
+
   std::vector<unsigned char> serialize_register(const serial::TableMetadata &table_metadata,
                                                 std::vector<SQL_type_> &values);
+
+  RegisterEntry str_values_to_register_entry(
+      const serial::TableMetadata &table_metadata,
+      std::vector<std::string> &values);
 
   // Retornamos todos los valores de un registro
   std::vector<SQL_type_> deserialize_register(const serial::TableMetadata &table_metadata,

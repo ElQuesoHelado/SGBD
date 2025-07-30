@@ -4,6 +4,7 @@
 #include "buffer/buffer_manager.hpp"
 #include "comparison.hpp"
 #include "reg_ptr.hpp"
+#include "result_set.hpp"
 #include "serial/table.hpp"
 
 class BPTree {
@@ -41,8 +42,18 @@ public:
   void remove(const SQL_type_ &key);
   void remove(BPNode &x, const SQL_type_ &key);
 
-  void insert(const SQL_type_ &key, const RegPtr reg_ptr);
+  void remove_from_set(const ResultSet &set, size_t key_col_index);
+
+  void insert(const SQL_type_ &key, const RegPtr &reg_ptr);
   void insert_non_full(BPNode &x, const SQL_type_ &key, const RegPtr &reg_ptr);
+
+  void insert_from_set(const ResultSet &set, size_t key_col_index);
+
+  void update(const SQL_type_ &old_key,
+              const SQL_type_ &new_key);
+
+  void update_from_set(const ResultSet &old_set,
+                       const ResultSet &new_set, size_t key_col_index);
 
   // Lineal, hasta que rompa condicion
   std::vector<RegPtr> linked_leaf_search(BPNode &x, Comparator &comp, size_t i);
