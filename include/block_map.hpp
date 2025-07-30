@@ -1,14 +1,17 @@
 #pragma once
 
 #include <cstdint>
+#include <list>
 #include <stdexcept>
 #include <vector>
 
 /*
  * Marca bloques de forma vertical, de igual forma marca si estan siendo usados
+ * [block_id] -> (used, [lba1, lba2, ...])
  */
 struct FreeBlockMap {
   std::vector<std::pair<bool, std::vector<uint32_t>>> blocks{};
+  std::list<uint32_t> free_block_list;
 
   bool is_block_free(uint32_t block_id) {
     if (block_id >= blocks.size())

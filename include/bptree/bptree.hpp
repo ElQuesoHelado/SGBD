@@ -36,7 +36,7 @@ public:
   void print_tree(uint32_t page_id, size_t depth = 0);
 
   std::vector<RegPtr> search(Comparator &comp);
-  std::vector<RegPtr> search(BPNode &x, Comparator &comp);
+  std::vector<RegPtr> search(BPNode &x, Comparator &low, Comparator &high);
 
   void remove(const SQL_type_ &key);
   void remove(BPNode &x, const SQL_type_ &key);

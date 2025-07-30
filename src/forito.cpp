@@ -42,14 +42,13 @@ int main(int argc, char *argv[]) {
   megatron.load_CSV("csv/post.csv",
                     post);
 
-  // megatron.add_hash_to_table(std::string &table_name, std::string &col_name)
-  // megatron.add_hash_to_table(board, board_cols[0].first);
-  // megatron.add_hash_to_table(thread, thread_cols[0].first);
-  // megatron.add_hash_to_table(post, post_cols[0].first);
-  //
-  // megatron.add_index_to_table(thread, thread_cols[3].first);
-  // megatron.add_index_to_table(post, post_cols[1].first);
+  megatron.add_hash_to_table(board, board_cols[0].first);
+  megatron.add_hash_to_table(thread, thread_cols[0].first);
+  megatron.add_hash_to_table(post, post_cols[0].first);
 
+  megatron.add_index_to_table(thread, thread_cols[3].first);
+  megatron.add_index_to_table(post, post_cols[3].first);
+  //
   // megatron.translate();
 
   megatron.run();

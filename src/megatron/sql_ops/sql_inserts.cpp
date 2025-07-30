@@ -30,12 +30,15 @@ ResultSet Megatron::insert(serial::TableMetadata &table_metadata, std::vector<st
   uint32_t insert_page_id;
 
   if (table_metadata.are_regs_fixed) {
-    insert_page_id = get_insertable_page_id(table_metadata.first_page_id,
-                                            table_metadata.max_reg_size);
+    insert_page_id =
+        get_insertable_page_id(table_metadata.first_page_id,
+                               table_metadata.max_reg_size);
   } else {
     // Peor caso, siempre se crea nuevo Slot
-    insert_page_id = get_insertable_page_id(table_metadata.first_page_id,
-                                            register_bytes.size() + sizeof(serial::Slot));
+    insert_page_id =
+        get_insertable_page_id(
+            table_metadata.first_page_id,
+            register_bytes.size() + sizeof(serial::Slot));
   }
 
   // Paginas sin espacio suficiente
@@ -84,18 +87,34 @@ ResultSet Megatron::insert_into_page(serial::TableMetadata &table_metadata,
   result_set.add_columns(table_metadata.columns);
   result_set.add_register(std::move(reg));
 
-  // Check hashes
-  auto cols = get_hashed_columns(table_metadata);
-  for (auto [col, page_id] : cols) {
+  // Hashes
+  auto hashed_cols = get_hashed_columns(table_metadata);
+  for (auto [col, page_id] : hashed_cols) {
     Hasher hasher(*buffer_manager,
                   page_id,
                   table_metadata.columns[col].type,
                   table_metadata.columns[col].max_size);
     hasher.insert_from_set(result_set, col);
-    // hasher.insert(const SQL_type &key, const RegPtr &reg_ptr)
   }
 
-  // TODO: indexes
+  // Indices
+  auto indexed_cols = get_indexed_columns(table_metadata);
+  for (auto [col, page_id] : indexed_cols) {
+    size_t min_degree =
+        calculate_btree_order(table_metadata.columns[col].max_size);
+    BPTree tree(*buffer_manager, table_metadata,
+                page_id,
+                min_degree,
+                table_metadata.columns[col].type,
+                table_metadata.columns[col].max_size);
+
+    for (auto &reg : result_set) {
+      tree.insert(
+          reg.values[col],
+          {static_cast<uint32_t>(reg.page_id),
+           static_cast<uint16_t>(reg.position)});
+    }
+  }
 
   return result_set;
 }

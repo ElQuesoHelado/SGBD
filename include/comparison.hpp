@@ -4,11 +4,19 @@
 #include <functional>
 
 struct Comparison {
+  enum Op {
+    EQUALS,
+    LESS,
+    LESS_EQUAL,
+    GREATER,
+    GREATER_EQUAL
+  };
+
   size_t col_index{};
   SQL_type_ compared;
   std::function<bool(const SQL_type_ &, const SQL_type_ &)> condition;
   bool is_next_and{true}; // representa (A < B) and/or ...
-  bool is_equals{};
+  Op type;
 };
 
 // Concatenacion de operaciones,
@@ -22,21 +30,44 @@ public:
   }
 
   bool is_only_equals() {
-    return value_comp_ops.size() == 1 && value_comp_ops.front().is_equals;
+    return value_comp_ops.size() == 1 &&
+           value_comp_ops.front().type == Comparison::EQUALS;
   }
 
-  // TODO: == tal vez cause problemas al concatenar con rangos
+  // Toda operacion se da en la misma columna y NO es ==
   bool is_ranged_on_single_col() {
-    if (value_comp_ops.empty())
+    if (value_comp_ops.empty() || value_comp_ops.size() > 2)
       return false;
 
     size_t col_index{value_comp_ops.front().col_index};
     for (auto &c : value_comp_ops) {
-      if (c.col_index != col_index)
+      if (c.col_index != col_index || c.type == Comparison::EQUALS)
         return false;
     }
 
     return true;
+  }
+
+  Comparator get_high() {
+    Comparator comp;
+    for (auto &c : value_comp_ops) {
+      if (c.type == Comparison::LESS || c.type == Comparison::LESS_EQUAL) {
+        comp.value_comp_ops.push_back(c);
+        break;
+      }
+    }
+    return comp;
+  }
+
+  Comparator get_low() {
+    Comparator comp;
+    for (auto &c : value_comp_ops) {
+      if (c.type == Comparison::GREATER || c.type == Comparison::GREATER_EQUAL) {
+        comp.value_comp_ops.push_back(c);
+        break;
+      }
+    }
+    return comp;
   }
 
   size_t col_index_at_op(size_t i) {
@@ -71,31 +102,44 @@ public:
         .emplace_back(
             col_index,
             cmp_value,
-            [](const SQL_type_ &x, const SQL_type_ &y) { return x < y; }, true);
+            [](const SQL_type_ &x, const SQL_type_ &y) { return x < y; },
+            true, Comparison::LESS);
     return *this;
   }
 
   Comparator &greater_than(const SQL_type_ &cmp_value, size_t col_index = 0) {
     value_comp_ops
-        .emplace_back(col_index, cmp_value, [](const SQL_type_ &x, const SQL_type_ &y) { return x > y; }, true);
+        .emplace_back(
+            col_index, cmp_value,
+            [](const SQL_type_ &x, const SQL_type_ &y) { return x > y; },
+            true, Comparison::GREATER);
     return *this;
   }
 
   Comparator &less_equal_than(const SQL_type_ &cmp_value, size_t col_index = 0) {
     value_comp_ops
-        .emplace_back(col_index, cmp_value, [](const SQL_type_ &x, const SQL_type_ &y) { return x <= y; }, true);
+        .emplace_back(
+            col_index, cmp_value,
+            [](const SQL_type_ &x, const SQL_type_ &y) { return x <= y; },
+            true, Comparison::LESS_EQUAL);
     return *this;
   }
 
   Comparator &greater_equal_than(const SQL_type_ &cmp_value, size_t col_index = 0) {
     value_comp_ops
-        .emplace_back(col_index, cmp_value, [](const SQL_type_ &x, const SQL_type_ &y) { return x >= y; }, true);
+        .emplace_back(
+            col_index, cmp_value,
+            [](const SQL_type_ &x, const SQL_type_ &y) { return x >= y; },
+            true, Comparison::GREATER_EQUAL);
     return *this;
   }
 
   Comparator &equals(const SQL_type_ &cmp_value, size_t col_index = 0) {
     value_comp_ops
-        .emplace_back(col_index, cmp_value, [](const SQL_type_ &x, const SQL_type_ &y) { return x == y; }, true, true);
+        .emplace_back(
+            col_index, cmp_value,
+            [](const SQL_type_ &x, const SQL_type_ &y) { return x == y; },
+            true, Comparison::EQUALS);
     return *this;
   }
 

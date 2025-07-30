@@ -1,4 +1,6 @@
 #include "megatron.hpp"
+#include "rapidcsv.h"
+#include <print>
 #include <string>
 
 #include <vector>
@@ -59,8 +61,8 @@ int main(int argc, char *argv[]) {
           {"", "OR", ""},
           {"Embarked", "==", "S"}},
       comparisons2 = {{"Sex", "==", "male"}}, ranged = {
-                                                  {"PassengerId", "<", "15"},
-                                                  {"PassengerId", ">", "7"},
+                                                  {"PassengerId", ">=", "120"},
+                                                  {"PassengerId", "<", "450"},
                                               },
       ranged2 = {
           {"PassengerId", "<", "15"},
@@ -87,10 +89,19 @@ int main(int argc, char *argv[]) {
   // megatron.select_print(titanic, ranged_comp);
   // megatron.select_print(titanic, sex_comp);
   //
-  // megatron.select_print(titanic_var, ranged_comp);
-  megatron.select_print(titanic_var, empty_comp);
+  megatron.select_print(titanic_var, ranged_comp);
+  // megatron.select_print(titanic, empty_comp);
+  // megatron.select_print(titanic_var, empty_comp);
+  // std::println("{}", sex_comp.is_ranged_on_single_col());
 
-  megatron.translate();
+  // megatron.translate();
+  // rapidcsv::Document doc("csv/titanic.csv", rapidcsv::LabelParams(-1, -1));
+  //
+  //
+  // auto row = doc.GetRow<std::string>(0);
+  // auto val = row[4];
+  //
+  // std::println("{}", val);
 
   // Comparator comp = megatron.generate_comparator(table_metadata, comparisons);
 

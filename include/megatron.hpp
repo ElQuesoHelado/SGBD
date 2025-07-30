@@ -2,6 +2,7 @@
 
 #include "bptree/bptree.hpp"
 #include "hash/hasher.hpp"
+#include "rapidcsv.h"
 #include "serial/fixed_data.hpp"
 #include "serial/slotted_data.hpp"
 #include <atomic>
@@ -194,6 +195,17 @@ public:
    * dato1,dato2,...
    */
   void load_CSV(std::string csv_path, std::string table_name, size_t n_regs = 0);
+
+  // Realiza todo insert en paginas limpias,
+  // luego son enlazadas a tabla
+  void bulk_insert(serial::TableMetadata &table_metadata,
+                   rapidcsv::Document &csv_file, size_t regs_to_insert);
+
+  ResultSet bulk_insert_fixed(serial::TableMetadata &table_metadata,
+                              rapidcsv::Document &csv_file, size_t regs_to_insert);
+
+  ResultSet bulk_insert_slotted(serial::TableMetadata &table_metadata,
+                                rapidcsv::Document &csv_file, size_t regs_to_insert);
 
   // =============================
   // Hashes

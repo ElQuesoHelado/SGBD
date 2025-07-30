@@ -1,32 +1,35 @@
 #include "bptree/bptree.hpp"
+#include "comparison.hpp"
 #include <print>
 
 std::vector<RegPtr> BPTree::search(Comparator &comp) {
+  Comparator low = comp.get_low(), high = comp.get_high();
+
   auto root = load_node(root_id);
 
   std::println("Arbol con root en: {}", root_id);
 
-  return search(root, comp);
+  return search(root, low, high);
 }
 
-std::vector<RegPtr> BPTree::search(BPNode &x, Comparator &comp) {
+std::vector<RegPtr> BPTree::search(BPNode &x, Comparator &low, Comparator &high) {
   std::println("Buscando en nodo: {}", x.node_id);
 
   size_t i{};
-  while (i < x.n_keys && !comp.evaluate(x.keys[i])) {
+  while (i < x.n_keys && !low.evaluate(x.keys[i])) {
     i++;
   }
 
   if (x.is_leaf) {
     // Se libera nodo internamente
     std::println("Se llego a una hoja, se busca secuencialmente");
-    return linked_leaf_search(x, comp, i);
+    return linked_leaf_search(x, high, i);
   } else {
     // One pass garantiza no ser utilizado otra vez
     auto child = load_node(x.ptrs[i]);
 
     unload_node(x);
-    return search(child, comp);
+    return search(child, low, high);
   }
 }
 
