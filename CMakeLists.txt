@@ -5,10 +5,9 @@ project(SGBD)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-# set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
+set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules" ${CMAKE_MODULE_PATH})
-
 
 # find_program(CLANGXX clang++)
 # if(CLANGXX)
@@ -92,7 +91,6 @@ set(BUFFER_MANAGER_SOURCES
 )
 
 find_package(Boost REQUIRED)
-
 
 add_library(megatron)
 target_sources(megatron PRIVATE ${MEGATRON_SOURCES})

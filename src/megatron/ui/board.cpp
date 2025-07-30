@@ -2,6 +2,31 @@
 #include <iostream>
 #include <print>
 
+#ifdef __GNUC__
+template <typename T>
+struct std::formatter<std::vector<T>> {
+    std::formatter<T> elem_formatter;
+
+    constexpr auto parse(std::format_parse_context& ctx) {
+        return ctx.begin();
+    }
+
+    template <typename FormatContext>
+    auto format(const std::vector<T>& vec, FormatContext& ctx) const  {
+        auto out = ctx.out();
+        out = std::format_to(out, "[");
+
+        for (std::size_t i = 0; i < vec.size(); ++i) {
+            out = elem_formatter.format(vec[i], ctx);
+            if (i + 1 < vec.size())
+                out = std::format_to(out, ", ");
+        }
+
+        return std::format_to(out, "]");
+    }
+};
+#endif
+
 void Megatron::ui_show_threads_from_board() {
   std::string board = "board", thread = "thread";
 
