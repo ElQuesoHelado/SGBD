@@ -37,7 +37,9 @@ public:
   void print_tree(uint32_t page_id, size_t depth = 0);
 
   std::vector<RegPtr> search(Comparator &comp);
-  std::vector<RegPtr> search(BPNode &x, Comparator &low, Comparator &high);
+  std::vector<RegPtr> search(BPNode &x,
+                             Comparator &low,
+                             Comparator &high, Comparator &filter);
 
   void remove(const SQL_type_ &key);
   void remove(BPNode &x, const SQL_type_ &key);
@@ -56,7 +58,8 @@ public:
                        const ResultSet &new_set, size_t key_col_index);
 
   // Lineal, hasta que rompa condicion
-  std::vector<RegPtr> linked_leaf_search(BPNode &x, Comparator &comp, size_t i);
+  std::vector<RegPtr> linked_leaf_search(
+      BPNode &x, Comparator &comp, Comparator &filter, size_t i);
 
   void split_child(BPNode &x, int i);
   BPNode split_root();

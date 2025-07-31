@@ -76,6 +76,8 @@ int main(int argc, char *argv[]) {
       ranged2 = {
           {"PassengerId", "<", "15"},
           {"PassengerId", ">", "13"},
+          {"Embarked", "==", "S"},
+
       };
 
   megatron.search_table(titanic_var, table_metadata);
@@ -88,6 +90,8 @@ int main(int argc, char *argv[]) {
   Comparator ranged_comp =
       megatron.generate_comparator(table_metadata, ranged);
 
+  std::println("{}", sex_comp.is_index_worthy());
+  std::println("{}", ranged_comp.is_index_worthy());
   // megatron.select_print(titanic, ranged_comp);
   // megatron.select_print(titanic, sex_comp);
   //

@@ -8,8 +8,8 @@
 #ifdef __GNUC__
 template <typename T1, typename T2>
 struct std::formatter<std::pair<T1, T2>> : std::formatter<std::string> {
-    auto format(const std::pair<T1, T2>& p, std::format_context& ctx) const {
-      return std::format_to(ctx.out(), "({}:{})", p.first, p.second);
+  auto format(const std::pair<T1, T2> &p, std::format_context &ctx) const {
+    return std::format_to(ctx.out(), "({}:{})", p.first, p.second);
   }
 };
 #endif
@@ -86,7 +86,7 @@ ResultSet Megatron::select(serial::TableMetadata &table_metadata,
     }
 
     return result_set;
-  } else if (comparator.is_ranged_on_single_col() &&
+  } else if (comparator.is_index_worthy() &&
              is_column_indexed(table_metadata,
                                comparator.col_index_at_op(0))) {
 

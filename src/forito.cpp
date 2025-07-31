@@ -54,27 +54,16 @@ int main(int argc, char *argv[]) {
 
   Board board(megatron);
 
-  std::println("{}", board.get_all_threads_ordered_by_date());
+  // std::println("{}",
+  //              board.get_threads_from_board_ordered_by_date(5, 0));
   // std::println("{}", board.get_all_threads());
+  std::println("{}",
+               board.get_posts_from_thread_ordered_by_date(281014779, 1));
+
+  std::println("{}",
+               board.get_posts_from_thread(281014779));
 
   megatron.translate();
-
-  // httplib::Server svr;
-  //
-  // svr.Get("/a", [&megatron](const httplib::Request &req, httplib::Response &res) {
-  //   std::string table_name = "board";
-  //   Comparator comp;
-  //   auto results = megatron.select(table_name, comp);
-  //   std::string html = results.columns.back();
-  //   res.set_content(html, "text/html");
-  // });
-  //
-  // svr.Get("/shutdown", [&](const httplib::Request &, httplib::Response &res) {
-  //   svr.stop();
-  //   return;
-  // });
-  //
-  // svr.listen("localhost", 8080);
 
   // megatron.run();
   //  Comparator comp;

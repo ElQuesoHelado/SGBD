@@ -31,7 +31,7 @@ Comparator Board::get_thread_id_comparator(size_t id) {
   return bd.generate_comparator(post, x);
 }
 
-Comparator Board::get_infinity_date_comparator(serial::TableMetadata &table) {
+Comparator Board::get_inf_date_comp(serial::TableMetadata &table) {
   std::vector<std::tuple<std::string,
                          std::string,
                          std::string>>

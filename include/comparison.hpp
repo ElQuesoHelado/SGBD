@@ -34,15 +34,28 @@ public:
            value_comp_ops.front().type == Comparison::EQUALS;
   }
 
-  // Toda operacion se da en la misma columna y NO es ==
-  bool is_ranged_on_single_col() {
-    if (value_comp_ops.empty() || value_comp_ops.size() > 2)
+  // Dos operaciones rango en 1 misma columna,
+  // un filtro opcional
+  bool is_index_worthy() {
+    if (value_comp_ops.empty() || value_comp_ops.size() > 3)
       return false;
 
-    size_t col_index{value_comp_ops.front().col_index};
-    for (auto &c : value_comp_ops) {
-      if (c.col_index != col_index || c.type == Comparison::EQUALS)
+    switch (value_comp_ops.size()) {
+    case 1:
+      if (value_comp_ops.front().type == Comparison::EQUALS)
         return false;
+      break;
+    case 2:
+      if (value_comp_ops.front().type == Comparison::EQUALS)
+        return false;
+
+      break;
+    case 3:
+      if ((value_comp_ops[0].type == Comparison::EQUALS ||
+           value_comp_ops[1].type == Comparison::EQUALS) ||
+          (value_comp_ops[0].col_index != value_comp_ops[1].col_index))
+        return false;
+      break;
     }
 
     return true;
@@ -63,6 +76,17 @@ public:
     Comparator comp;
     for (auto &c : value_comp_ops) {
       if (c.type == Comparison::GREATER || c.type == Comparison::GREATER_EQUAL) {
+        comp.value_comp_ops.push_back(c);
+        break;
+      }
+    }
+    return comp;
+  }
+
+  Comparator get_filter() {
+    Comparator comp;
+    for (auto &c : value_comp_ops) {
+      if (c.type == Comparison::EQUALS) {
         comp.value_comp_ops.push_back(c);
         break;
       }
