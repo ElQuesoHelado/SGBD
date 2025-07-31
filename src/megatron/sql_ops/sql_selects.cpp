@@ -5,6 +5,15 @@
 #include <iostream>
 #include <print>
 
+#ifdef __GNUC__
+template <typename T1, typename T2>
+struct std::formatter<std::pair<T1, T2>> : std::formatter<std::string> {
+    auto format(const std::pair<T1, T2>& p, std::format_context& ctx) const {
+      return std::format_to(ctx.out(), "({}:{})", p.first, p.second);
+  }
+};
+#endif
+
 void Megatron::select_print(std::string &table_name,
                             Comparator &comparator,
                             int max_pages_loaded) {
