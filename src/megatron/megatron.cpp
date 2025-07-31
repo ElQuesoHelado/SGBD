@@ -52,18 +52,7 @@ void Megatron::run() {
       ui_load_n_regs_csv();
     else if (opcion == "14") {
       clearScreen();
-      std::cout << "Especificaciones de disco" << std::endl;
-      std::cout << "Superficies: " << disk_manager->SURFACES << std::endl;
-      std::cout << "Pistas/superf: " << disk_manager->TRACKS_PER_SURFACE << std::endl;
-      std::cout << "Sectores/pista: " << disk_manager->SECTORS_PER_TRACK << std::endl;
-      std::cout << "Sectores totales: " << disk_manager->TOTAL_SECTORS << std::endl;
-      std::cout << "Pistas totales: " << disk_manager->TRACKS_PER_SURFACE * disk_manager->SURFACES << std::endl;
-      std::cout << "Capacidad de sector: " << disk_manager->SECTOR_SIZE << std::endl;
-      std::cout << "Capacidad de bloque: " << disk_manager->BLOCK_SIZE << std::endl;
-      std::cout << "Bloques por pista: " << disk_manager->TRACK_SIZE / (disk_manager->BLOCK_SIZE) << std::endl;
-      std::cout << "Bloques por superficie: " << disk_manager->SURFACE_SIZE / (disk_manager->BLOCK_SIZE) << std::endl;
-      std::cout << "Bloques totales: " << disk_manager->DISK_CAPACITY / (disk_manager->BLOCK_SIZE) << std::endl;
-      std::cout << "Bytes Usados: " << disk_manager->calculate_free_space() << " / " << disk_manager->DISK_CAPACITY << std::endl;
+      dump();
 
       pauseAndReturn();
 
@@ -120,6 +109,21 @@ void Megatron::run() {
 
   std::cout << "Cerrado correctamente" << std::endl;
   clean_managers();
+}
+
+void Megatron::dump() const {
+  std::cout << "Especificaciones de disco" << std::endl;
+  std::cout << "Superficies: " << disk_manager->SURFACES << std::endl;
+  std::cout << "Pistas/superf: " << disk_manager->TRACKS_PER_SURFACE << std::endl;
+  std::cout << "Sectores/pista: " << disk_manager->SECTORS_PER_TRACK << std::endl;
+  std::cout << "Sectores totales: " << disk_manager->TOTAL_SECTORS << std::endl;
+  std::cout << "Pistas totales: " << disk_manager->TRACKS_PER_SURFACE * disk_manager->SURFACES << std::endl;
+  std::cout << "Capacidad de sector: " << disk_manager->SECTOR_SIZE << std::endl;
+  std::cout << "Capacidad de bloque: " << disk_manager->BLOCK_SIZE << std::endl;
+  std::cout << "Bloques por pista: " << disk_manager->TRACK_SIZE / (disk_manager->BLOCK_SIZE) << std::endl;
+  std::cout << "Bloques por superficie: " << disk_manager->SURFACE_SIZE / (disk_manager->BLOCK_SIZE) << std::endl;
+  std::cout << "Bloques totales: " << disk_manager->DISK_CAPACITY / (disk_manager->BLOCK_SIZE) << std::endl;
+  std::cout << "Bytes Usados: " << disk_manager->calculate_free_space() << " / " << disk_manager->DISK_CAPACITY << std::endl;
 }
 
 // Set/Reset de frames en buffer pool

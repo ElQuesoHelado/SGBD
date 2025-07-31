@@ -264,6 +264,8 @@ public:
 
   size_t calculate_btree_order(size_t key_size);
 
+  void dump() const;
+
   // Helprs
   // void print_relation(Relation &relation);
   size_t char_size(std::string type);
@@ -297,6 +299,9 @@ public:
   void new_disk(std::string disk_name, size_t surfaces, size_t tracks, size_t sectors,
                 size_t bytes, size_t sectors_block, size_t n_frames, bool is_clock);
   void load_disk(std::string disk_name, size_t n_frames, bool is_clock);
+  bool is_loaded() const {
+    return disk_manager != nullptr;
+  }
 
   void set_buffer_manager_frames();
 
