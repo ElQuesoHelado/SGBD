@@ -1,6 +1,7 @@
 #include "megatron.hpp"
 #include "serial/fixed_page.hpp"
 #include "serial/slotted_page.hpp"
+#include "types/types.hpp"
 #include <iostream>
 #include <print>
 

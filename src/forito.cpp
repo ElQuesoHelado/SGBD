@@ -1,4 +1,7 @@
+#include "board.hpp"
+#include "httplib.h"
 #include "megatron.hpp"
+#include <print>
 
 int main(int argc, char *argv[]) {
   Megatron megatron;
@@ -27,32 +30,54 @@ int main(int argc, char *argv[]) {
           {"path", "VARCHAR(250)"},
       };
 
-  std::string board = "board", thread = "thread", post = "post";
+  std::string board_str = "board", thread_str = "thread", post_str = "post";
 
-  megatron.create_table(board, board_cols);
-  megatron.create_table(thread, thread_cols);
-  megatron.create_table(post, post_cols);
+  megatron.create_table(board_str, board_cols);
+  megatron.create_table(thread_str, thread_cols);
+  megatron.create_table(post_str, post_cols);
 
   megatron.load_CSV("csv/board.csv",
-                    board);
+                    board_str);
 
   megatron.load_CSV("csv/thread.csv",
-                    thread);
+                    thread_str);
 
   megatron.load_CSV("csv/post.csv",
-                    post);
+                    post_str, 500);
 
-  megatron.add_hash_to_table(board, board_cols[0].first);
-  megatron.add_hash_to_table(thread, thread_cols[0].first);
-  megatron.add_hash_to_table(post, post_cols[0].first);
+  megatron.add_hash_to_table(board_str, board_cols[0].first);
+  megatron.add_hash_to_table(thread_str, thread_cols[0].first);
+  megatron.add_hash_to_table(post_str, post_cols[0].first);
 
-  megatron.add_index_to_table(thread, thread_cols[3].first);
-  megatron.add_index_to_table(post, post_cols[3].first);
+  megatron.add_index_to_table(thread_str, thread_cols[3].first);
+  megatron.add_index_to_table(post_str, post_cols[3].first);
+
+  Board board(megatron);
+
+  std::println("{}", board.get_all_threads_ordered_by_date());
+  // std::println("{}", board.get_all_threads());
+
+  megatron.translate();
+
+  // httplib::Server svr;
   //
-  // megatron.translate();
+  // svr.Get("/a", [&megatron](const httplib::Request &req, httplib::Response &res) {
+  //   std::string table_name = "board";
+  //   Comparator comp;
+  //   auto results = megatron.select(table_name, comp);
+  //   std::string html = results.columns.back();
+  //   res.set_content(html, "text/html");
+  // });
+  //
+  // svr.Get("/shutdown", [&](const httplib::Request &, httplib::Response &res) {
+  //   svr.stop();
+  //   return;
+  // });
+  //
+  // svr.listen("localhost", 8080);
 
-  megatron.run();
-  // Comparator comp;
+  // megatron.run();
+  //  Comparator comp;
 
   // megatron.select_print(board, comp);
   // megatron.select_print(thread, comp);

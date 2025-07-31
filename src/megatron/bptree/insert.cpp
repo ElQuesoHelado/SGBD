@@ -6,7 +6,7 @@ void BPTree::insert_from_set(const ResultSet &set, size_t key_col_index) {
   }
 }
 
-void BPTree::insert(const SQL_type_ &key, const RegPtr &reg_ptr) {
+void BPTree::insert(const SQL_type_ &key, RegPtr reg_ptr) {
 
   auto r = load_node(root_id);
 
@@ -20,11 +20,16 @@ void BPTree::insert(const SQL_type_ &key, const RegPtr &reg_ptr) {
 }
 
 void BPTree::insert_non_full(BPNode &x,
-                             const SQL_type_ &key, const RegPtr &reg_ptr) {
+                             const SQL_type_ &key, RegPtr reg_ptr) {
   auto i = x.n_keys - 1;
   if (x.is_leaf) {
+
+    x.ptrs[x.n_keys + 1] = x.ptrs[x.n_keys];
     while (i >= 0 && key < x.keys[i]) {
       x.keys[i + 1] = x.keys[i];
+      x.ptrs[i + 1] = x.ptrs[i];
+      x.reg_slots[i + 1] = x.reg_slots[i];
+
       i--;
     }
     x.keys[i + 1] = key;

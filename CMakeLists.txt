@@ -72,6 +72,9 @@ set(MEGATRON_SOURCES
     ${SOURCE_DIR}/megatron/translate/translate_hash.cpp
     ${SOURCE_DIR}/megatron/translate/translate_index.cpp
     ${SOURCE_DIR}/megatron/misc.cpp
+    ${SOURCE_DIR}/board/generic.cpp
+    ${SOURCE_DIR}/board/basic_orders.cpp
+    ${SOURCE_DIR}/board/misc.cpp
 )
 
 set(DISK_MANAGER_SOURCES

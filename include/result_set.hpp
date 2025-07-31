@@ -4,6 +4,7 @@
 #include "serial/table.hpp"
 #include "types/types.hpp"
 #include <cstdint>
+#include <format>
 
 struct RegisterEntry {
   RegPtr reg_ptr;
@@ -74,5 +75,34 @@ public:
 
   bool empty() {
     return registers.empty();
+  }
+};
+
+// Solo valores
+inline std::ostream &operator<<(std::ostream &os, const ResultSet &set) {
+  for (const auto &col : set.columns)
+    os << col << " ";
+  os << "\n";
+
+  for (const auto &entry : set)
+    os << '(' << entry.reg_ptr.page_id << ", " << entry.reg_ptr.slot
+       << ") " << entry << "\n";
+
+  return os;
+}
+
+template <>
+struct std::formatter<ResultSet> : std::formatter<std::string> {
+  auto format(const ResultSet &set, std::format_context &ctx) const {
+    std::string values_str;
+    for (const auto &col : set.columns)
+      values_str += col + " ";
+    values_str += "\n";
+
+    for (const auto &entry : set)
+      values_str += std::format("({}, {}) {}\n", entry.reg_ptr.page_id,
+                                entry.reg_ptr.slot, entry);
+
+    return std::formatter<std::string>::format(std::format("{}", values_str), ctx);
   }
 };

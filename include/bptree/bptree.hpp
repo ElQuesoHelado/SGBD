@@ -44,8 +44,8 @@ public:
 
   void remove_from_set(const ResultSet &set, size_t key_col_index);
 
-  void insert(const SQL_type_ &key, const RegPtr &reg_ptr);
-  void insert_non_full(BPNode &x, const SQL_type_ &key, const RegPtr &reg_ptr);
+  void insert(const SQL_type_ &key, RegPtr reg_ptr);
+  void insert_non_full(BPNode &x, const SQL_type_ &key, RegPtr reg_ptr);
 
   void insert_from_set(const ResultSet &set, size_t key_col_index);
 
