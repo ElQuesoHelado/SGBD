@@ -55,9 +55,6 @@ ResultSet Board::get_posts_from_board_ordered_by_date(size_t board_id, bool asc)
   ResultSet posts_result;
   for (auto &t : threads_result) {
 
-    auto thread_id_comp =
-        get_thread_id_comparator(std::get<int64_t>(t.values[0]));
-
     posts_result.merge(get_posts_from_thread_ordered_by_date(
         std::get<int64_t>(t.values[0])));
   }

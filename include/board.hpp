@@ -37,6 +37,8 @@ struct Board {
   ResultSet get_posts_from_board(size_t board_id);
   ResultSet get_posts_from_thread(size_t thread_id);
 
+  void load_posts(size_t n);
+
   // Ordenamiento basico
   ResultSet get_all_threads_ordered_by_date(bool asc = true);
   ResultSet get_all_posts_ordered_by_date(bool asc = true);
@@ -44,21 +46,23 @@ struct Board {
   ResultSet get_posts_from_board_ordered_by_date(size_t board_id, bool asc = true);
   ResultSet get_posts_from_thread_ordered_by_date(size_t thread_id, bool asc = true);
 
-  // FIXME: TODO usando all_posts, luego se filtra en result set, ?Fecha como parametro?
-  // caso vacia se crea comparador empty?
-  ResultSet get_all_posts_in_date_range(size_t thread_id, bool asc = true);
-  ResultSet get_posts_in_date_range_from_thread(size_t thread_id, bool asc = true);
-  ResultSet get_posts_in_date_range_from_board(size_t thread_id, bool asc = true);
+  ResultSet get_all_posts_in_date_range(size_t low_date,
+                                        size_t high_date, bool asc = true);
+  ResultSet get_posts_in_date_range_from_thread(size_t thread_id,
+                                                size_t low_date,
+                                                size_t high_date, bool asc = true);
+  ResultSet get_posts_in_date_range_from_board(size_t board_id, size_t low_date,
+                                               size_t high_date, bool asc = true);
 
-  // FIXME: Se obtiene result set, luego se llama db.delete en cada uno
-  void delete_posts_in_date_range();
+  ResultSet delete_posts_in_date_range(size_t low_date, size_t high_date);
 
-  // FIXME: select de todo post de thread, se eliminan, luego se elimina thread
-  void delete_thread();
+  ResultSet delete_thread(size_t thread_id);
 
   // MISCELANEA/HELPERS
   Comparator get_id_comparator(serial::TableMetadata &table, size_t id);
-  Comparator get_board_id_comparator(size_t id);
-  Comparator get_thread_id_comparator(size_t id);
+  Comparator get_board_id_comparator(size_t board_id);
+  Comparator get_thread_id_comparator(size_t thread_id);
   Comparator get_inf_date_comp(serial::TableMetadata &table);
+  Comparator get_ranged_date_comp(serial::TableMetadata &table,
+                                  size_t low_date, size_t high_date);
 };

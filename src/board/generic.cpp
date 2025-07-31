@@ -59,3 +59,7 @@ ResultSet Board::get_posts_from_thread(size_t thread_id) {
 
   return bd.select(post, thread_id_comp);
 }
+
+void Board::load_posts(size_t n) {
+  bd.load_CSV("csv/post.csv", post_str, n);
+}

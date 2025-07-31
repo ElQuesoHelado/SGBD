@@ -73,6 +73,8 @@ set(MEGATRON_SOURCES
     ${SOURCE_DIR}/megatron/misc.cpp
     ${SOURCE_DIR}/board/generic.cpp
     ${SOURCE_DIR}/board/basic_orders.cpp
+    ${SOURCE_DIR}/board/in_range.cpp
+    ${SOURCE_DIR}/board/deletes.cpp
     ${SOURCE_DIR}/board/misc.cpp
 )
 

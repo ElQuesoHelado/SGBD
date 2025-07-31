@@ -1,4 +1,5 @@
 #include "board.hpp"
+#include "board_ui.hpp"
 #include "httplib.h"
 #include "megatron.hpp"
 #include <print>
@@ -54,16 +55,21 @@ int main(int argc, char *argv[]) {
 
   Board board(megatron);
 
+  BoardInterface board_ui(board);
+
+  board_ui.run();
+
   // std::println("{}",
   //              board.get_threads_from_board_ordered_by_date(5, 0));
   // std::println("{}", board.get_all_threads());
-  std::println("{}",
-               board.get_posts_from_thread_ordered_by_date(281014779, 1));
+  // std::println("{}",
+  //              board.get_posts_from_thread_ordered_by_date(281014779, 1));
 
-  std::println("{}",
-               board.get_posts_from_thread(281014779));
+  // std::println("{}",
+  //              board.get_all_posts_in_date_range(0,
+  //                                                202507291016));
 
-  megatron.translate();
+  // megatron.translate();
 
   // megatron.run();
   //  Comparator comp;
