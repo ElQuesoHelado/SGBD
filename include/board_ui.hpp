@@ -158,6 +158,7 @@ private:
     if (!silent) {
       std::cout << result << "\n";
     }
+    std::cout << "N_Registros:" << result.registers.size() << "\n";
     wait_for_enter();
   }
 
@@ -197,6 +198,7 @@ private:
     if (!silent) {
       std::cout << result << "\n";
     }
+    std::cout << "N_Registros:" << result.registers.size() << "\n";
     wait_for_enter();
   }
 
@@ -208,6 +210,7 @@ private:
     if (!silent) {
       std::cout << result << "\n";
     }
+    std::cout << "N_Registros:" << result.registers.size() << "\n";
     wait_for_enter();
   }
 
@@ -226,6 +229,7 @@ private:
     if (!silent) {
       std::cout << result << "\n";
     }
+    std::cout << "N_Registros:" << result.registers.size() << "\n";
     wait_for_enter();
   }
 
@@ -246,6 +250,7 @@ private:
     if (!silent) {
       std::cout << result << "\n";
     }
+    std::cout << "N_Registros:" << result.registers.size() << "\n";
     wait_for_enter();
   }
 
@@ -271,6 +276,7 @@ private:
     if (!silent) {
       std::cout << result << "\n";
     }
+    std::cout << "N_Registros:" << result.registers.size() << "\n";
     wait_for_enter();
   }
 
@@ -285,6 +291,7 @@ private:
     if (!silent) {
       std::cout << result << "\n";
     }
+    std::cout << "N_Registros:" << result.registers.size() << "\n";
     wait_for_enter();
   }
 
@@ -299,6 +306,7 @@ private:
     if (!silent) {
       std::cout << result << "\n";
     }
+    std::cout << "N_Registros:" << result.registers.size() << "\n";
     wait_for_enter();
   }
 
@@ -306,7 +314,9 @@ private:
     size_t low = get_numeric_input<size_t>("Ingrese fecha inicial: ");
     size_t high = get_numeric_input<size_t>("Ingrese fecha final: ");
     std::cout << "=== Eliminando posts en rango de fechas ===\n";
-    std::cout << board.delete_posts_in_date_range(low, high) << "\n";
+    auto result = board.delete_posts_in_date_range(low, high);
+    std::cout << result << "\n";
+    std::cout << "N_Registros eliminados:" << result.registers.size() << "\n";
     board.translate();
 
     wait_for_enter();
@@ -316,7 +326,9 @@ private:
     size_t id = get_numeric_input<size_t>("Ingrese ID del hilo a eliminar: ");
     std::cout << "=== Eliminando hilo " << id << " ===\n";
     std::cout << "Resultado de la eliminación:\n";
-    std::cout << board.delete_thread(id) << "\n";
+    auto result = board.delete_thread(id);
+    std::cout << result << "\n";
+    std::cout << "N_Registros eliminados:" << result.registers.size() << "\n";
 
     board.translate();
 
